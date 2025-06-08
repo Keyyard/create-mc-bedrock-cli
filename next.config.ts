@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
       },
     ],
     dangerouslyAllowSVG: true, // Allow SVG images from remote sources
+    unoptimized: true, // Disable Image Optimization for static export
   }, // Enable remote images from shields.io
   output: 'export', // Enable static export for Next.js 13+
 };

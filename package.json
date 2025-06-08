@@ -1,26 +1,27 @@
 {
-  "name": "create-mc-bedrock",
-  "version": "1.1.4",
-  "description": "CLI tool to create Minecraft projects by cloning samples from the Minecraft Scripting Samples repository.",
-  "main": "src/cli/index.js",
-  "bin": {
-    "create-mc-bedrock": "src/cli/index.js"
-  },
+  "name": "bedrock-cli-website",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "start": "node src/cli/index.js"
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "keywords": [
-    "minecraft",
-    "bedrock",
-    "cli",
-    "create"
-  ],
-  "author": "keyyard",
-  "license": "MIT",
   "dependencies": {
-    "inquirer": "^9.3.7",
-    "simple-git": "^3.27.0",
-    "uuid": "^9.0.0"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "next": "15.3.3"
   },
-  "type": "module"
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@tailwindcss/postcss": "^4",
+    "tailwindcss": "^4",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.3",
+    "@eslint/eslintrc": "^3"
+  }
 }

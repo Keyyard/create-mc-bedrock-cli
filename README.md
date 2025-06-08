@@ -1,41 +1,18 @@
-# Create Minecraft Bedrock
+# Create Minecraft Bedrock Website Branch
 
-`create-mc-bedrock` is a simple and interactive CLI tool to help you quickly set up Minecraft Bedrock workspaces by cloning samples from the [Microsoft Minecraft Scripting Samples](https://github.com/microsoft/minecraft-scripting-samples) repository.
+This branch contains the source code for the official website of the `create-mc-bedrock` CLI tool.
 
-[![CodeFactor](https://www.codefactor.io/repository/github/keyyard/create-mc-bedrock-cli/badge)](https://www.codefactor.io/repository/github/keyyard/create-mc-bedrock-cli)
+## About This Branch
+This branch is dedicated to the website only. It does not include the CLI tool source code or other project files.
 
-## Features
-- Interactive prompts to select a sample project.
-- Automatically clones the selected sample to your workspace.
-- Easy to use with `npx create-mc-bedrock`.
-- Fresh manifest uuids generated along.
-
-## Requirements
-- Node.js
-
-## Installation
-You don't need to install this tool globally. You can use it directly with `npx`:
-
-```bash
-npx create-mc-bedrock
-```
-
-## Usage
-1. Run the following command:
-   ```bash
-   npx create-mc-bedrock
-   ```
-2. Follow the interactive prompts:
-   - Select a sample project from the list.
-   - Specify the destination folder where the project should be created.
-
-## Showcase
-![showcase](https://github.com/Keyyard/create-mc-bedrock-cli/blob/main/screenshots/img2.png)
-![showcase](https://github.com/Keyyard/create-mc-bedrock-cli/blob/main/screenshots/img1.png)
-![showcase](https://github.com/Keyyard/create-mc-bedrock-cli/blob/main/screenshots/gif.gif)
+## Website Purpose
+- Showcase the features of `create-mc-bedrock`
+- Provide documentation and guides
+- Share screenshots and usage examples
 
 ## Contributing
-Contributions are welcome! Feel free to open an issue or submit a pull request.
+Contributions to the website are welcome! Feel free to open an issue or submit a pull request.
 
 ## License
+This website follows the same license as the main project. See the LICENSE file for details.
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

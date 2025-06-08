@@ -25,9 +25,7 @@ jobs:
         run: npm ci
 
       - name: Build Next.js static site
-        run: |
-          npm run build
-          npx next export
+        run: npm run build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

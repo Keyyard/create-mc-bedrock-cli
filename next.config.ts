@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
     ],
     dangerouslyAllowSVG: true, // Allow SVG images from remote sources
   }, // Enable remote images from shields.io
+  output: 'export', // Enable static export for Next.js 13+
 };
 
 export default nextConfig;

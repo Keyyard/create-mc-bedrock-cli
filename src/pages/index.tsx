@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main className="flex flex-col gap-12 items-center w-full">
+      <main className="flex flex-col gap-2 items-center w-full">
         <section className="w-full"><StartSection /></section>
         <section className="w-full"><WhyUseSection /></section>
         <section className="w-full"><HowItWorksSection /></section>

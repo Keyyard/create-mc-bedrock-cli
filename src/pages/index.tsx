@@ -12,6 +12,7 @@ import Footer from "@/components/organism/Footer";
 export default function Home() {
   return (
     <>
+      <title>Create Bedrock CLI</title>
       <Header />
       <main className="flex flex-col gap-2 items-center w-full">
         <section className="w-full"><StartSection /></section>

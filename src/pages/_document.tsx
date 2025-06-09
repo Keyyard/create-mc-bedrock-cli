@@ -10,7 +10,7 @@ export default function Document() {
       <meta property="og:description" content="The fastest way to start Minecraft Bedrock Addon development!" />
       <meta property="og:type" content="website" />
       <meta property="og:url" content="https://bedrockcli.keyyard.xyz/" />
-      <meta property="og:image" content="https://bedrockcli.keyyard.xyz/medias/create-bedrock-cli-banner.png" />
+      <meta property="og:image" content="https://bedrockcli.keyyard.xyz/medias/favicon.ico" />
       <meta property="og:site_name" content="Create Bedrock CLI" />
     </Head>
     <body className="antialiased">

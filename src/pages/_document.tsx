@@ -3,7 +3,7 @@ export default function Document() {
   return (
     <Html lang="en">
     <Head>
-      <link rel="icon" href="/favicon.ico" />
+      <link rel="icon" href="/icon.ico" />
       <meta name="description" content="The fastest way to start Minecraft Bedrock Addon development!" />
 
       <meta property="og:title" content="Create Bedrock CLI" />

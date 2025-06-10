@@ -1,15 +1,21 @@
 import React from "react";
+import Image from "next/image";
 const Footer: React.FC = () => (
   <footer className="flex flex-col items-center text-center text-gray-700 dark:text-gray-300 border-t">
     <p className="text-lg mt-2">
-      Made with <span className="text-red-500">❤️</span> for the Minecraft Bedrock development community
+      Made with <span className="text-red-500">❤️</span> for the Minecraft
+      Bedrock development community
     </p>
-    <p className="text-sm">
-      &copy; 2025 Keyyard. All rights reserved.
-    </p>
+    <p className="text-sm">&copy; 2025 Keyyard. All rights reserved.</p>
     <div className="flex gap-4">
-      <a href="https://github.com/Keyyard/create-mc-bedrock-cli" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-600 underline">GitHub Repo</a>
-      <a href="https://github.com/Keyyard" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-600 underline">GitHub Profile</a>
+      <a href="https://github.com/Keyyard/create-mc-bedrock-cli">
+        <Image
+          src="https://img.shields.io/badge/Github%20Repository-Red?style=for-the-badge&logo=Github&logoColor=white&labelColor=%23181717&color=white"
+          alt="Github Repository"
+          width={200}
+          height={30}
+        />
+      </a>
     </div>
   </footer>
 );

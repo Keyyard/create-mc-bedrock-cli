@@ -6,7 +6,6 @@ const Footer: React.FC = () => (
       Made with <span className="text-red-500">❤️</span> for the Minecraft
       Bedrock development community
     </p>
-    <p className="text-sm">&copy; 2025 Keyyard. All rights reserved.</p>
     <div className="flex gap-4">
       <a href="https://github.com/Keyyard/create-mc-bedrock-cli">
         <Image
@@ -17,6 +16,7 @@ const Footer: React.FC = () => (
         />
       </a>
     </div>
+    <p className="text-sm">&copy; 2025 Keyyard. All rights reserved.</p>
   </footer>
 );
 

@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 const Footer: React.FC = () => (
-  <footer className="flex flex-col items-center text-center text-gray-700 dark:text-gray-300 border-t">
+  <footer className="flex flex-col items-center text-center text-gray-700 dark:text-gray-300 border-t pb-2">
     <p className="text-lg mt-2">
       Made with <span className="text-red-500">❤️</span> for the Minecraft
       Bedrock development community

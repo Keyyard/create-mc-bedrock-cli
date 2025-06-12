@@ -16,13 +16,13 @@ export default function Home() {
       <Header />
       <main className="flex flex-col gap-2 items-center w-full">
         <section className="w-full"><StartSection /></section>
-        <section className="w-full"><WhyUseSection /></section>
-        <section className="w-full"><HowItWorksSection /></section>
-        <section className="w-full"><ShowcaseSection /></section>
-        <section className="w-full"><FeaturesSection /></section>
-        <section className="w-full"><RequirementsSection /></section>
-        <section className="w-full"><ProTipsSection /></section>
-        <section className="w-full"><ContributingSection /></section>
+        <section className="w-full px-2"><WhyUseSection /></section>
+        <section className="w-full px-2"><HowItWorksSection /></section>
+        <section className="w-full px-2"><ShowcaseSection /></section>
+        <section className="w-full px-2"><FeaturesSection /></section>
+        <section className="w-full px-2"><RequirementsSection /></section>
+        <section className="w-full px-2"><ProTipsSection /></section>
+        <section className="w-full px-2"><ContributingSection /></section>
       </main>
       <Footer />
     </>

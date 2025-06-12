@@ -6,12 +6,12 @@ const Footer: React.FC = () => (
       Made with <span className="text-red-500">❤️</span> for the Minecraft
       Bedrock development community
     </p>
-    <div className="flex gap-4">
+    <div className="flex gap-4 my-2">
       <a href="https://github.com/Keyyard/create-mc-bedrock-cli">
         <Image
           src="https://img.shields.io/badge/Github%20Repository-Red?style=for-the-badge&logo=Github&logoColor=white&labelColor=%23181717&color=white"
           alt="Github Repository"
-          width={200}
+          width={180}
           height={30}
         />
       </a>

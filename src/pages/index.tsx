@@ -15,14 +15,14 @@ export default function Home() {
       <title>Create Bedrock CLI</title>
       <Header />
       <main className="flex flex-col gap-2 items-center w-full">
-        <section className="w-full"><StartSection /></section>
-        <section className="w-full px-2"><WhyUseSection /></section>
-        <section className="w-full px-2"><HowItWorksSection /></section>
-        <section className="w-full px-2"><ShowcaseSection /></section>
-        <section className="w-full px-2"><FeaturesSection /></section>
-        <section className="w-full px-2"><RequirementsSection /></section>
-        <section className="w-full px-2"><ProTipsSection /></section>
-        <section className="w-full px-2"><ContributingSection /></section>
+        <section className="w-full py-4"><StartSection /></section>
+        <section className="w-full px-2 py-2 pb-2"><WhyUseSection /></section>
+        <section className="w-full px-2 py-2"><HowItWorksSection /></section>
+        <section className="w-full px-2 py-2"><ShowcaseSection /></section>
+        <section className="w-full px-2 py-2"><FeaturesSection /></section>
+        <section className="w-full px-2 py-2"><RequirementsSection /></section>
+        <section className="w-full px-2 py-2"><ProTipsSection /></section>
+        <section className="w-full px-2 py-2"><ContributingSection /></section>
       </main>
       <Footer />
     </>

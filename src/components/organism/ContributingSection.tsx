@@ -1,8 +1,8 @@
 import React from "react";
 
 const ContributingSection: React.FC = () => (
-  <section className="py-4 max-w-3xl mx-auto">
-    <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">🤝 Contributing</h2>
+  <section className="max-w-3xl mx-auto">
+    <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">Contributing</h2>
     <div className="text-lg text-center space-y-4">
       <p>
         We’d love your help to make <b>Create MC Bedrock CLI</b> even better!<br />

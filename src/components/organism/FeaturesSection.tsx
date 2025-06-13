@@ -9,8 +9,8 @@ const features = [
 ];
 
 const FeaturesSection: React.FC = () => (
-  <section className="py-4 max-w-3xl mx-auto">
-    <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">🛠️ Features</h2>
+  <section className="max-w-3xl mx-auto">
+    <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">Features</h2>
     <ul className="list-disc list-inside space-y-2 text-lg">
       {features.map((f) => (
         <li key={f}>{f}</li>

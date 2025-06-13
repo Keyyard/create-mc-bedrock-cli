@@ -21,7 +21,7 @@ const BADGES = [
 ];
 
 const StartSection: React.FC = () => (
-  <section className="pt-4 max-w-4xl mx-auto">
+  <section className="max-w-4xl mx-auto">
     <div className="flex flex-wrap gap-2 justify-center mt-2">
       <p className="text-xl md:text-2xl font-bold mb-6 text-center">
         The Fastest Way to Start Minecraft Bedrock Addon Development! 🚀

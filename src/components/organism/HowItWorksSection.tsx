@@ -2,8 +2,8 @@ import React from "react";
 import CopyBlock from "@/components/atoms/CopyBlock";
 
 const HowItWorksSection: React.FC = () => (
-  <section className="py-4 max-w-3xl mx-auto">
-    <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">🚀 How It Works</h2>
+  <section className="max-w-3xl mx-auto">
+    <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">How It Works</h2>
     <ol className="list-decimal list-inside space-y-4 text-lg">
       <li>
         <span className="font-semibold">Run the CLI:</span>

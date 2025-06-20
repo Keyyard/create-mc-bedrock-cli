@@ -1,9 +1,10 @@
 import React from "react";
 
 const tips = [
-  "Use the ⭐ ts-starter template for a modern TypeScript setup.",
-  "Run the CLI with npx for the latest version every time.",
-  "All generated projects are ready to open in VS Code—just cd into your folder and run code .",
+  "Star ⭐ templates are featured to help you find the best starting points.",
+  "Always use npx bedrock-cli to ensure you're running the latest version without global installations.",
+  "Generated projects include VS Code workspace settings—just open the folder and start coding immediately.",
+  "Take advantage of built-in features like ESLint, Prettier, and testing frameworks that come pre-configured.",
 ];
 
 const ProTipsSection: React.FC = () => (

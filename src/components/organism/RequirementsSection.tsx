@@ -3,7 +3,7 @@ import React from "react";
 
 const requirements = [
   {
-    label: "Node.js",
+    label: "Node.js (v18+ reccommended)",
     url: "https://nodejs.org/en/download/"
   },
   {
@@ -22,7 +22,7 @@ const RequirementsSection: React.FC = () => (
             href={r.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="underline text-blue-600 hover:text-blue-800"
+            className="underline text-emerald-600 hover:text-emerald-800"
           >
             {r.label}
           </a>

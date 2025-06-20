@@ -3,7 +3,7 @@ import LetterGlitch from "@/components/molecules/LetterGlitch";
 const Header: React.FC = () => (
   <header className="flex flex-col items-center text-center w-full">
     <div className="h-[60vh] relative block w-full">
-      <div className="absolute inset-0 w-full h-full z-0">
+      <div className="absolute inset-0 w-full h-full z-15">
         <LetterGlitch
           glitchColors={["#2b4539", "#61dca3", "#61b3dc"]}
           glitchSpeed={100}
@@ -12,7 +12,7 @@ const Header: React.FC = () => (
           smooth={true}
         />
       </div>
-      <div className="absolute inset-0 flex flex-col items-center justify-center z-10 mix-blend-color-dodge">
+      <div className="absolute inset-0 flex flex-col items-center justify-center z-15 mix-blend-color-dodge">
         <h1 className="text-7xl md:text-8xl font-extrabold mb-4">CREATE MC BEDROCK CLI</h1>
       </div>
     </div>

@@ -1,24 +1,78 @@
-import LetterGlitch from "@/components/molecules/LetterGlitch";
+import CopyBlock from "../atoms/CopyBlock";
+import Image from "next/image";
+import ShieldsBadge from "@/components/atoms/ShieldsBadge";
 
+const BADGES = [
+  {
+    alt: "Version",
+    src: "https://img.shields.io/badge/version-1.3.1-blue.svg",
+    href: "https://github.com/keyyard/create-mc-bedrock-cli",
+  },
+  {
+    alt: "Node.js",
+    src: "https://img.shields.io/badge/Node.js-18%2B-green.svg",
+    href: "https://nodejs.org/",
+  },
+  {
+    alt: "License",
+    src: "https://img.shields.io/badge/license-MIT-orange.svg",
+    href: "https://github.com/Keyyard/create-mc-bedrock-cli/blob/main/LICENSE",
+  },
+];
 const Header: React.FC = () => (
-  <header className="flex flex-col items-center text-center w-full">
-    <div className="h-[60vh] relative block w-full">
-      <div className="absolute inset-0 w-full h-full z-15">
-        <LetterGlitch
-          glitchColors={["#2b4539", "#61dca3", "#61b3dc"]}
-          glitchSpeed={100}
-          centerVignette={true}
-          outerVignette={false}
-          smooth={true}
-        />
+  <header className="flex flex-col items-center text-center w-full min-h-[60vh] bg-emerald-800/20 relative overflow-hidden" id="start">
+    <Image
+      src="/bg.webp"
+      alt="Keyyard BedrockCLI bg"
+      fill
+      style={{ mixBlendMode: "overlay" }}
+      className="object-cover object-center opacity-40 pointer-events-none select-none z-0"
+      priority
+    />
+    <div className="flex flex-col items-center justify-center h-full py-16 z-10 relative">
+      <h1 className="text-4xl md:text-5xl font-extrabold mb-2 text-white drop-shadow-lg">
+        Create MC Bedrock CLI
+      </h1>
+      <p className="text-md font-semibold text-gray-300 mb-2">
+        The Fastest Way to Start Minecraft Bedrock Addon Development
+      </p>
+      <p className="text-base text-gray-400 mb-8 max-w-2xl">
+        Tired of manually setting up Minecraft Bedrock workspaces?<br />
+        With <span className="font-semibold">create-mc-bedrock</span>, you can bootstrap your next project in seconds, using official Microsoft samples and fresh manifest UUIDs every time.
+      </p>
+      <a
+        href="#requirements"
+        className="inline-block w-[300px] py-4 mb-6 rounded-full bg-emerald-600 text-white text-xl font-bold shadow-lg hover:bg-emerald-700 transition min-w-[260px]"
+      >
+        Get Started
+      </a>
+      <div className="mb-8 flex text-left">
+        <div className="inline-block w-[300px]">
+          <CopyBlock code="npx create-mc-bedrock" />
+        </div>
       </div>
-      <div className="absolute inset-0 flex flex-col items-center justify-center z-15 mix-blend-color-dodge">
-        <h1 className="text-7xl md:text-8xl font-extrabold mb-4">CREATE MC BEDROCK CLI</h1>
+      <div className="flex flex-wrap gap-2 justify-center mt-2">
+        {BADGES.map((badge) => (
+          <ShieldsBadge key={badge.alt} {...badge} />
+        ))}
+      </div>
+      <div className="flex flex-wrap gap-2 justify-center mt-2">
+        <a
+          href="https://github.com/keyyard/create-mc-bedrock-cli"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block"
+        >
+          <Image
+            src="https://img.shields.io/github/stars/keyyard/create-mc-bedrock-cli"
+            alt="GitHub Stars"
+            className="inline"
+            width={100}
+            height={50}
+          />
+        </a>
       </div>
     </div>
-    <p className="text-xs text-gray-500 pt-2">
-      Tip: Squint your eyes.
-    </p>
   </header>
 );
 

@@ -29,27 +29,31 @@ const SideNavbar: React.FC = () => {
   };
 
   return (
-    <>      {/* Mobile menu button */}
+    <>
+      {/* Navigation menu button - fixed to top */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="sticky top-1/2 left-4 z-1 md:hidden text-white/70 p-2 hover:text-white transition-colors transform -translate-y-1/2"
+        className="fixed top-4 left-4 z-50 bg-emerald-600/80 hover:bg-emerald-600 text-white p-3 rounded-full shadow-lg transition-all duration-300 backdrop-blur-sm"
+        aria-label="Toggle navigation menu"
       >
-        <div className="w-6 h-6 flex flex-col justify-center items-center">
-          <span className={`block w-5 h-0.5 bg-current transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-1' : '-translate-y-1'}`}></span>
-          <span className={`block w-5 h-0.5 bg-current transition-all duration-300 ${isOpen ? 'opacity-0' : 'opacity-100'}`}></span>
-          <span className={`block w-5 h-0.5 bg-current transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-1' : 'translate-y-1'}`}></span>
+        <div className="w-5 h-5 flex flex-col justify-center items-center">
+          <span className={`block w-4 h-0.5 bg-current transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-0.5' : '-translate-y-1'}`}></span>
+          <span className={`block w-4 h-0.5 bg-current transition-all duration-300 ${isOpen ? 'opacity-0' : 'opacity-100'}`}></span>
+          <span className={`block w-4 h-0.5 bg-current transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-0.5' : 'translate-y-1'}`}></span>
         </div>
-      </button>      {/* Sidebar */}
-      <nav className={`fixed top-1/2 left-0 w-64 z-10 transform -translate-y-1/2 transition-transform duration-300 ease-in-out ${
+      </button>
+
+      {/* Sidebar */}
+      <nav className={`fixed top-0 left-0 h-full w-64 bg-emerald-900/95 backdrop-blur-md z-40 transform transition-transform duration-300 ease-in-out ${
         isOpen ? 'translate-x-0' : '-translate-x-full'
-      } md:translate-x-0`}>
-        <div className="p-6">
-          <ul className="space-y-1">
+      }`}>
+        <div className="p-6 pt-20">
+          <ul className="space-y-2">
             {navItems.map((item) => (
               <li key={item.id}>
                 <button
                   onClick={() => scrollToSection(item.id)}
-                  className="w-full text-left py-2 text-white/70 hover:text-white hover:text-shadow-sm transition-all duration-200 font-light tracking-wide"
+                  className="w-full text-left py-3 px-4 text-white/80 hover:text-white hover:bg-emerald-800/50 rounded-lg transition-all duration-200 font-medium"
                 >
                   {item.label}
                 </button>
@@ -57,10 +61,12 @@ const SideNavbar: React.FC = () => {
             ))}
           </ul>
         </div>
-      </nav>      {/* Overlay for mobile */}
+      </nav>
+
+      {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/30 z-5 md:hidden"
+          className="fixed inset-0 bg-black/50 z-30"
           onClick={() => setIsOpen(false)}
         ></div>
       )}

@@ -1,4 +1,4 @@
-import simpleGit from 'simple-git';
+import { downloadAndExtractRepo } from './repoDownloadService.js';
 import fs from 'fs/promises';
 import { cleanupTempFiles } from '../utils/helpers.js';
 import { getTemplateLabel, sortTemplates } from './templateLabels.js';
@@ -17,15 +17,11 @@ const sources = {
 };
 export async function fetchSamples(sourceKey) {
   const source = sources[sourceKey];
-  const git = simpleGit();
   console.log(`Fetching available samples from ${source.name}...`);
   await cleanupTempFiles();
   try {
-    await git.clone(source.repo, source.tempRepoPath, ['--depth', '1']);
+    await downloadAndExtractRepo(source.repo, source.tempRepoPath);
   } catch (error) {
-    if (error.message && error.message.includes('spawn git ENOENT')) {
-      throw new Error('Git is not installed or not found in your PATH. Please install Git from https://git-scm.com/downloads and try again.');
-    }
     throw new Error(`Error fetching samples: ${error.message}`);
   }
 }

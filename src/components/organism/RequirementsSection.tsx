@@ -3,13 +3,9 @@ import React from "react";
 
 const requirements = [
   {
-    label: "Node.js (v18+ reccommended)",
+    label: "Node.js (v18+ recommended)",
     url: "https://nodejs.org/en/download/"
-  },
-  {
-    label: "Git",
-    url: "https://git-scm.com/downloads"
-  },
+  }
 ];
 
 const RequirementsSection: React.FC = () => (

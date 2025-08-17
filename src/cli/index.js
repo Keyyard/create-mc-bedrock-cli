@@ -31,7 +31,10 @@ async function run() {
         }
       ]);
       destination = answers.destination;
-      samplePath = path.join('./temp-repo-custom', category, sample);
+      // Use the actual repo root from gitService
+      const { sources } = await import('../services/gitService.js');
+      const repoRoot = sources.custom.repoRoot || './temp-repo-custom';
+      samplePath = path.join(repoRoot, category, sample);
     } else {
       const samples = await getSamples(source);
       if (samples.length === 0) {
@@ -41,7 +44,10 @@ async function run() {
       const answers = await promptUser(samples);
       sample = answers.sample;
       destination = answers.destination;
-      samplePath = path.join('./temp-repo-microsoft', sample);
+      // Use the actual repo root from gitService
+      const { sources } = await import('../services/gitService.js');
+      const repoRoot = sources.microsoft.repoRoot || './temp-repo-microsoft';
+      samplePath = path.join(repoRoot, sample);
     }
 
     const targetPath = path.resolve(destination);
@@ -50,10 +56,12 @@ async function run() {
     // Update manifest files after moving the sample
     const relativePath = path.relative(process.cwd(), targetPath);
     await updateManifestFiles(relativePath, destination);
+
   } catch (error) {
     console.error(error.message);
   } finally {
     await cleanupTempFiles();
+    process.exit(0);
   }
 }
 

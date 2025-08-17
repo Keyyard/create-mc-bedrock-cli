@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import { cleanupTempFiles } from '../utils/helpers.js';
 import { getTemplateLabel, sortTemplates } from './templateLabels.js';
 
-const sources = {
+export const sources = {
   microsoft: {
     name: 'Microsoft Official Templates',
     repo: 'https://github.com/microsoft/minecraft-scripting-samples.git',
@@ -20,7 +20,9 @@ export async function fetchSamples(sourceKey) {
   console.log(`Fetching available samples from ${source.name}...`);
   await cleanupTempFiles();
   try {
-    await downloadAndExtractRepo(source.repo, source.tempRepoPath);
+    // Store the actual extracted repo root path
+    const repoRoot = await downloadAndExtractRepo(source.repo, source.tempRepoPath);
+    source.repoRoot = repoRoot;
   } catch (error) {
     throw new Error(`Error fetching samples: ${error.message}`);
   }
@@ -44,7 +46,8 @@ export async function fetchSamples(sourceKey) {
 export async function getCustomCategories() {
   const source = sources.custom;
   try {
-    const entries = await fs.readdir(source.tempRepoPath, { withFileTypes: true });
+    const rootPath = source.repoRoot || source.tempRepoPath;
+    const entries = await fs.readdir(rootPath, { withFileTypes: true });
     return entries
       .filter(entry => entry.isDirectory() && !entry.name.startsWith('.'))
       .map(entry => ({
@@ -60,7 +63,8 @@ export async function getCustomCategories() {
 // New: Get templates within a selected custom category
 export async function getCustomTemplates(category) {
   const source = sources.custom;
-  const categoryPath = `${source.tempRepoPath}/${category}`;
+  const rootPath = source.repoRoot || source.tempRepoPath;
+  const categoryPath = `${rootPath}/${category}`;
   try {
     const entries = await fs.readdir(categoryPath, { withFileTypes: true });
     let templates = entries
@@ -92,7 +96,9 @@ export async function getSamples(sourceKey, category) {
     return getCustomTemplates(category);
   }
   try {
-    const entries = await fs.readdir(source.tempRepoPath, { withFileTypes: true });
+    // Use the actual repo root if available, otherwise fallback to tempRepoPath
+    const rootPath = source.repoRoot || source.tempRepoPath;
+    const entries = await fs.readdir(rootPath, { withFileTypes: true });
     let samples = entries
       .filter(entry => entry.isDirectory() && !entry.name.startsWith('.'))
       .map(entry => ({

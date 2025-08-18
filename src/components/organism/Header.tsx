@@ -20,7 +20,7 @@ const BADGES = [
   },
 ];
 const Header: React.FC = () => (
-  <header className="flex flex-col items-center text-center w-full min-h-[60vh] bg-emerald-800/20 relative overflow-hidden" id="start">
+  <header className="flex flex-col items-center text-center w-full min-h-[60vh] bg-emerald-900/30 relative overflow-hidden" id="start">
     <Image
       src="/bg.webp"
       alt="Keyyard BedrockCLI bg"
@@ -33,16 +33,17 @@ const Header: React.FC = () => (
       <h1 className="text-4xl md:text-5xl font-extrabold mb-2 text-white drop-shadow-lg">
         Create MC Bedrock CLI
       </h1>
-      <p className="text-md font-semibold text-gray-300 mb-2">
+      <p className="text-md font-semibold text-gray-100 mb-2">
         The Fastest Way to Start Minecraft Bedrock Addon Development
       </p>
-      <p className="text-base text-gray-400 mb-8 max-w-2xl">
+      <p className="text-base text-gray-200 mb-8 max-w-2xl">
         Tired of manually setting up Minecraft Bedrock workspaces?<br />
         With <span className="font-semibold">create-mc-bedrock</span>, you can bootstrap your next project in seconds, using official Microsoft samples and fresh manifest UUIDs every time.
       </p>
       <a
         href="#requirements"
-        className="inline-block w-[300px] py-4 mb-6 rounded-full bg-emerald-600 text-white text-xl font-bold shadow-lg hover:bg-emerald-700 transition min-w-[260px]"
+        className="inline-block w-[300px] py-4 mb-6 rounded-full bg-emerald-800 text-white text-xl font-bold shadow-lg hover:bg-emerald-700 transition min-w-[260px]"
+        style={{ color: "white" }}
       >
         Get Started
       </a>

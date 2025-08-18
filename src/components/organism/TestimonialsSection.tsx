@@ -33,15 +33,15 @@ const TestimonialsSection: React.FC = () => {
             {testimonials.map((t, idx) => (
               <div
                 key={idx}
-                className="flex-shrink-0 w-80 bg-white/80 dark:bg-emerald-800/10 rounded-lg shadow p-6 border border-emerald-100 dark:border-emerald-900"
+                className="flex-shrink-0 w-80 bg-emerald-900/70 rounded-lg shadow p-6 border border-emerald-800"
               >
-                <div className="font-semibold text-emerald-700 dark:text-emerald-300">
+                <div className="font-semibold text-emerald-200">
                   {t.name}
                 </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
+                <div className="text-sm text-gray-300">
                   {t.role}
                 </div>
-                <p className="text-gray-800 dark:text-gray-200 italic mb-4">
+                <p className="text-gray-100 italic mb-4">
                   “{t.feedback}”
                 </p>
               </div>

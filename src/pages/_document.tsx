@@ -1,7 +1,7 @@
 import { Html, Head, Main, NextScript } from "next/document";
 export default function Document() {
   return (
-    <Html lang="en">
+    <Html lang="en" className="dark">
     <Head>
       <link rel="icon" href="/icon.ico" />
       <meta name="description" content="The fastest way to start Minecraft Bedrock Addon development!" />

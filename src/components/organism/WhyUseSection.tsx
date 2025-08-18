@@ -28,10 +28,10 @@ const WhyUseSection: React.FC = () => (
     <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">Why Use Create MC Bedrock CLI?</h2>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       {features.map((f) => (
-        <div key={f.title} className="flex flex-col items-center text-center bg-white/80 dark:bg-emerald-800/10 rounded-lg p-6 shadow">
-          <span className="text-4xl mb-2">{f.icon}</span>
-          <h3 className="text-lg font-semibold mb-1">{f.title}</h3>
-          <p className="text-gray-700 dark:text-gray-300">{f.desc}</p>
+        <div key={f.title} className="flex flex-col items-center text-center bg-emerald-900/70 rounded-lg p-6 shadow border border-emerald-800">
+          <span className="text-3xl mb-2 text-emerald-200">{f.icon}</span>
+          <h3 className="text-lg font-semibold mb-1 text-emerald-100">{f.title}</h3>
+          <p className="text-gray-200">{f.desc}</p>
         </div>
       ))}
     </div>

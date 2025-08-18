@@ -46,10 +46,13 @@ export default function ShowcaseCarousel() {
         {images.map((img, idx) => (
           <button
             key={img.src}
-            className={`w-3 h-3 rounded-full ${idx === current ? "bg-emerald-500" : "bg-gray-300"}`}
             onClick={() => setCurrent(idx)}
             aria-label={`Go to image ${idx + 1}`}
-          />
+            className="inline-flex items-center justify-center p-2 w-11 h-11 rounded-full focus:outline-none focus:ring-2 focus:ring-white/60"
+          >
+            {/* visual dot stays small while touch target is large */}
+            <span className={`block w-3 h-3 rounded-full ${idx === current ? "bg-emerald-500" : "bg-gray-300"}`} aria-hidden="true" />
+          </button>
         ))}
       </div>
     </div>

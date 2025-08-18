@@ -12,3 +12,23 @@ body {
   color: var(--foreground);
   font-family: 'Inter', Arial, Helvetica;
 }
+
+/* Dark-mode fallbacks for elements that don't use Tailwind 'dark:' utilities */
+:root.dark, html.dark {
+  --background: #0a0a0a;
+  --foreground: #e6eef8;
+}
+
+html.dark body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Make links readable by default in dark mode */
+html.dark a {
+  color: #9be7d7;
+}
+
+/* Optional helper for hiding scrollbars if used */
+.scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }

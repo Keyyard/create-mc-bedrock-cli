@@ -91,7 +91,6 @@ Choose from a curated list of Microsoft’s best scripting samples. Your selecte
 ## 📦 Requirements
 
 - Node.js 18 or higher
-- Git
 
 ---
 

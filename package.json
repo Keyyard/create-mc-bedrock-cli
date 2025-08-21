@@ -1,6 +1,6 @@
 {
   "name": "create-mc-bedrock",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "create-mc-bedrock is a simple and interactive CLI tool to help you quickly set up Minecraft Bedrock workspaces with given templates from both Microsoft's and Customs!",
   "main": "src/cli/index.js",
   "bin": {
@@ -37,7 +37,7 @@
   "license": "MIT",
   "dependencies": {
     "inquirer": "^9.3.7",
-    "simple-git": "^3.27.0",
+  "unzipper": "^0.10.11",
     "uuid": "^9.0.0"
   },
   "type": "module"

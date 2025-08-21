@@ -5,7 +5,7 @@ import ShieldsBadge from "@/components/atoms/ShieldsBadge";
 const BADGES = [
   {
     alt: "Version",
-    src: "https://img.shields.io/badge/version-1.4.1-blue.svg",
+    src: "https://img.shields.io/badge/version-1.4.2-blue.svg",
     href: "https://github.com/keyyard/create-mc-bedrock-cli",
   },
   {

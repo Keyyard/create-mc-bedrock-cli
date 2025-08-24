@@ -1,5 +1,8 @@
-# Create MC Bedrock CLI
-also known as Bedrock CLI
+<div>
+   <h1>Create MC Bedrock CLI</h1>
+   <p>also known as Bedrock CLI
+</p>
+</div> 
 <div align="center">
 
 [![GitHub Stars](https://img.shields.io/github/stars/keyyard/create-mc-bedrock-cli?style=social)](https://github.com/keyyard/create-mc-bedrock-cli)

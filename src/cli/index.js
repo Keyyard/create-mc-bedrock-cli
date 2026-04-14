@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 import { displayAsciiArt } from '../utils/logger.js';
 import { fetchSamples, getSamples } from '../services/gitService.js';
-import { promptSource, promptUser, promptCategory, promptTemplate } from './commands.js';
+import { promptSource, promptUser, promptCategory, promptTemplate, promptRegolith } from './commands.js';
 import { moveSample } from '../services/fileService.js';
 import { updateManifestFiles } from '../services/manifestService.js';
+import { applyRegolithStructure } from '../services/regolithService.js';
 import { cleanupTempFiles } from '../utils/helpers.js';
 import path from 'path';
 import inquirer from 'inquirer';
@@ -51,11 +52,21 @@ async function run() {
     }
 
     const targetPath = path.resolve(destination);
+
+    // Ask about Regolith before doing anything — keeps prompts together
+    const { useRegolith, author } = await promptRegolith();
+
     await moveSample(samplePath, targetPath);
 
     // Update manifest files after moving the sample
     const relativePath = path.relative(process.cwd(), targetPath);
     await updateManifestFiles(relativePath, destination);
+
+    // Optionally restructure as a Regolith project
+    if (useRegolith) {
+      const projectName = path.basename(targetPath);
+      await applyRegolithStructure(targetPath, projectName, author);
+    }
 
   } catch (error) {
     console.error(error.message);

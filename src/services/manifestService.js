@@ -5,8 +5,8 @@ import { v4 as uuidv4 } from 'uuid';
 export async function updateManifestFiles(destination, userInputName) {
   // Find manifest paths dynamically
   const manifestPaths = [];
-  
-  // Check for behavior_packs folder and find the first subfolder
+
+  // --- Standard structure: behavior_packs/<subfolder>/manifest.json ---
   const bpDir = path.join(destination, 'behavior_packs');
   try {
     const bpEntries = await fs.readdir(bpDir, { withFileTypes: true });
@@ -14,11 +14,11 @@ export async function updateManifestFiles(destination, userInputName) {
     if (bpFolder) {
       manifestPaths.push(path.join(bpDir, bpFolder.name, 'manifest.json'));
     }
-  } catch (error) {
+  } catch {
     // behavior_packs folder doesn't exist, skip
   }
 
-  // Check for resource_packs folder and find the first subfolder
+  // --- Standard structure: resource_packs/<subfolder>/manifest.json ---
   const rpDir = path.join(destination, 'resource_packs');
   try {
     const rpEntries = await fs.readdir(rpDir, { withFileTypes: true });
@@ -26,9 +26,21 @@ export async function updateManifestFiles(destination, userInputName) {
     if (rpFolder) {
       manifestPaths.push(path.join(rpDir, rpFolder.name, 'manifest.json'));
     }
-  } catch (error) {
+  } catch {
     // resource_packs folder doesn't exist, skip
   }
+
+  // --- Regolith structure: BP/manifest.json and RP/manifest.json ---
+  const flatBpManifest = path.join(destination, 'BP', 'manifest.json');
+  const flatRpManifest = path.join(destination, 'RP', 'manifest.json');
+  try {
+    await fs.access(flatBpManifest);
+    if (!manifestPaths.includes(flatBpManifest)) manifestPaths.push(flatBpManifest);
+  } catch { /* not present */ }
+  try {
+    await fs.access(flatRpManifest);
+    if (!manifestPaths.includes(flatRpManifest)) manifestPaths.push(flatRpManifest);
+  } catch { /* not present */ }
 
   // Generate UUIDs for BP and RP headers to maintain dependency relationship
   const bpHeaderUuid = uuidv4();
@@ -40,7 +52,9 @@ export async function updateManifestFiles(destination, userInputName) {
       if (!manifestExists) continue;
 
       const manifestContent = JSON.parse(await fs.readFile(manifestPath, 'utf-8'));
-      const isBehaviorPack = manifestPath.includes('behavior_packs');
+      // Works for both standard (behavior_packs/...) and Regolith (BP/) structures
+      const isBehaviorPack = manifestPath.includes('behavior_packs') ||
+        manifestPath.replace(/\\/g, '/').endsWith('/BP/manifest.json');
 
       // Update header UUID
       manifestContent.header.uuid = isBehaviorPack ? bpHeaderUuid : rpHeaderUuid;

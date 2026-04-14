@@ -6,7 +6,7 @@
 <div align="center">
 
 [![GitHub Stars](https://img.shields.io/github/stars/keyyard/create-mc-bedrock-cli?style=social)](https://github.com/keyyard/create-mc-bedrock-cli)
-[![Version](https://img.shields.io/badge/version-1.4.2-blue.svg)](https://github.com/keyyard/create-mc-bedrock-cli)
+[![Version](https://img.shields.io/badge/version-1.5.0-blue.svg)](https://github.com/keyyard/create-mc-bedrock-cli)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
 
@@ -29,6 +29,7 @@ With `create-mc-bedrock`, you can bootstrap your next project in seconds, using 
 ## Table of Contents
 - [✨ Why Use Create MC Bedrock CLI?](#-why-use-create-mc-bedrock-cli)
 - [🚀 How It Works](#-how-it-works)
+- [🔧 Regolith Integration](#-regolith-integration)
 - [📸 Showcase](#-showcase)
 - [🛠️ Features](#-features)
 - [📦 Requirements](#-requirements)
@@ -71,6 +72,37 @@ Choose from a curated list of Microsoft’s best scripting samples. Your selecte
 
 ---
 
+## 🔧 Regolith Integration
+
+[Regolith](https://github.com/Bedrock-OSS/regolith) is a popular Bedrock addon compiler that runs filter pipelines on your BP/RP before exporting to `com.mojang`. Create MC Bedrock CLI now supports scaffolding Regolith-compatible projects out of the box.
+
+When the CLI asks **"Set up as a Regolith project?"**, answering yes will:
+
+- Flatten the pack folders from `behavior_packs/<name>/` → `BP/` and `resource_packs/<name>/` → `RP/` (the layout Regolith expects)
+- Generate a `config.json` with the correct Regolith schema (name, author, packs, profiles, filterDefinitions)
+- Create a `data/` directory for filter data
+- Create a `.regolith/` directory (Regolith's internal cache)
+- Add `/build` and `/.regolith` to `.gitignore`
+
+**Resulting structure:**
+```
+my-addon/
+  config.json       ← Regolith config
+  BP/               ← behavior pack source
+  RP/               ← resource pack source
+  data/             ← filter data
+  .regolith/        ← Regolith cache (git-ignored)
+  .gitignore
+```
+
+**Next steps after scaffolding with Regolith:**
+1. [Install Regolith](https://regolith-docs.readthedocs.io/en/latest/introduction/installation/)
+2. Add filters to `config.json` under `regolith.filterDefinitions`
+3. Run `regolith install-all` to download filter dependencies
+4. Run `regolith run` to compile your addon
+
+---
+
 ## 📸 Showcase
 
 <div align="center">
@@ -87,6 +119,7 @@ Choose from a curated list of Microsoft’s best scripting samples. Your selecte
 - Direct cloning to your specified folder (no more nested directories)
 - Automatic manifest UUID regeneration for every project
 - Supports both JavaScript and TypeScript samples
+- **Regolith integration** — optional one-prompt scaffold for Regolith-compatible projects (flat `BP/`/`RP/`, `config.json`, `data/`)
 - Cleans up temporary files after setup
 
 ---

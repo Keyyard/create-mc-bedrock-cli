@@ -36,10 +36,9 @@ const config: DocsThemeConfig = {
   sidebar: {
     defaultMenuCollapseLevel: 1,
   },
-  // Emerald/sage green — matches blogs.keyyard.xyz palette and the
-  // marketing site's emerald accent (Tailwind emerald-500 ≈ hsl(158 64% 40%)).
-  primaryHue: 158,
-  primarySaturation: 70,
+  // Sage green — matches blogs.keyyard.xyz palette (#7BA47C ≈ hsl(122 18% 56%)).
+  primaryHue: 122,
+  primarySaturation: 18,
 };
 
 export default config;

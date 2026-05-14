@@ -33,37 +33,44 @@ const BADGES = [
 const Header: React.FC = () => (
   <header
     id="start"
-    className="relative flex flex-col items-center text-center w-full overflow-hidden pt-28 pb-16 md:pt-36 md:pb-24 border-b border-zinc-800"
+    className="relative flex flex-col items-center text-center w-full overflow-hidden pt-28 pb-16 md:pt-36 md:pb-24 border-b border-lightgray"
   >
-    {/* True-dark radial gradient base */}
+    {/* Sage-tinted hero base */}
     <div
-      className="absolute inset-0 -z-20 pointer-events-none"
+      className="absolute inset-0 -z-20 pointer-events-none bg-light"
+      aria-hidden
+    />
+    <div
+      className="absolute inset-0 -z-20 pointer-events-none bg-secondary/10"
       style={{
-        background:
-          "radial-gradient(ellipse at top, rgba(16,185,129,0.12), transparent 55%), linear-gradient(180deg, #0a0a0a 0%, #050505 100%)",
+        backgroundImage:
+          "radial-gradient(ellipse at top, rgb(var(--secondary)), transparent 55%)",
+        opacity: 0.18,
       }}
       aria-hidden
     />
-    {/* Dot grid background pattern. Solid dots, no color blend. */}
+    {/* Dot grid background pattern. */}
     <div
-      className="absolute inset-0 -z-10 pointer-events-none opacity-[0.06]"
+      className="absolute inset-0 -z-10 pointer-events-none opacity-[0.08]"
       style={{
         backgroundImage:
-          "radial-gradient(circle at center, rgba(16,185,129,0.5) 1px, transparent 1px)",
+          "radial-gradient(circle at center, rgb(var(--secondary)) 1px, transparent 1px)",
         backgroundSize: "14px 14px",
       }}
       aria-hidden
     />
 
     <div className="relative flex flex-col items-center w-full max-w-4xl px-4">
-      <h1 className="mt-8 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-white leading-[1.05]">
+      <h1 className="mt-8 font-header text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-dark leading-[1.05]">
         Skip the lazy part,
         <br />
         work hard and{" "}
-        <span className="text-emerald-400">smart.</span>
+        <span className="bg-gradient-to-r from-secondary via-tertiary to-secondary bg-clip-text text-transparent">
+          smart.
+        </span>
       </h1>
 
-      <p className="mt-6 max-w-2xl text-base md:text-lg text-gray-400">
+      <p className="mt-6 max-w-2xl text-base md:text-lg text-gray">
         The fastest way to bootstrap, build, and ship Minecraft Bedrock
         add-ons.
       </p>
@@ -71,13 +78,13 @@ const Header: React.FC = () => (
       <div className="mt-8 flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
         <a
           href="/docs/getting-started"
-          className="inline-flex items-center justify-center w-full sm:w-auto px-7 py-3 rounded-full bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-bold text-base transition"
+          className="inline-flex items-center justify-center w-full sm:w-auto px-7 py-3 rounded-full bg-secondary hover:bg-secondary/80 text-light font-bold text-base transition"
         >
           Get Started
         </a>
         <a
           href="/docs"
-          className="inline-flex items-center justify-center w-full sm:w-auto px-7 py-3 rounded-full border border-emerald-400/40 bg-white/5 hover:bg-white/10 text-white font-semibold text-base backdrop-blur-sm transition"
+          className="inline-flex items-center justify-center w-full sm:w-auto px-7 py-3 rounded-full border border-secondary/50 bg-highlight hover:bg-secondary/15 text-dark font-semibold text-base backdrop-blur-sm transition"
         >
           Read the docs
         </a>
@@ -85,13 +92,13 @@ const Header: React.FC = () => (
 
       <div className="mt-8 w-full max-w-md text-left">
         <CopyBlock code="npx create-mc-bedrock" />
-        <p className="mt-3 text-sm text-gray-400">
+        <p className="mt-3 text-sm text-gray">
           Run in your terminal after installing{" "}
           <a
             href="https://nodejs.org/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2"
+            className="text-secondary hover:text-tertiary underline underline-offset-2"
           >
             Node.js
           </a>.

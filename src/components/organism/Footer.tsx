@@ -3,8 +3,8 @@ import Image from "next/image";
 import { CLI_VERSION } from "@/data/version";
 
 const Footer: React.FC = () => (
-  <footer className="flex flex-col items-center text-center text-gray-400 border-t border-zinc-800 pt-8 pb-6 px-4">
-    <p className="text-base text-gray-200">
+  <footer className="flex flex-col items-center text-center text-gray border-t border-lightgray pt-8 pb-6 px-4">
+    <p className="text-base text-darkgray">
       Made with <span className="text-red-400">❤️</span> for the Minecraft
       Bedrock development community
     </p>
@@ -58,9 +58,9 @@ const Footer: React.FC = () => (
         />
       </a>
     </div>
-    <p className="mt-4 text-xs text-gray-400 flex items-center justify-center gap-2">
+    <p className="mt-4 text-xs text-gray flex items-center justify-center gap-2">
       <span>&copy; 2025 Keyyard. All rights reserved.</span>
-      <span className="font-mono text-xs text-gray-500">v{CLI_VERSION}</span>
+      <span className="font-code text-xs text-gray">v{CLI_VERSION}</span>
     </p>
   </footer>
 );

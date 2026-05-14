@@ -2,10 +2,81 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
-  font-family: var(--font-sans, system-ui, sans-serif);
+/* ---------------------------------------------------------------------------
+   Palette — matches blogs.keyyard.xyz. Stored as raw RGB channels so Tailwind's
+   `<alpha-value>` syntax (e.g. `bg-secondary/20`, `border-darkgray/40`) works
+   through the color tokens defined in tailwind.config.cjs.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --light: 242 247 242;          /* #F2F7F2 */
+  --lightgray: 228 239 229;      /* #E4EFE5 */
+  --gray: 83 111 90;             /* #536f5a */
+  --darkgray: 83 111 90;         /* #536f5a */
+  --dark: 49 69 49;              /* #314531 */
+  --secondary: 73 104 74;        /* #49684A */
+  --tertiary: 132 165 157;       /* #84a59d */
+  --highlight-rgb: 143 169 151;  /* #8fa997 */
+  --highlight-alpha: 0.15;
+  --text-highlight-rgb: 255 242 54;  /* #fff236 */
+  --text-highlight-alpha: 0.533;     /* 0x88 / 0xff */
+}
+
+.dark {
+  --light: 22 22 24;             /* #161618 */
+  --lightgray: 57 54 57;         /* #393639 */
+  --gray: 100 100 100;           /* #646464 */
+  --darkgray: 212 212 212;       /* #d4d4d4 */
+  --dark: 242 247 242;           /* #F2F7F2 */
+  --secondary: 123 164 124;      /* #7BA47C */
+  --tertiary: 132 165 157;       /* #84a59d */
+  --highlight-rgb: 143 169 151;
+  --highlight-alpha: 0.15;
+  --text-highlight-rgb: 179 170 2;   /* #b3aa02 */
+  --text-highlight-alpha: 0.533;
+}
+
+/* ---------------------------------------------------------------------------
+   Type system — Be Vietnam Pro for headers, Inter for body, JetBrains Mono
+   for code. Font CSS variables are injected by next/font/google in
+   src/pages/_app.tsx and applied to the root wrapper there.
+   --------------------------------------------------------------------------- */
+
+html,
+body {
+  font-family: var(--font-inter, system-ui, sans-serif);
+  color: rgb(var(--darkgray));
+  background-color: rgb(var(--light));
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-be-vietnam-pro, var(--font-inter), system-ui, sans-serif);
+  color: rgb(var(--dark));
 }
 
 code, kbd, pre, samp {
-  font-family: var(--font-mono, ui-monospace, monospace);
+  font-family: var(--font-jetbrains, ui-monospace, monospace);
+}
+
+/* Nextra renders docs content inside `.nextra-content` — apply the same family
+   rules there so MDX headings + code blocks inherit the palette typography. */
+
+.nextra-content h1,
+.nextra-content h2,
+.nextra-content h3,
+.nextra-content h4,
+.nextra-content h5,
+.nextra-content h6 {
+  font-family: var(--font-be-vietnam-pro), sans-serif;
+}
+
+.nextra-content code,
+.nextra-content pre {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+}
+
+/* Text-selection uses the palette's accent yellow, consistent across modes. */
+::selection {
+  background-color: rgb(var(--text-highlight-rgb) / var(--text-highlight-alpha));
+  color: rgb(var(--dark));
 }

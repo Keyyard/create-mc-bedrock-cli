@@ -3,11 +3,11 @@ import { showcase, type ShowcaseTag } from "@/data/showcase";
 
 const tagStyles: Record<ShowcaseTag, string> = {
   Marketplace:
-    "bg-emerald-400/15 text-emerald-200 border border-emerald-400/30 hover:bg-emerald-400/25",
+    "bg-secondary/15 text-secondary border border-secondary/30 hover:bg-secondary/25",
   CurseForge:
     "bg-orange-400/15 text-orange-200 border border-orange-400/30 hover:bg-orange-400/25",
   GitHub:
-    "bg-gray-400/15 text-gray-200 border border-gray-400/30 hover:bg-gray-400/25",
+    "bg-gray/15 text-darkgray border border-gray/30 hover:bg-gray/25",
 };
 
 interface CardImageProps {
@@ -20,8 +20,8 @@ const CardImage: React.FC<CardImageProps> = ({ src, alt }) => {
 
   if (errored || !src) {
     return (
-      <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-zinc-900 flex items-center justify-center">
-        <span className="text-emerald-200 font-mono text-xs uppercase tracking-wider">
+      <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-lightgray flex items-center justify-center">
+        <span className="text-secondary font-code text-xs uppercase tracking-wider">
           {alt || "No preview"}
         </span>
       </div>
@@ -31,7 +31,7 @@ const CardImage: React.FC<CardImageProps> = ({ src, alt }) => {
   // Use native img to avoid Next/Image domain config issues with external URLs
   // and to keep the fallback simple under static export.
   return (
-    <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-black/40">
+    <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-light/40">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}
@@ -50,20 +50,20 @@ const ShowcaseSection: React.FC = () => (
     className="w-full max-w-6xl mx-auto px-4 py-16 md:py-24 scroll-mt-24"
   >
     <div className="text-center mb-12">
-      <p className="text-emerald-400 font-semibold text-sm uppercase tracking-wider">
+      <p className="text-secondary font-semibold text-sm uppercase tracking-wider">
         Showcase
       </p>
-      <h2 className="mt-2 text-3xl md:text-4xl font-bold text-white">
+      <h2 className="mt-2 font-header text-3xl md:text-4xl font-bold text-dark">
         Shipped with Bedrock CLI
       </h2>
-      <p className="mt-3 text-gray-400 max-w-2xl mx-auto">
+      <p className="mt-3 text-gray max-w-2xl mx-auto">
         Real projects built and packaged with the toolchain. Want yours
         here? Open a PR.
       </p>
     </div>
 
     {showcase.length === 0 ? (
-      <div className="text-center text-gray-500 py-12">
+      <div className="text-center text-gray py-12">
         Showcase entries coming soon.
       </div>
     ) : (
@@ -71,11 +71,11 @@ const ShowcaseSection: React.FC = () => (
         {showcase.map((entry) => (
           <div
             key={entry.url}
-            className="group flex flex-col rounded-xl border border-zinc-800 bg-zinc-900/60 overflow-hidden hover:border-emerald-500/40 transition"
+            className="group flex flex-col rounded-xl border border-lightgray bg-lightgray/60 overflow-hidden hover:border-secondary/40 transition"
           >
             <CardImage src={entry.image} alt={entry.name} />
             <div className="flex items-center justify-between p-4 gap-3">
-              <h3 className="font-semibold text-white text-sm md:text-base line-clamp-2">
+              <h3 className="font-header font-semibold text-dark text-sm md:text-base line-clamp-2">
                 {entry.name}
               </h3>
               <a

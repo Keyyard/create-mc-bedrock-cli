@@ -57,8 +57,8 @@ const renderCodeLine = (line: string, idx: number) => {
   if (line.startsWith("$ ")) {
     return (
       <span key={idx}>
-        <span className="text-emerald-400">$</span>
-        <span className="text-gray-200">{line.slice(1)}</span>
+        <span className="text-secondary">$</span>
+        <span className="text-darkgray">{line.slice(1)}</span>
         {"\n"}
       </span>
     );
@@ -66,14 +66,14 @@ const renderCodeLine = (line: string, idx: number) => {
   if (line.startsWith("> ")) {
     return (
       <span key={idx}>
-        <span className="text-emerald-400">{">"}</span>
-        <span className="text-gray-200">{line.slice(1)}</span>
+        <span className="text-secondary">{">"}</span>
+        <span className="text-darkgray">{line.slice(1)}</span>
         {"\n"}
       </span>
     );
   }
   return (
-    <span key={idx} className="text-emerald-200">
+    <span key={idx} className="text-dark">
       {line}
       {"\n"}
     </span>
@@ -88,13 +88,13 @@ const renderCode = (code: string) => {
 const FeaturesSection: React.FC = () => (
   <section className="w-full max-w-6xl mx-auto px-4 py-16 md:py-24">
     <div className="text-center mb-12">
-      <p className="font-mono text-xs uppercase tracking-[0.2em] text-emerald-500">
+      <p className="font-code text-xs uppercase tracking-[0.2em] text-secondary">
         {"// features"}
       </p>
-      <h2 className="mt-3 text-3xl md:text-4xl font-bold tracking-tight text-white">
+      <h2 className="mt-3 font-header text-3xl md:text-4xl font-bold tracking-tight text-dark">
         Everything a professional Bedrock dev needs.
       </h2>
-      <p className="mt-3 text-base text-gray-400 max-w-2xl mx-auto">
+      <p className="mt-3 text-base text-gray max-w-2xl mx-auto">
         From an 8 year experienced developer who worked on the official
         Minecraft x Cut the Rope DLC.
       </p>
@@ -109,23 +109,23 @@ const FeaturesSection: React.FC = () => (
           }`}
         >
           <div>
-            <h3 className="text-xl md:text-2xl font-bold text-white">
+            <h3 className="font-header text-xl md:text-2xl font-bold text-dark">
               {f.title}
             </h3>
-            <p className="mt-3 text-gray-400 leading-relaxed">
+            <p className="mt-3 text-gray leading-relaxed">
               {f.description}
             </p>
           </div>
-          <div className="relative rounded-lg border border-zinc-800 bg-black/80 overflow-hidden shadow-[inset_0_0_30px_rgba(16,185,129,0.04)]">
-            <div className="flex items-center gap-1.5 px-4 py-2 border-b border-zinc-800 bg-zinc-950/60">
+          <div className="relative rounded-lg border border-lightgray bg-lightgray overflow-hidden">
+            <div className="flex items-center gap-1.5 px-4 py-2 border-b border-lightgray bg-light/60">
               <span className="h-2.5 w-2.5 rounded-full bg-red-500/70" />
               <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/70" />
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/70" />
-              <span className="ml-auto text-[10px] font-mono uppercase tracking-wider text-gray-400">
+              <span className="h-2.5 w-2.5 rounded-full bg-secondary/80" />
+              <span className="ml-auto text-[10px] font-code uppercase tracking-wider text-gray">
                 {f.language}
               </span>
             </div>
-            <pre className="overflow-x-auto px-4 py-4 text-sm font-mono leading-relaxed">
+            <pre className="overflow-x-auto px-4 py-4 text-sm font-code leading-relaxed">
               {renderCode(f.code)}
             </pre>
           </div>

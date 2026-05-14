@@ -8,7 +8,7 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
-      // Palette tokens — values resolve to CSS variables defined in
+      // Palette tokens. Values resolve to CSS variables defined in
       // src/styles/globals.css. RGB-channel form lets `<alpha-value>` substitute
       // for opacity modifiers like `bg-secondary/20` or `border-dark/40`.
       colors: {
@@ -24,7 +24,7 @@ module.exports = {
           'rgb(var(--text-highlight-rgb) / var(--text-highlight-alpha, 1))',
       },
       fontFamily: {
-        // Semantic names — use these in components.
+        // Semantic names. Use these in components.
         header: ['var(--font-be-vietnam-pro)', 'var(--font-inter)', 'sans-serif'],
         body: ['var(--font-inter)', 'system-ui', 'sans-serif'],
         code: ['var(--font-jetbrains)', 'ui-monospace', 'monospace'],

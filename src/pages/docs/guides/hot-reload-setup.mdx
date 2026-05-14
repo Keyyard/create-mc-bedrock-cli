@@ -1,3 +1,167 @@
+import { Callout, Steps } from "nextra-theme-docs";
+
 # Hot Reload Setup
 
-Coming soon — being written in Wave 2 follow-up.
+The fastest dev loop on Bedrock is `bedrock-build deploy --watch` plus
+`/reload` inside Minecraft. Save a TypeScript file, the compiler
+rebuilds and re-syncs the pack to `com.mojang`, type `/reload` in the
+world, and your script changes are live. No restart, no manual zip, no
+re-import.
+
+This guide walks through getting that loop running.
+
+## What `deploy --watch` does
+
+In one command:
+
+1. Builds the project in dev mode (sourcemaps inline, no minify).
+2. Copies `dist/packs/BP/` and `dist/packs/RP/` into the matching
+   `development_behavior_packs/<name>/` and
+   `development_resource_packs/<name>/` directories under `com.mojang`.
+3. Watches both your source files (`src/**`) and your pack files
+   (`packs/BP/**`, `packs/RP/**`) for changes.
+4. On every change, rebuilds incrementally and re-deploys.
+
+For the full breakdown of the pipeline, see
+[Compiler Pipeline](/docs/concepts/compiler-pipeline).
+
+<Steps>
+
+### Step 1: pick a deploy target
+
+Open [`bedrock.config.json`](/docs/reference/config-schema) and check
+`deploy.target`.
+
+**On Windows with Minecraft Bedrock retail:**
+
+```json
+"deploy": {
+  "target": "retail",
+  "customPath": null
+}
+```
+
+The compiler auto-detects
+`%LOCALAPPDATA%\Packages\Microsoft.MinecraftUWP_*\LocalState\games\com.mojang\`.
+No further config needed.
+
+**On macOS, Linux, Bedrock Preview, Bedrock Dedicated Server, or
+Education Edition:**
+
+```json
+"deploy": {
+  "target": "custom",
+  "customPath": "/absolute/path/to/com.mojang"
+}
+```
+
+The `customPath` must point at the `com.mojang` directory that
+contains `development_behavior_packs/` and `development_resource_packs/`.
+See [Custom deploy path](/docs/guides/custom-deploy-path) for
+platform-specific examples.
+
+### Step 2: open the add-on in a world
+
+Launch Minecraft, create or open a world, and in **Settings > Behavior
+Packs** and **Settings > Resource Packs**, find your pack under
+**Available** and activate it.
+
+Minecraft lists packs from `development_behavior_packs/` and
+`development_resource_packs/` separately from regular packs. That's why
+`bedrock-build deploy` writes there: those folders auto-refresh
+without re-importing.
+
+<Callout type="info">
+**You only need to do this once per world.** After the pack is
+activated in the world, you can leave it that way. `deploy --watch`
+just overwrites the contents; it does not need to re-activate.
+</Callout>
+
+### Step 3: start the watcher
+
+In your project root:
+
+```bash
+npm run deploy:watch
+```
+
+Or directly:
+
+```bash
+npx bedrock-build deploy --watch
+```
+
+You'll see an initial build, then a line like `watching for changes...`.
+Leave this running in a terminal. Each save logs a rebuild line.
+
+### Step 4: reload inside Minecraft
+
+After every save, switch to Minecraft and run:
+
+```
+/reload
+```
+
+This reloads scripts and most JSON definitions without restarting the
+world. The compiler has already updated the files on disk; `/reload`
+just tells Minecraft to re-read them.
+
+<Callout type="warning">
+**Some changes need a full world reload, not `/reload`.** Adding new
+custom blocks, entities, or items typically requires leaving and
+re-entering the world (or restarting Minecraft) so the registry
+re-initializes. This is a Minecraft limitation, not a
+`bedrock-build` one. Script-only changes, behavior tweaks, and most
+content edits work fine with `/reload`.
+</Callout>
+
+</Steps>
+
+## Troubleshooting
+
+### My pack isn't appearing in the world's pack list
+
+- **Manifest UUID collision.** If you scaffolded from a starter and
+  didn't run `npx create-mc-bedrock` (which regenerates UUIDs), you
+  might share UUIDs with another installed pack. Re-scaffold a fresh
+  project, or manually rotate the UUIDs in both manifests. See
+  [Packs and Manifests](/docs/concepts/packs-and-manifests) for the
+  layout.
+- **Manifest format invalid.** Open
+  `com.mojang/development_behavior_packs/<your-pack>/manifest.json`
+  and confirm the JSON parses. Minecraft silently skips packs with
+  invalid manifests.
+- **Wrong folder.** Confirm
+  [`deploy.customPath`](/docs/reference/config-schema) points at the
+  `com.mojang` directory itself, not at its parent or at
+  `development_behavior_packs/` directly.
+
+### `/reload` doesn't seem to do anything
+
+- **Script error.** Open the in-game chat or the content log and look
+  for a stack trace. Script errors cause the module to fail to load,
+  and the symptoms look like "nothing happened" because nothing did.
+- **Cached state.** Some scripts hold global state (timers, listeners)
+  that survives `/reload`. If a change should take effect but doesn't,
+  try a full world exit and re-entry as a sanity check.
+- **Build failed.** Glance at your watcher terminal. If the last
+  rebuild logged an error, the deployed bundle is from the previous
+  good build, so your latest change isn't actually on disk yet.
+
+### Builds are slow
+
+The first build is the slowest (esbuild cold start, around 30 to 100ms).
+Subsequent watch rebuilds should be in single-digit milliseconds. If
+they aren't, check whether something else (an editor file watcher,
+antivirus) is racing with the compiler on the source files.
+
+## Related
+
+- [Custom deploy path](/docs/guides/custom-deploy-path) for any
+  non-Windows-retail setup.
+- [CLI reference: `deploy`](/docs/reference/cli-build) for the full
+  flag list and exit codes.
+- [Compiler Pipeline](/docs/concepts/compiler-pipeline) for what
+  actually happens inside `bedrock-build`.
+- [Dev vs Release builds](/docs/guides/dev-vs-release-builds) for
+  why watch always runs in dev mode.

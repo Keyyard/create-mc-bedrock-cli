@@ -1,4 +1,4 @@
-# Bedrock CLI — Website & Docs
+# Bedrock CLI Website & Docs
 
 [![Live site](https://img.shields.io/badge/site-bedrockcli.keyyard.xyz-8A2BE2)](https://bedrockcli.keyyard.xyz/)
 [![npm: create-mc-bedrock](https://img.shields.io/npm/v/create-mc-bedrock?label=create-mc-bedrock&color=cb3837&logo=npm)](https://www.npmjs.com/package/create-mc-bedrock)
@@ -9,9 +9,9 @@ Marketing site + Nextra documentation for [`create-mc-bedrock`](https://www.npmj
 
 ## Stack
 
-- Next.js 15 (pages router) — static export
+- Next.js 15 (pages router), static export
 - Tailwind v4
-- Nextra v2 — docs at `/docs/*`
+- Nextra v2 for docs at `/docs/*`
 - TypeScript, ESLint
 - Hosted via GitHub Pages from the static `out/` build
 

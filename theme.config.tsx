@@ -13,7 +13,7 @@ const config: DocsThemeConfig = {
     "https://github.com/keyyard/create-mc-bedrock-cli/tree/main/website",
   useNextSeoProps() {
     return {
-      titleTemplate: "%s – Bedrock CLI",
+      titleTemplate: "%s | Bedrock CLI",
     };
   },
   head: (
@@ -22,7 +22,7 @@ const config: DocsThemeConfig = {
       <meta property="og:title" content="Bedrock CLI Docs" />
       <meta
         property="og:description"
-        content="Documentation for Create Bedrock CLI – the fastest way to start Minecraft Bedrock Addon development."
+        content="Documentation for Create Bedrock CLI. The fastest way to start Minecraft Bedrock Addon development."
       />
     </>
   ),
@@ -36,7 +36,7 @@ const config: DocsThemeConfig = {
   sidebar: {
     defaultMenuCollapseLevel: 1,
   },
-  // Sage green — matches blogs.keyyard.xyz palette (#7BA47C ≈ hsl(122 18% 56%)).
+  // Sage green; matches blogs.keyyard.xyz palette (#7BA47C is hsl(122 18% 56%)).
   primaryHue: 122,
   primarySaturation: 18,
 };

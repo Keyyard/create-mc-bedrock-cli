@@ -1,3 +1,67 @@
+import { Callout } from "nextra-theme-docs";
+
 # Cookbook
 
-Coming soon — being written in Wave 2 follow-up.
+Code recipes for common Bedrock scripting tasks. The cookbook is
+**community-driven**: every recipe is a contributed page, focused on
+one small, copy-pasteable pattern. If you've solved something that
+others would benefit from, send a pull request.
+
+<Callout type="info">
+The cookbook is just getting started. Expect the page list below to
+fill in as recipes are contributed.
+</Callout>
+
+## Contribute a recipe
+
+Recipes live as individual MDX pages under
+`website/src/pages/docs/cookbook/` in the
+[`Keyyard/create-mc-bedrock-cli`](https://github.com/Keyyard/create-mc-bedrock-cli)
+repo. To contribute one:
+
+1. Fork the repo and check out the `website` branch.
+2. Add a new `.mdx` file under `website/src/pages/docs/cookbook/`.
+3. Add an entry for the new page in
+   `website/src/pages/docs/cookbook/_meta.json`.
+4. Open a pull request describing what the recipe does and why
+   someone would reach for it.
+
+A good cookbook entry is:
+
+- **Focused.** One pattern per page. Resist the urge to teach the
+  whole API around it.
+- **Copy-pasteable.** A working snippet that someone can drop into
+  `src/main.ts` and modify.
+- **Honest about caveats.** If the pattern has a known sharp edge
+  (perf, edge case, gotcha), say so.
+
+See [Contributing](/docs/contributing) for the broader guidelines.
+
+## Suggested topics
+
+Recipes that would be especially welcome:
+
+- **Custom items.** Defining a custom item end to end (BP JSON + RP
+  texture + script hook).
+- **Custom blocks.** Defining a custom block and reacting to
+  interactions from a script.
+- **Custom entities.** Spawning, behaviors, and script-side event
+  handlers.
+- **Server event handling.** Common patterns for
+  [`world.afterEvents`](https://learn.microsoft.com/en-us/minecraft/creator/scriptapi/minecraft/server/worldafterevents)
+  and friends.
+- **Scoreboard helpers.** Wrappers around the scoreboard APIs for
+  common tasks (set/get, increment, reset on join).
+- **Common scripting patterns.** Tick loops, cooldown maps, player
+  state caches, and other building blocks.
+
+If you're thinking about a recipe that isn't on this list, that's
+fine. The list is suggestions, not a fixed roster.
+
+## Related
+
+- [Contributing](/docs/contributing) for PR guidelines.
+- [Getting Started](/docs/getting-started) if you haven't yet
+  scaffolded a project to drop recipes into.
+- [Compiler Pipeline](/docs/concepts/compiler-pipeline) for what
+  happens to the code in a recipe after you save.

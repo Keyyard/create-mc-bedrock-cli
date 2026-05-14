@@ -3,19 +3,19 @@
 @tailwind utilities;
 
 /* ---------------------------------------------------------------------------
-   Palette — matches blogs.keyyard.xyz. Stored as raw RGB channels so Tailwind's
+   Palette. Matches blogs.keyyard.xyz. Stored as raw RGB channels so Tailwind's
    `<alpha-value>` syntax (e.g. `bg-secondary/20`, `border-darkgray/40`) works
    through the color tokens defined in tailwind.config.cjs.
    --------------------------------------------------------------------------- */
 
 :root {
-  --light: 242 247 242;          /* #F2F7F2 — surface (sage tint OK on bg) */
-  --lightgray: 228 239 229;      /* #E4EFE5 — raised surface */
-  --gray: 100 100 100;           /* #646464 — neutral muted text */
-  --darkgray: 64 64 64;          /* #404040 — neutral body text */
-  --dark: 23 23 23;              /* #171717 — neutral near-black text */
-  --secondary: 73 104 74;        /* #49684A — sage ACCENT only */
-  --tertiary: 132 165 157;       /* #84a59d — teal-sage accent */
+  --light: 242 247 242;          /* #F2F7F2. Surface (sage tint OK on bg). */
+  --lightgray: 228 239 229;      /* #E4EFE5. Raised surface. */
+  --gray: 100 100 100;           /* #646464. Neutral muted text. */
+  --darkgray: 64 64 64;          /* #404040. Neutral body text. */
+  --dark: 23 23 23;              /* #171717. Neutral near-black text. */
+  --secondary: 73 104 74;        /* #49684A. Sage ACCENT only. */
+  --tertiary: 132 165 157;       /* #84a59d. Teal-sage accent. */
   --highlight-rgb: 143 169 151;  /* #8fa997 */
   --highlight-alpha: 0.15;
   --text-highlight-rgb: 255 242 54;  /* #fff236 */
@@ -23,13 +23,13 @@
 }
 
 .dark {
-  --light: 22 22 24;             /* #161618 — surface */
-  --lightgray: 57 54 57;         /* #393639 — raised surface */
-  --gray: 163 163 163;           /* #a3a3a3 — neutral muted text */
-  --darkgray: 237 237 237;       /* #ededed — neutral body text */
-  --dark: 250 250 250;           /* #fafafa — neutral near-white text */
-  --secondary: 123 164 124;      /* #7BA47C — sage ACCENT only */
-  --tertiary: 132 165 157;       /* #84a59d — teal-sage accent */
+  --light: 22 22 24;             /* #161618. Surface. */
+  --lightgray: 57 54 57;         /* #393639. Raised surface. */
+  --gray: 163 163 163;           /* #a3a3a3. Neutral muted text. */
+  --darkgray: 237 237 237;       /* #ededed. Neutral body text. */
+  --dark: 250 250 250;           /* #fafafa. Neutral near-white text. */
+  --secondary: 123 164 124;      /* #7BA47C. Sage ACCENT only. */
+  --tertiary: 132 165 157;       /* #84a59d. Teal-sage accent. */
   --highlight-rgb: 143 169 151;
   --highlight-alpha: 0.15;
   --text-highlight-rgb: 179 170 2;   /* #b3aa02 */
@@ -37,7 +37,7 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Type system — Be Vietnam Pro for headers, Inter for body, JetBrains Mono
+   Type system. Be Vietnam Pro for headers, Inter for body, JetBrains Mono
    for code. Font CSS variables are injected by next/font/google in
    src/pages/_app.tsx and applied to the root wrapper there.
    --------------------------------------------------------------------------- */
@@ -58,7 +58,7 @@ code, kbd, pre, samp {
   font-family: var(--font-jetbrains, ui-monospace, monospace);
 }
 
-/* Nextra renders docs content inside `.nextra-content` — apply the same family
+/* Nextra renders docs content inside `.nextra-content`. Apply the same family
    rules there so MDX headings + code blocks inherit the palette typography. */
 
 .nextra-content h1,
@@ -82,13 +82,13 @@ code, kbd, pre, samp {
 }
 
 /* ---------------------------------------------------------------------------
-   Docs color consolidation
+   Docs color consolidation.
    Nextra ships ~9 distinct Shiki token colors per theme + 4 callout color
    families (blue/yellow/red/gray). Collapse to a 4-color palette using the
    sage tokens, keeping warning/error semantic via muted amber/rose.
    --------------------------------------------------------------------------- */
 
-/* Shiki syntax tokens — point everything at the palette. */
+/* Shiki syntax tokens. Point everything at the palette. */
 :root,
 .dark {
   --shiki-color-text: rgb(var(--darkgray));
@@ -104,10 +104,10 @@ code, kbd, pre, samp {
   --shiki-token-comment: rgb(var(--gray));
 }
 
-/* Callouts — flatten the blue/yellow/red palettes into the sage family
-   for default + info, keep muted warning/error signals so semantics stay. */
+/* Callouts. Flatten the blue/yellow/red palettes into the sage family
+   for default + info; keep muted warning/error signals so semantics stay. */
 
-/* Default + info (blue family in Nextra defaults) → sage. */
+/* Default + info (blue family in Nextra defaults) become sage. */
 .nextra-callout[class*="border-blue-"],
 .nextra-callout[class*="border-gray-"] {
   border-color: rgb(var(--secondary) / 0.4) !important;
@@ -119,7 +119,7 @@ code, kbd, pre, samp {
   color: rgb(var(--secondary)) !important;
 }
 
-/* Warning (yellow family) → muted amber. */
+/* Warning (yellow family) becomes muted amber. */
 .nextra-callout[class*="border-yellow-"] {
   border-color: rgba(217, 159, 71, 0.4) !important;
   background-color: rgba(217, 159, 71, 0.08) !important;
@@ -129,7 +129,7 @@ code, kbd, pre, samp {
   color: rgb(217, 159, 71) !important;
 }
 
-/* Error (red family) → muted rose. */
+/* Error (red family) becomes muted rose. */
 .nextra-callout[class*="border-red-"] {
   border-color: rgba(217, 122, 122, 0.4) !important;
   background-color: rgba(217, 122, 122, 0.08) !important;

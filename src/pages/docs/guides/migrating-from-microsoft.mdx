@@ -1,3 +1,181 @@
-# Migrating from Microsoft
+import { Callout, Steps } from "nextra-theme-docs";
 
-Coming soon — being written in Wave 2 follow-up.
+# Migrating from Microsoft Samples
+
+If you started a project from
+[`microsoft/minecraft-scripting-samples`](https://github.com/microsoft/minecraft-scripting-samples)
+and want to switch to the Custom Workspace, this guide walks through
+the move. It takes about ten minutes for a small project. The migration
+is non-destructive: you scaffold a fresh Custom Workspace next to your
+existing project and copy code across.
+
+## Why migrate
+
+The Custom Workspace ships with a few things the Microsoft samples
+don't:
+
+- **Opinionated, documented layout.** One workspace shape across every
+  project. See [Workspace Layout](/docs/concepts/workspace-layout).
+- **Fewer config files.** A single
+  [`bedrock.config.json`](/docs/reference/config-schema) instead of
+  per-sample build scripts.
+- **Hot reload built in.** `bedrock-build deploy --watch` handles the
+  whole rebuild-and-sync loop. See
+  [Hot reload setup](/docs/guides/hot-reload-setup).
+- **Faster builds.** esbuild (used by `bedrock-build`) is roughly an
+  order of magnitude faster than `tsc` for the same code.
+- **`.mcaddon` packaging.** One command produces a clean, shareable
+  zip. See [Packaging a `.mcaddon`](/docs/guides/packaging-mcaddon).
+
+If you're following an MS tutorial verbatim, **don't migrate**. The
+Microsoft Samples source exists for that case. See
+[Which source?](/docs/concepts/which-source).
+
+## What you'll copy
+
+- Your TypeScript files from the sample's `scripts/` directory into
+  the new project's `src/`.
+- Your behavior pack content (items, blocks, entities, loot tables,
+  recipes, etc.) into the new `packs/BP/`.
+- Your resource pack content (textures, models, animations, sounds)
+  into the new `packs/RP/`.
+
+What you'll **not** copy:
+
+- The sample's `manifest.json` files. The fresh scaffold has new,
+  freshly generated UUIDs (see
+  [Packs and Manifests](/docs/concepts/packs-and-manifests)). You want
+  those, not the sample's UUIDs.
+- The sample's build tooling (`gulp`, `just`, `tsc` configs).
+  `bedrock-build` replaces all of it.
+
+<Steps>
+
+### Step 1: scaffold a fresh Custom Workspace
+
+In a directory next to your existing project:
+
+```bash
+npx create-mc-bedrock
+```
+
+Pick **Custom** at the source prompt. Give it the name you want the
+new project to have. Let the scaffolder generate fresh manifest UUIDs.
+
+The result is a clean Custom Workspace following the
+[standard layout](/docs/concepts/workspace-layout).
+
+### Step 2: copy your scripts
+
+Take the contents of your old `scripts/` directory (in the Microsoft
+sample) and copy them into the new project's `src/` directory.
+
+If the sample's entry was `scripts/main.ts`, drop it into `src/main.ts`
+(overwriting the stub). If it was named differently, either rename it
+to `main.ts` or update the
+[`entry`](/docs/reference/config-schema) field in
+`bedrock.config.json` to point at the new filename.
+
+### Step 3: copy BP content
+
+Copy everything under your sample's behavior pack directory into the
+new project's `packs/BP/`, **except** for `manifest.json`. The
+scaffold's `manifest.json` already has fresh UUIDs wired up correctly
+to the matching RP. Overwriting it would break the cross-reference.
+
+What to copy:
+
+- `blocks/`, `entities/`, `items/`, `loot_tables/`, `recipes/`,
+  `trading/`, `spawn_rules/`, anything else that's part of the pack
+  content.
+- `pack_icon.png` if the sample has one.
+
+What to skip:
+
+- `manifest.json` (already in place).
+- `scripts/` (you already moved those into `src/`).
+
+### Step 4: copy RP content
+
+Same idea on the resource pack side. Copy everything from the sample's
+resource pack into `packs/RP/`, except `manifest.json`.
+
+What to copy:
+
+- `textures/`, `models/`, `animations/`, `animation_controllers/`,
+  `entity/`, `attachables/`, `particles/`, `sounds/`, `ui/`, `fonts/`,
+  `texts/`, anything else.
+- `pack_icon.png` if present.
+
+### Step 5: install dependencies and verify
+
+In the new project:
+
+```bash
+npm install
+npm run watch
+```
+
+The first build will surface any compile errors. Most code that
+targets `@minecraft/server` should work unchanged. Common cleanups:
+
+- Imports that referenced sample-only utilities (helper files in the
+  sample's `scripts/` directory). Either copy those helpers across or
+  inline them.
+- Imports that reference the sample's directory structure
+  (`../../../something`). Fix the relative paths to match the new
+  layout.
+
+Once the build is green, try a deploy:
+
+```bash
+npm run deploy:watch
+```
+
+See [Hot reload setup](/docs/guides/hot-reload-setup) for the
+Minecraft side of the loop.
+
+### Step 6: archive the old project
+
+Once the migrated project builds and runs the same as the original,
+move the old project to an `archive/` directory or delete it. Don't
+keep two copies live; they'll drift.
+
+</Steps>
+
+## Caveats
+
+- **`just` and other sample tooling go away.** The Microsoft samples
+  sometimes use `just` as a task runner. The equivalent in a Custom
+  Workspace is the `scripts` section of `package.json`, which already
+  wires up `build`, `watch`, `deploy`, `deploy:watch`, and `pack`. See
+  [CLI reference](/docs/reference/cli-build).
+- **`gulp` setups go away too.** Same story. `bedrock-build` handles
+  the full pipeline (bundle, copy, deploy, pack).
+- **TypeScript version may bump.** The fresh scaffold installs the
+  latest stable `typescript` and `@minecraft/server*` versions at
+  scaffold time (see [`create-mc-bedrock` reference](/docs/reference/cli-create)).
+  If your sample code targeted older API shapes, you may need small
+  fixes.
+- **API drift.** Microsoft samples are pinned to the
+  `@minecraft/server` API at the time they were written. The fresh
+  scaffold uses the current latest. Most code carries over, but a
+  small fraction may need API updates. This is the same drift you'd
+  hit on the Microsoft Samples source itself.
+
+<Callout type="info">
+**Need to roll back?** Because the migration creates a new project
+without touching the original, you can always keep working on the
+old one. Migration is opt-in and reversible.
+</Callout>
+
+## Related
+
+- [Which source?](/docs/concepts/which-source) for the bigger picture
+  on Custom vs Microsoft Samples vs Community Templates.
+- [Workspace Layout](/docs/concepts/workspace-layout) for the target
+  shape you're migrating into.
+- [Hot reload setup](/docs/guides/hot-reload-setup) for the post-
+  migration dev loop.
+- [CLI reference: `create-mc-bedrock`](/docs/reference/cli-create) for
+  what the scaffolder does.

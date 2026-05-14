@@ -1,3 +1,171 @@
+import { Callout } from "nextra-theme-docs";
+
 # Compiler Pipeline
 
-Coming soon — being written in Wave 2 follow-up.
+When you run `npm run build` (or any other
+[`bedrock-build`](/docs/reference/cli-build) command), a small,
+deterministic pipeline runs. Knowing what each stage does makes
+debugging build issues much shorter, and explains why the workspace is
+shaped the way it is.
+
+This page covers the pipeline for each of the four subcommands
+(`build`, `watch`, `deploy`, `pack`). For flag-level reference, see the
+[CLI reference](/docs/reference/cli-build).
+
+## The flow at a glance
+
+```text
+src/main.ts ─► esbuild ─► dist/packs/BP/scripts/main.js
+packs/BP/*  ─► copy   ─► dist/packs/BP/
+packs/RP/*  ─► copy   ─► dist/packs/RP/
+```
+
+Two operations, run in parallel for speed. One bundles TypeScript into
+a single JavaScript file. The other mirrors pack assets from source to
+output. The compiler owns the `dist/` tree and only writes there.
+
+## `build` mode
+
+The standard `bedrock-build build` invocation goes through these steps:
+
+1. **Load config.** Parse
+   [`bedrock.config.json`](/docs/reference/config-schema), apply
+   defaults, validate required fields, and fail fast with exit code 2
+   on schema problems.
+2. **Optional clean.** If `--clean` is passed, remove `<out>/`
+   recursively before writing anything.
+3. **Bundle the entry.** Run esbuild on
+   [`entry`](/docs/reference/config-schema) (default
+   `src/main.ts`) and write the result to
+   `<out>/packs/BP/scripts/main.js`.
+4. **Copy BP assets.** Walk `<packs.bp>/` and copy everything into
+   `<out>/packs/BP/`, except for any `scripts/` folder at the BP root
+   (that's reserved for the bundled output).
+5. **Copy RP assets.** Walk `<packs.rp>/` and copy everything into
+   `<out>/packs/RP/`.
+6. **Log the result.** Elapsed time plus a one-line summary.
+
+### The esbuild config
+
+The bundler is pinned to a single configuration. It is not user-
+overridable in v1, by design.
+
+| Option | Value |
+|---|---|
+| `target` | `es2020` |
+| `format` | `esm` |
+| `platform` | `neutral` |
+| `bundle` | `true` |
+| `external` | `["@minecraft/server", "@minecraft/server-ui", "@minecraft/server-net", "@minecraft/server-admin", "@minecraft/server-gametest"]` |
+| `sourcemap` | `inline` (dev) / `false` (release) |
+| `minify` | `false` (dev) / `true` (release) |
+
+The `@minecraft/server*` family of modules is marked external because
+Minecraft provides them at runtime. Bundling them in would balloon the
+output and break the runtime resolver.
+
+## Dev mode vs release mode
+
+| Mode | Sourcemaps | Minified | `NODE_ENV` | When to use |
+|---|---|---|---|---|
+| **dev** (default) | inline | no | unset | local iteration, hot reload, debugging |
+| **release** (`--release`) | none | yes | `production` | distribution, `.mcaddon` packaging, CI |
+
+Inline sourcemaps make the bundled JS bigger but let you map runtime
+errors back to TypeScript lines, which matters during development.
+Release mode strips them and minifies for smaller, faster-loading
+packs. See [Dev vs Release builds](/docs/guides/dev-vs-release-builds)
+for the longer take.
+
+## `watch` mode
+
+`bedrock-build watch` runs an initial dev build, then keeps two
+watchers alive:
+
+- **esbuild's watch context** for the entry file and everything it
+  imports. Source changes trigger an incremental rebuild, which is fast
+  (typically single-digit milliseconds after the first cold build).
+- **chokidar** for `<packs.bp>/**/*` (excluding its `scripts/` folder)
+  and `<packs.rp>/**/*`. Pack file changes copy that single file to its
+  `dist/` mirror. No full re-walk on each save.
+
+Changes are debounced 50ms so a save that triggers a flurry of file
+events (common on Windows) collapses into one rebuild. Each rebuild
+logs a timestamp plus what changed. Ctrl+C exits cleanly.
+
+Watch mode never minifies and never deploys. If you want
+deploy-on-save, use `deploy --watch` (next section).
+
+## `deploy` mode
+
+`bedrock-build deploy` runs a `build` first, then takes over the
+copying step at the other end of the pipeline:
+
+1. Run `build` (honoring `--release` if passed).
+2. Resolve the deploy target from
+   [`deploy.target`](/docs/reference/config-schema): glob
+   `%LOCALAPPDATA%\Packages\Microsoft.MinecraftUWP_*\LocalState\games\com.mojang\`
+   for `retail`, or use
+   [`deploy.customPath`](/docs/reference/config-schema) directly for
+   `custom`.
+3. Remove `<comMojang>/development_behavior_packs/<name>/` and
+   `<comMojang>/development_resource_packs/<name>/` (clean slate).
+4. Copy `dist/packs/BP/` and `dist/packs/RP/` into those locations.
+5. If `--watch` is set, stay running and re-deploy on every rebuild.
+
+The clean-slate copy is deliberate. If a file is deleted from the
+source pack, you want it gone from the deployed pack too. Anything else
+risks "ghost files" that disappear on the next clean build but linger
+in Minecraft. See the
+[hot reload guide](/docs/guides/hot-reload-setup) for the end-to-end
+flow including the `/reload` step inside Minecraft.
+
+## `pack` mode
+
+`bedrock-build pack` is the distribution path. It always runs a release
+build, then zips the output into a `.mcaddon`:
+
+```text
+<name>-<version>.mcaddon
+  <name>_BP/    ← contents of dist/packs/BP/
+  <name>_RP/    ← contents of dist/packs/RP/
+```
+
+Two subfolders inside the zip, named `<name>_BP` and `<name>_RP`. This
+is the layout Minecraft expects when a user double-clicks the
+`.mcaddon` to install: both packs land in one step. See
+[Packaging a `.mcaddon`](/docs/guides/packaging-mcaddon) for the
+distribution side.
+
+<Callout type="info">
+**`pack` always implies `--release`.** There is no `--dev-pack` flag.
+Shipping a dev build (with inline sourcemaps and no minify) wastes
+file size and exposes source-mapped code paths users don't need. If
+you find yourself reaching for "pack in dev mode," what you probably
+want is `deploy --watch` to test changes live.
+</Callout>
+
+## Where this is configured
+
+The compiler's behavior is driven entirely by
+[`bedrock.config.json`](/docs/reference/config-schema). The most
+relevant fields:
+
+- [`entry`](/docs/reference/config-schema): the TypeScript entry file
+  esbuild bundles.
+- [`packs.bp` and `packs.rp`](/docs/reference/config-schema): the
+  source directories copied into `dist/`.
+- [`out`](/docs/reference/config-schema): where everything lands.
+- [`deploy.target` and `deploy.customPath`](/docs/reference/config-schema):
+  where the `deploy` command sends output.
+
+## Related
+
+- [CLI reference](/docs/reference/cli-build) for every flag and every
+  exit code.
+- [Dev vs Release builds](/docs/guides/dev-vs-release-builds) for when
+  to flip the mode.
+- [Hot reload setup](/docs/guides/hot-reload-setup) for the full
+  edit-save-reload loop.
+- [Workspace Layout](/docs/concepts/workspace-layout) for what lives
+  where on disk.

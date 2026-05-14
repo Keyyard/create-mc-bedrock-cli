@@ -46,11 +46,11 @@ bedrock-build build [options]
 
 **Behavior.** Loads and validates
 [`bedrock.config.json`](/docs/reference/config-schema). Bundles the
-entry file via esbuild — ES2020 ESM, with the `@minecraft/server-*`
-packages marked as external — to `<out>/packs/BP/scripts/main.js`.
+entry file via esbuild (ES2020 ESM, with the `@minecraft/server-*`
+packages marked as external) to `<out>/packs/BP/scripts/main.js`.
 Copies `<packs.bp>/*` to `<out>/packs/BP/` (excluding any existing
 `scripts/`, to avoid clobbering the bundle), and copies
-`<packs.rp>/*` to `<out>/packs/RP/`. Only writes under `<out>/` — never
+`<packs.rp>/*` to `<out>/packs/RP/`. Only writes under `<out>/`, never
 modifies sources. Sourcemaps are inline in dev mode and off in release
 mode. Minification is off in dev mode and on in release mode.
 
@@ -102,10 +102,10 @@ bedrock-build deploy [options]
 **Behavior.** Runs `build` (honoring `--release`), then resolves the
 deploy target:
 
-- `deploy.target === "retail"` — globs
+- `deploy.target === "retail"`: globs
   `%LOCALAPPDATA%\Packages\Microsoft.MinecraftUWP_*\LocalState\games\com.mojang\`
   on Windows. Exits with [code 3](#exit-codes) if not found.
-- `deploy.target === "custom"` — uses
+- `deploy.target === "custom"`: uses
   [`deploy.customPath`](/docs/reference/config-schema) directly. Exits
   with [code 3](#exit-codes) if the path doesn't exist.
 
@@ -119,7 +119,7 @@ rebuild.
 <Callout type="warning">
 **Windows retail only for 2.0.** The `retail` target relies on the
 Windows-specific `%LOCALAPPDATA%` path. Mac and Linux retail detection
-is a post-2.0 item. Custom paths work on any platform — set
+is a post-2.0 item. Custom paths work on any platform. Set
 `deploy.target` to `"custom"` and `deploy.customPath` to your
 `com.mojang` directory.
 </Callout>
@@ -142,7 +142,7 @@ bedrock-build pack [options]
 |---|---|
 | `--output <path>` | Override the output `.mcaddon` path. Default: `<out>/<name>-<version>.mcaddon`. |
 
-**Behavior.** Always runs a release build first — there is no
+**Behavior.** Always runs a release build first. There is no
 `--dev-pack`. Then creates a zip with two top-level subfolders:
 
 ```
@@ -173,7 +173,7 @@ npx bedrock-build pack --output ./releases/my-addon.mcaddon
 | 3 | Deploy target not found (`com.mojang` directory doesn't exist). |
 | 4 | Pack failure (zip step failed). |
 
-Use these in CI to handle specific failure modes — for example, exit
+Use these in CI to handle specific failure modes. For example, exit
 code 2 is always a fixable config problem, while exit code 3 means the
 machine running the deploy doesn't have Minecraft installed in the
 expected place.

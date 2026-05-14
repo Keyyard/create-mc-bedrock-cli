@@ -1,3 +1,118 @@
+import { Callout } from "nextra-theme-docs";
+
 # Dev vs Release Builds
 
-Coming soon — being written in Wave 2 follow-up.
+[`bedrock-build`](/docs/reference/cli-build) has two build modes: **dev**
+(the default) and **release** (opt-in via `--release`). They're tuned
+for different jobs. This page covers what each mode produces, when to
+use which, and the small set of cases where it matters.
+
+## At a glance
+
+| | dev (default) | release (`--release`) |
+|---|---|---|
+| Sourcemaps | inline | none |
+| Minified | no | yes |
+| `NODE_ENV` | unset | `production` |
+| Bundle size | larger | smaller |
+| Typical use | local dev, debugging, hot reload | distribution, CI, `.mcaddon` packaging |
+
+For the full pipeline, see
+[Compiler Pipeline](/docs/concepts/compiler-pipeline).
+
+## Dev mode (default)
+
+```bash
+npx bedrock-build build         # dev
+npx bedrock-build watch         # dev
+npx bedrock-build deploy        # dev (unless --release)
+```
+
+**What you get:**
+
+- Inline sourcemaps. Runtime errors map back to your TypeScript lines,
+  which is the difference between "crash at `main.js:1:47823`" and
+  "crash at `src/items/sword.ts:14`".
+- No minification. The output is readable if you ever need to look at
+  the bundled file directly.
+- `NODE_ENV` left unset. Any `process.env.NODE_ENV` check in your code
+  (or in a dependency) sees the dev branch.
+
+**Use it for:**
+
+- Day-to-day development.
+- Debugging a script that throws inside Minecraft (you want the
+  sourcemap).
+- `deploy --watch` hot reload sessions.
+
+## Release mode (`--release`)
+
+```bash
+npx bedrock-build build --release
+npx bedrock-build deploy --release
+npx bedrock-build pack          # always implies --release
+```
+
+**What you get:**
+
+- No sourcemaps. Smaller file, no source-mapped surface to expose.
+- Minified output via esbuild's built-in minifier.
+- `NODE_ENV=production`. Dependencies that check it (rare in Bedrock
+  scripts, but possible) take their production branch.
+
+**Use it for:**
+
+- Producing a `.mcaddon` for distribution. `bedrock-build pack` runs
+  release for you, so this is usually transparent.
+- A final pre-release deploy to playtest the actual shipped build,
+  not the dev build with sourcemaps.
+- CI builds that publish or upload artifacts.
+
+<Callout type="info">
+**`pack` always implies `--release`.** You cannot ship a dev-mode
+`.mcaddon`. The flag is rejected, and the build always runs in release
+mode. See [Packaging a `.mcaddon`](/docs/guides/packaging-mcaddon).
+</Callout>
+
+## When the difference actually matters
+
+In practice, the two cases where the mode matters:
+
+1. **Debugging.** If you're chasing a runtime error in Minecraft, you
+   want dev mode. The inline sourcemap turns the stack trace into
+   real file paths.
+2. **Distribution.** If you're producing a file for someone else to
+   install, you want release mode. Smaller, cleaner, no debug payload.
+
+Everything else is local iteration where the difference doesn't show
+up.
+
+## Performance: the minify overhead is tiny
+
+A common worry: "isn't minification slow?" In practice, esbuild's
+minifier adds something like 30ms to a build that already takes 30 to
+100ms. It's not a meaningful tradeoff for local dev, and it's
+invisible in CI.
+
+The reason to default to dev mode isn't the perf. It's the sourcemaps.
+You want them on while you're working, off when you ship.
+
+## Quick reference
+
+| Goal | Command |
+|---|---|
+| Iterate locally with hot reload | `bedrock-build deploy --watch` |
+| Iterate locally without deploying | `bedrock-build watch` |
+| One-shot dev build | `bedrock-build build` |
+| One-shot release build | `bedrock-build build --release` |
+| Clean release build for CI | `bedrock-build build --clean --release` |
+| Produce a distribution `.mcaddon` | `bedrock-build pack` |
+
+## Related
+
+- [CLI reference: `build`](/docs/reference/cli-build) for the full
+  flag list.
+- [Packaging a `.mcaddon`](/docs/guides/packaging-mcaddon) for the
+  distribution side.
+- [Compiler Pipeline](/docs/concepts/compiler-pipeline) for what
+  esbuild does in each mode.

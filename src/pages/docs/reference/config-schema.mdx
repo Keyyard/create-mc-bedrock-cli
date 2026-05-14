@@ -39,7 +39,7 @@ interface BedrockConfig {
 
   /** Minecraft scripting API target version */
   minecraft?: {
-    serverVersion?: string;  // e.g., "1.19.0" — used for hints, not enforced
+    serverVersion?: string;  // e.g., "1.19.0", used for hints only, not enforced
   };
 }
 ```
@@ -115,8 +115,8 @@ a single output bundle written to `<out>/packs/BP/scripts/main.js`.
 - **Default:** `"dist"`
 
 Output directory, relative to the config file. The compiler owns this
-path — `build --clean` removes it, and pack output is written under
-it. Should be in `.gitignore`. See
+path. `build --clean` removes it, and pack output is written under it.
+Should be in `.gitignore`. See
 [Workspace Layout](/docs/concepts/workspace-layout) for the structure
 written here.
 
@@ -132,10 +132,10 @@ written here.
 
 How the [`deploy` command](/docs/reference/cli-build) finds Minecraft.
 
-- **`"retail"`** — auto-detects the Bedrock retail install via
+- **`"retail"`**: auto-detects the Bedrock retail install via
   `%LOCALAPPDATA%\Packages\Microsoft.MinecraftUWP_*\LocalState\games\com.mojang\`.
   Windows-only in 2.0.
-- **`"custom"`** — uses `deploy.customPath` as the `com.mojang`
+- **`"custom"`**: uses `deploy.customPath` as the `com.mojang`
   directory. Works on any platform.
 
 ### `deploy.customPath`
@@ -162,7 +162,7 @@ Ignored when `deploy.target` is `"retail"`.
 - **Default:** none
 
 Hint for which `@minecraft/server` version the project targets, e.g.
-`"1.19.0"`. **Used for hints only — the compiler does not enforce or
+`"1.19.0"`. **Used for hints only. The compiler does not enforce or
 verify this.** Useful as documentation inside the config file.
 
 ```json

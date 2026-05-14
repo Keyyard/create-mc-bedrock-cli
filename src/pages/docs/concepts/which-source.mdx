@@ -2,8 +2,8 @@ import { Callout } from "nextra-theme-docs";
 
 # Which Source?
 
-`create-mc-bedrock` offers three starting points. They are not ranked —
-each one fits a different situation. This page is the honest version of
+`create-mc-bedrock` offers three starting points. They are not ranked.
+Each one fits a different situation. This page is the honest version of
 the decision: when to pick each, when not to, and what you actually get.
 
 If you're not sure, **Custom** is the safe default for new projects.
@@ -35,7 +35,7 @@ the root, TypeScript in `src/`, pack assets in `packs/BP` and
 
 - A scaffolded workspace following the
   [layout in the Workspace Layout doc](/docs/concepts/workspace-layout).
-- `bedrock.config.json` pre-filled with sensible defaults — see the
+- `bedrock.config.json` pre-filled with sensible defaults. See the
   [config schema](/docs/reference/config-schema).
 - A `package.json` with `@keyyard/bedrock-build` as a dev dependency,
   resolved to the latest stable version at scaffold time.
@@ -62,7 +62,7 @@ documentation.
 
 - You want the build/deploy/pack ergonomics of `bedrock-build`. The
   Microsoft samples don't ship with one.
-- You're bothered by API drift — sample code can lag behind the
+- You're bothered by API drift. Sample code can lag behind the
   current `@minecraft/server` API and may need touch-ups to compile
   against the latest types.
 
@@ -70,7 +70,7 @@ documentation.
 
 - One of the official Microsoft sample projects, cloned and ready to
   open.
-- Whatever build setup that sample includes (varies — some use
+- Whatever build setup that sample includes (varies; some use
   `gulp`, some are pure-source, some have other approaches).
 - Manifest UUIDs regenerated for your local copy.
 
@@ -79,7 +79,7 @@ documentation.
 state of `@minecraft/server` at the time they were written. The API
 evolves between Minecraft releases, so some samples may need small
 fixes to typecheck against the current types. That's not a flaw of
-the samples — it's just the cost of using anything that targets a
+the samples. It's just the cost of using anything that targets a
 moving API. Worth knowing before you pick this source.
 </Callout>
 
@@ -87,7 +87,7 @@ moving API. Worth knowing before you pick this source.
 
 Specialized starters from
 [`keyyard/custom-mc-scripting-templates`](https://github.com/Keyyard/custom-mc-scripting-templates).
-Curated by the community for specific use cases — different scripting
+Curated by the community for specific use cases: different scripting
 patterns, alternative tooling setups, or themed starter content.
 
 **Pick this when:**
@@ -109,7 +109,7 @@ patterns, alternative tooling setups, or themed starter content.
 **What you get:**
 
 - The chosen template, cloned into your project folder.
-- Whatever conventions that template defines — read the template's
+- Whatever conventions that template defines. Read the template's
   own README before assuming the build commands match this site's
   CLI reference.
 - Fresh manifest UUIDs for your project.
@@ -124,5 +124,5 @@ patterns, alternative tooling setups, or themed starter content.
 | Hot reload + `.mcaddon` packaging out of the box | Custom |
 | Files that match published MS docs verbatim | Microsoft Samples |
 
-All three sources are first-class. There's no wrong choice — there's
-just a fit for the project in front of you.
+All three sources are first-class. There's no wrong choice, just a
+fit for the project in front of you.

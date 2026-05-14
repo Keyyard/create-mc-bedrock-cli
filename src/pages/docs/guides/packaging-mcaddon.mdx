@@ -1,3 +1,124 @@
-# Packaging .mcaddon
+import { Callout } from "nextra-theme-docs";
 
-Coming soon — being written in Wave 2 follow-up.
+# Packaging a `.mcaddon`
+
+A `.mcaddon` is the distribution format for a Bedrock add-on. It's a
+zip file with two subfolders (one BP, one RP), renamed so Minecraft
+recognizes it as installable. Double-click on a machine with Minecraft
+and both packs install in one step.
+
+`bedrock-build pack` produces one of these in a single command. This
+guide covers the output, the version bump workflow, and where to
+distribute the result.
+
+## Run the command
+
+```bash
+npm run pack
+```
+
+Or directly:
+
+```bash
+npx bedrock-build pack
+```
+
+Output lands at `dist/<name>-<version>.mcaddon`, where `<name>` and
+`<version>` come from
+[`bedrock.config.json`](/docs/reference/config-schema). Pass
+`--output ./somewhere-else.mcaddon` to override the path.
+
+## What's inside
+
+A `.mcaddon` is just a zip with a specific internal layout:
+
+```text
+my-addon-1.0.0.mcaddon       (zip file)
+  my-addon_BP/               (contents of dist/packs/BP/)
+    manifest.json
+    scripts/main.js
+    blocks/ entities/ items/ ...
+  my-addon_RP/               (contents of dist/packs/RP/)
+    manifest.json
+    textures/ models/ ...
+```
+
+Two top-level subfolders, named `<name>_BP` and `<name>_RP`. Minecraft
+recognizes this two-pack layout and installs both halves together when
+the user double-clicks the file.
+
+## Release mode is mandatory
+
+`pack` always runs `bedrock-build build --release` first. There is no
+dev-mode `.mcaddon`. The reason: a shipped pack should be minified, with
+no inline sourcemaps, set up with `NODE_ENV=production`. Smaller file,
+faster cold start, no debug payload exposed to end users.
+
+If you want to share a build for testing without packaging, use
+`bedrock-build deploy` to push it into a friend's `com.mojang` directly,
+or zip `dist/packs/` by hand. See
+[Dev vs Release builds](/docs/guides/dev-vs-release-builds) for why
+the two modes exist.
+
+## Version bump workflow
+
+Before packing, bump the version in three places so they stay in sync:
+
+1. **`bedrock.config.json`**: the `version` field. This controls the
+   `.mcaddon` filename.
+2. **`packs/BP/manifest.json`**: `header.version` (array form, e.g.
+   `[1, 1, 0]`). This is what Minecraft reads to detect updates.
+3. **`packs/RP/manifest.json`**: same as above. Keep BP and RP version
+   numbers aligned so updates stay coherent.
+
+A quick mental checklist when releasing:
+
+```bash
+# 1. Update versions in bedrock.config.json + both manifest.json files.
+
+# 2. Verify everything still builds clean.
+npx bedrock-build build --clean --release
+
+# 3. Pack.
+npx bedrock-build pack
+
+# 4. Look at dist/<name>-<version>.mcaddon. That's your release artifact.
+```
+
+<Callout type="warning">
+**Don't ship a dev build.** Dev builds carry inline sourcemaps, which
+roughly double the bundle size and reveal more of the source map than
+end users need. `pack` enforces release mode for this reason. If you
+ever zip `dist/packs/` by hand, make sure the last build that ran was
+a release build.
+</Callout>
+
+## Where to distribute
+
+Once you have a `.mcaddon`, the file is yours to ship. Common
+destinations:
+
+- **Minecraft Marketplace** for paid distribution. Requires acceptance
+  into the
+  [Minecraft Partner Program](https://www.minecraft.net/en-us/partnerprogram)
+  and goes through Microsoft's submission and review process.
+- **[CurseForge](https://www.curseforge.com/minecraft-bedrock)** for
+  free distribution with stats, comments, and a familiar mod-hosting
+  workflow.
+- **[MCPEDL](https://mcpedl.com/)** for free distribution to the
+  Bedrock community at large.
+- **GitHub Releases** for open-source projects. Attach the `.mcaddon`
+  to a tagged release alongside your changelog.
+- **Discord servers, Twitter, your own site, friends.** It's just a
+  file. Anywhere you can share a file, you can share a `.mcaddon`.
+
+## Related
+
+- [CLI reference: `pack`](/docs/reference/cli-build) for the full
+  flag list.
+- [Dev vs Release builds](/docs/guides/dev-vs-release-builds) for
+  what `--release` actually does.
+- [Workspace Layout](/docs/concepts/workspace-layout) for how the
+  output tree gets shaped.
+- [Packs and Manifests](/docs/concepts/packs-and-manifests) for the
+  manifest fields that drive versioning.

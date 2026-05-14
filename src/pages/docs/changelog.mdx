@@ -1,3 +1,160 @@
+import { Callout } from "nextra-theme-docs";
+
 # Changelog
 
-Coming soon — being written in Wave 2 follow-up.
+Everything that shipped across the Bedrock CLI ecosystem, organized by component. For full per-commit detail, follow the GitHub Releases links at the end of each section.
+
+<Callout type="info">
+  Looking for a per-package release feed? See the linked GitHub Releases for [`create-mc-bedrock`](https://github.com/Keyyard/create-mc-bedrock-cli/releases) and [`@keyyard/bedrock-build`](https://github.com/Keyyard/bedrock-build/releases).
+</Callout>
+
+## 2.0 release (2026-05-14)
+
+The major rework. Five components shipped together: the scaffolder, a new compiler package, a bundled Custom Workspace, a website rebuild with docs, and CI/CD plumbing.
+
+---
+
+### `create-mc-bedrock@2.0.0` (scaffolder)
+
+Replaces the v1.x "pick a Microsoft sample and clone it" flow with a three-source picker plus a recommended bundled workspace.
+
+**New**
+
+- **Three sources.** First prompt is now a source picker:
+  - **Custom Workspace** (recommended). Bundled inside the scaffolder, wired to `@keyyard/bedrock-build` for hot reload and `.mcaddon` packaging.
+  - **Microsoft Official Samples.** Cloned from [`microsoft/minecraft-scripting-samples`](https://github.com/microsoft/minecraft-scripting-samples) for following official tutorials.
+  - **Community Templates.** Cloned from [`Keyyard/custom-mc-scripting-templates`](https://github.com/Keyyard/custom-mc-scripting-templates) for specialized starters. See [Which source?](/docs/concepts/which-source).
+- **Auto-install prompt.** When the scaffolded project ships a `package.json`, the CLI offers to run `npm install` right after scaffolding. Decline to keep the install for later.
+- **Registry-fetched dependency versions.** At scaffold time the CLI queries the npm registry for the current `latest` of `@minecraft/server`, `@minecraft/server-ui`, `typescript`, and `@keyyard/bedrock-build`, then pins the resolved version strings into the generated `package.json`. Every new scaffold ships current stable without us needing to bump a template.
+- **Generalized manifest service.** Auto-detects three pack layouts in one pass:
+  - `packs/BP` + `packs/RP` (Custom)
+  - `BP/` + `RP/` at project root (some Community templates)
+  - `behavior_packs/<first>` + `resource_packs/<first>` (Microsoft samples)
+  UUIDs are regenerated and the BP-to-RP cross-references are kept consistent.
+- **Project name prompt** drives `bedrock.config.json`, `package.json`, and `manifest.header.name` in one place.
+- **Node 18+** is now required (`engines.node: ">=18"`). The scaffolder uses `fs.cp` and other Node 18 APIs.
+
+**Breaking**
+
+- The first interactive prompt is a source picker. Any v1-era script piping answers into `npx create-mc-bedrock` via stdin will see an extra question at the top and needs adjustment.
+- The default scaffold is now the Custom Workspace layout (`src/`, `packs/BP|RP`, `dist/`, `bedrock.config.json`), not the Microsoft-samples layout. To keep the old behavior, pick **Microsoft Official Samples** at the source prompt.
+
+**Internal**
+
+- Removed the self-referential `"publish": "npm publish"` script in `cli/package.json` that caused npm to recursively invoke itself during publish.
+- Repository URL normalized to the form npm auto-corrects to.
+
+Full notes: [create-mc-bedrock 2.0.0 release](https://github.com/Keyyard/create-mc-bedrock-cli/releases/tag/v2.0.0).
+
+---
+
+### `@keyyard/bedrock-build@1.0.0` (compiler)
+
+Brand new package. The build tool that powers the Custom Workspace. Independent of the scaffolder so you can install it directly into any project that follows the [workspace layout](/docs/concepts/workspace-layout).
+
+**Commands** (see [CLI reference](/docs/reference/cli-build))
+
+- `bedrock-build build`: dev bundle into `dist/`
+- `bedrock-build build --release`: minified, no sourcemaps, `NODE_ENV=production`
+- `bedrock-build watch`: rebuild on source and pack changes
+- `bedrock-build deploy`: build, then copy to `com.mojang/development_*_packs/`
+- `bedrock-build deploy --watch`: hot reload to local Minecraft on save
+- `bedrock-build pack`: release build, then zip into `dist/<name>-<version>.mcaddon`
+
+**Highlights**
+
+- **esbuild-powered bundling.** ES2020 ESM. `@minecraft/server`, `@minecraft/server-ui`, `@minecraft/server-net`, `@minecraft/server-admin`, and `@minecraft/server-gametest` are marked external. Cold builds in roughly 30 ms, incremental rebuilds in single-digit milliseconds.
+- **Dev and release modes.** Dev (default) is inline sourcemaps with no minify. Release adds minify and drops sourcemaps. `pack` always uses release. See [Dev vs Release builds](/docs/guides/dev-vs-release-builds).
+- **Retail and custom deploy targets.** Auto-detects the Bedrock retail install on Windows, or points at any `com.mojang` directory via `deploy.customPath`. Works on macOS, Linux, and BDS through the custom path. See [Custom deploy path](/docs/guides/custom-deploy-path).
+- **Watch + deploy.** chokidar watches the pack directories with a 50 ms debounce and mirrors changed files into `dist/` (or directly to the deploy target in `deploy --watch`). The esbuild watch context handles incremental source rebuilds. See [Hot reload setup](/docs/guides/hot-reload-setup).
+- **`.mcaddon` packaging.** `bedrock-build pack` produces a clean zip with the `<name>_BP/` + `<name>_RP/` two-folder structure Bedrock expects. See [Packaging a `.mcaddon`](/docs/guides/packaging-mcaddon).
+- **Programmatic API.** Import `build`, `watch`, `deploy`, `pack`, `loadConfig` from `@keyyard/bedrock-build` to embed the compiler in your own scripts.
+- **TypeScript declarations** shipped from `dist/index.d.ts`.
+- **12 vitest tests** covering bundler, copier, build, watch, deploy, deploy-watch, and pack against a fixture workspace. SIGINT shutdown verified in watch and deploy-watch.
+- **Exit codes** per [SPEC](https://github.com/Keyyard/create-mc-bedrock-cli/blob/main/SPEC.md#2-cli-surface): `0` success, `1` generic, `2` config validation, `3` deploy target not found, `4` pack failure.
+
+Full notes: [bedrock-build 1.0.0 release](https://github.com/Keyyard/bedrock-build/releases/tag/v1.0.0).
+
+---
+
+### Website & docs (bedrockcli.keyyard.xyz)
+
+The marketing site got a full rebuild and grew a documentation tree.
+
+**Landing page**
+
+- New section flow: Hero → Pain Points → Choose your Path → Features → Comparison → CTA / Resources.
+- Sticky top navigation (TopNav) with **Docs, Showcase, GitHub, Discord** links plus a primary CTA.
+- npm version badges for both packages in the hero badge row, in the resources section, and in the footer.
+- Marketing copy is always-dark by design. The light-mode theme toggle applies only on `/docs/*` routes.
+- Headline locked in: **"Skip the lazy part, work hard and smart."**
+- Data-driven showcase card (`src/data/showcase.ts`) ready to fill with community projects.
+
+**Docs site (Nextra v2 at `/docs/*`)**
+
+- Static export integrated with the existing Next.js 15 pages router. Full sidebar, full-text search, edit-on-GitHub.
+- Working **light/dark theme toggle**. Default is dark.
+- Sage green primary accent (`primaryHue: 122, primarySaturation: 18`) matching [blogs.keyyard.xyz](https://blogs.keyyard.xyz).
+- Sixteen real pages: [Getting Started](/docs/getting-started), [Workspace Layout](/docs/concepts/workspace-layout), [Packs & Manifests](/docs/concepts/packs-and-manifests), [Compiler Pipeline](/docs/concepts/compiler-pipeline), [Which Source?](/docs/concepts/which-source), five guides under [Guides](/docs/guides/hot-reload-setup), three references ([cli-build](/docs/reference/cli-build), [cli-create](/docs/reference/cli-create), [config-schema](/docs/reference/config-schema)), the [Cookbook](/docs/cookbook), [Contributing](/docs/contributing), and this Changelog.
+- Cookbook is community-driven. Contribute via PR (see [Contributing](/docs/contributing)).
+
+**Design system**
+
+- New centralized palette in `src/styles/globals.css` as CSS custom properties, with both `:root` (light) and `.dark` (dark) blocks. Tailwind tokens registered in `tailwind.config.cjs` so utilities like `bg-secondary/20` and `text-darkgray/40` work via `<alpha-value>`.
+- **Typography**: Be Vietnam Pro for headings, Inter for body, JetBrains Mono for code. All loaded through `next/font/google` with no extra render-blocking requests. Available as `font-header`, `font-body`, `font-code` Tailwind utilities.
+- **Shiki syntax highlighting** in code blocks consolidated to four colors using palette tokens: text, sage (keywords / functions / constants / links), teal-sage (strings), gray (comments / punctuation).
+- **Nextra callouts** flattened. Default and info callouts render in sage; warning uses muted amber; error uses muted rose. Body color is always the neutral text color for readability.
+
+**Cleanup**
+
+- Eight unused legacy organism components removed (`WhyUseSection`, `HowItWorksSection`, `RequirementsSection`, `ProTipsSection`, `ContributingSection`, `SideNavbar`, `ShowcaseCarousel`, `LetterGlitch`).
+
+**Internal**
+
+- `src/data/version.ts` is auto-generated from `cli/package.json` by `scripts/sync-version.mjs` so the in-page version badge stays in sync with the published scaffolder.
+
+---
+
+### `Keyyard/custom-mc-scripting-templates` (Community Templates)
+
+Refocused on specialized starters now that the recommended default workspace lives in the scaffolder.
+
+- Removed legacy `default-workspaces/starter-tsjs` and `default-workspaces/ts-starter`. Both are superseded by the bundled Custom Workspace.
+- README rewritten for the v2 context. Surfaced as the **Community Templates** source in the scaffolder.
+
+---
+
+### Tooling and CI/CD
+
+- **GitHub Actions release workflows** in both `Keyyard/create-mc-bedrock-cli` and `Keyyard/bedrock-build`. Push a `v*.*.*` tag and the workflow verifies the tag matches `package.json`, publishes to npm with `--provenance`, and creates a GitHub Release with auto-generated notes from commits.
+- **npm provenance** enabled on both packages. The npm UI now shows a verified attestation linking each published version back to the GitHub Actions run that produced it.
+- **NPM_TOKEN** secret required in each repo for the workflow to publish. See [Contributing](/docs/contributing) for the release flow.
+
+---
+
+## Migration from v1.x
+
+If you scaffolded with `create-mc-bedrock@1.x`, the most direct path forward:
+
+```bash
+npx create-mc-bedrock
+# pick "Custom Workspace (recommended)"
+# project name, destination
+# "Install dependencies now? (Y/n)" -> y
+```
+
+Then copy your scripts and pack files over. See [Migrating from Microsoft samples](/docs/guides/migrating-from-microsoft) for the step-by-step. The same flow works coming from a v1 scaffold.
+
+<Callout type="warning">
+  Don't overwrite the new `packs/BP/manifest.json` and `packs/RP/manifest.json`. Those have freshly generated UUIDs and cross-references. Copy only your behavior pack and resource pack content (items, blocks, entities, textures, etc.).
+</Callout>
+
+---
+
+## Related
+
+- [GitHub Releases: create-mc-bedrock](https://github.com/Keyyard/create-mc-bedrock-cli/releases)
+- [GitHub Releases: bedrock-build](https://github.com/Keyyard/bedrock-build/releases)
+- [SPEC (compiler contract)](https://github.com/Keyyard/create-mc-bedrock-cli/blob/main/SPEC.md)
+- [Getting Started](/docs/getting-started) for the 2.0 walkthrough.
+- [Discord](https://discord.gg/EJ4swPKJNU) for questions, bug reports, and discussion.

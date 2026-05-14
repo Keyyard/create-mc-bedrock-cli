@@ -12,7 +12,7 @@ five minutes.
   will not run the scaffolder or the compiler.
 - A working Minecraft for Windows (Bedrock retail) install if you want to
   use the `deploy` command's hot-reload flow. Mac and Linux retail
-  detection is not in 2.0 — but the
+  detection is not in 2.0, but the
   [custom deploy path](/docs/reference/config-schema) works on every
   platform.
 
@@ -27,13 +27,13 @@ npx create-mc-bedrock
 The scaffolder is interactive. You'll see prompts for:
 
 - **Source.** Pick one of three starting points:
-  - **Custom** — the new default. A `bedrock.config.json` workspace wired
+  - **Custom**: the new default. A `bedrock.config.json` workspace wired
     up to `@keyyard/bedrock-build`. Pick this unless you have a reason
     not to.
-  - **Microsoft Samples** — the official samples from
+  - **Microsoft Samples**: the official samples from
     [`microsoft/minecraft-scripting-samples`](https://github.com/microsoft/minecraft-scripting-samples).
     Good for following an MS tutorial verbatim.
-  - **Community Templates** — specialized starters from
+  - **Community Templates**: specialized starters from
     [`keyyard/custom-mc-scripting-templates`](https://github.com/Keyyard/custom-mc-scripting-templates).
 
   More detail on the trade-offs: [Which source?](/docs/concepts/which-source).
@@ -43,7 +43,7 @@ The scaffolder is interactive. You'll see prompts for:
 
 - **Install dependencies?** Yes/No. If you say yes, the scaffolder runs
   `npm install` for you. Either way, manifest UUIDs are freshly
-  generated for this project — no copy-paste collisions.
+  generated for this project, with no copy-paste collisions.
 
 ### Look at what you got
 
@@ -99,7 +99,7 @@ Reload your world in Minecraft to see updates.
 which only exists on Windows. Mac and Linux retail detection is a
 post-2.0 item. If you're on another platform, set
 `deploy.target` to `"custom"` and point `deploy.customPath` at your
-Minecraft install — see the
+Minecraft install. See the
 [config schema](/docs/reference/config-schema) for details.
 </Callout>
 
@@ -114,7 +114,7 @@ into `dist/<name>-<version>.mcaddon`. The result is a single file you can
 share, upload, or import by double-clicking on a machine with Minecraft
 installed.
 
-`pack` always implies `--release` — there is no dev-mode pack.
+`pack` always implies `--release`. There is no dev-mode pack.
 
 </Steps>
 

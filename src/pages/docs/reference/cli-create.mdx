@@ -1,3 +1,209 @@
+import { Callout } from "nextra-theme-docs";
+
 # CLI: `create-mc-bedrock`
 
-Coming soon — being written in Wave 2 follow-up.
+`create-mc-bedrock` is the scaffolder. It creates a new Bedrock add-on
+project from one of three sources, regenerates manifest UUIDs, and
+optionally installs dependencies.
+
+This page is the reference. For the conceptual differences between
+sources, see [Which source?](/docs/concepts/which-source). For the
+day-one walkthrough, see [Getting Started](/docs/getting-started).
+
+## Usage
+
+```bash
+npx create-mc-bedrock
+```
+
+That's it. The CLI is fully interactive in 2.0. There are no flags.
+Non-interactive scaffolding (for CI and automation) is planned for a
+future release.
+
+## Requirements
+
+- **Node.js 18 or later.** The scaffolder uses `fs.cp`, which lands in
+  Node 18. Check with `node --version`.
+- **A working npm install.** `npx` ships with npm and runs the
+  scaffolder without a global install.
+
+## The interactive prompts
+
+The prompts run in this order. Each one validates inline; mistakes are
+re-asked rather than failing the whole run.
+
+### 1. Source
+
+```
+? Which source do you want to start from?
+  > Custom Workspace (recommended)
+    Microsoft Official Samples
+    Community Templates
+```
+
+- **Custom Workspace** scaffolds the bundled Custom template wired up
+  to [`@keyyard/bedrock-build`](/docs/reference/cli-build). This is
+  the path the rest of these docs assume.
+- **Microsoft Official Samples** clones a sample from
+  [`microsoft/minecraft-scripting-samples`](https://github.com/microsoft/minecraft-scripting-samples).
+- **Community Templates** clones a template from
+  [`keyyard/custom-mc-scripting-templates`](https://github.com/Keyyard/custom-mc-scripting-templates).
+
+See [Which source?](/docs/concepts/which-source) for the longer
+comparison.
+
+### 2. (Microsoft only) Sample picker
+
+If you picked **Microsoft Official Samples**, a second prompt lists
+the available samples from the upstream repo. Pick the one you want.
+
+### 3. (Community only) Category and template picker
+
+If you picked **Community Templates**, you'll see a category prompt
+first (the top-level folders in the community-templates repo), then a
+template picker inside that category.
+
+### 4. Project name
+
+```
+? Project name:
+```
+
+Becomes the folder name for the new project and the value of
+[`name` in `bedrock.config.json`](/docs/reference/config-schema). It's
+also propagated into the manifest `header.name` fields as
+`<name> BP` and `<name> RP`.
+
+### 5. Destination folder
+
+```
+? Destination folder: (./<project-name>)
+```
+
+Where the project lands. Defaults to a subdirectory of the current
+working directory named after the project. Press Enter to accept.
+
+### 6. Auto-install dependencies?
+
+```
+? Install dependencies now? (Y/n)
+```
+
+Only shown when the scaffolded project includes a `package.json` (all
+three sources do, in 2.0). Picking **Yes** runs `npm install` in the
+new project. Picking **No** finishes the scaffold and leaves
+dependency installation to you.
+
+## What gets generated
+
+### For the Custom source
+
+The full Custom Workspace as described in
+[Workspace Layout](/docs/concepts/workspace-layout):
+
+```
+<project>/
+  bedrock.config.json
+  package.json
+  tsconfig.json
+  .gitignore
+  src/main.ts
+  packs/BP/manifest.json
+  packs/BP/pack_icon.png
+  packs/RP/manifest.json
+  packs/RP/pack_icon.png
+  packs/RP/textures/item_texture.json
+```
+
+### For Microsoft Samples
+
+Whatever the chosen sample ships in
+`microsoft/minecraft-scripting-samples`. Layout varies by sample.
+
+### For Community Templates
+
+Whatever the chosen template ships in `custom-mc-scripting-templates`.
+Layout varies by template.
+
+In all three cases, the scaffolder rewrites manifest UUIDs after
+copying. See the next section.
+
+## Manifest UUID regeneration
+
+Every scaffold gets a fresh set of UUIDs for both the BP and RP
+manifests, and the cross-references between them are wired up
+correctly in one pass:
+
+- Each `header.uuid` is replaced with a new v4 UUID.
+- Each `modules[].uuid` is replaced with a new v4 UUID.
+- BP `dependencies[].uuid` entries are pointed at the new RP header
+  UUID.
+- RP `dependencies[].uuid` entries are pointed at the new BP header
+  UUID.
+- `dependencies[].module_name` entries (like `@minecraft/server`) are
+  left untouched.
+
+The scaffolder auto-detects three pack layouts:
+
+1. **Custom Workspace:** `packs/BP/manifest.json` and
+   `packs/RP/manifest.json`.
+2. **Community style:** `BP/manifest.json` and `RP/manifest.json` at
+   the project root.
+3. **Microsoft samples style:** `behavior_packs/<first>/manifest.json`
+   and `resource_packs/<first>/manifest.json`.
+
+See [Packs and Manifests](/docs/concepts/packs-and-manifests) for what
+each field means.
+
+## Version pinning at scaffold time
+
+The Custom Workspace's `package.json` doesn't ship with hard-coded
+version strings. Instead, the scaffolder queries the npm registry for
+the **latest stable** version of each of:
+
+- `@minecraft/server`
+- `@minecraft/server-ui`
+- `typescript`
+- `@keyyard/bedrock-build`
+
+It writes the resolved version strings into the generated
+`package.json` before handing the project over. Every fresh scaffold
+is pinned to current latest, with no maintenance burden on the
+template.
+
+<Callout type="info">
+**Offline scaffolding.** If the registry fetch fails (no network, npm
+mirror down), the scaffolder falls back to a known-good baseline
+version for each dependency. The scaffold still succeeds; you'll just
+get older pins until you `npm install` an updated version.
+</Callout>
+
+## Behavior notes
+
+- **Existing directory:** if the destination folder already exists and
+  is non-empty, the scaffolder refuses and asks for a different name.
+  No clobbering.
+- **Failed downloads:** if the Microsoft Samples or Community Templates
+  clone fails (network error, bad ref), the scaffolder exits with a
+  non-zero code and leaves no partial directory.
+- **`pack_icon.png`:** included in both BP and RP for the Custom
+  source. Replace with your own art before shipping.
+
+## No flags (yet)
+
+The CLI is fully interactive in 2.0. There's no `--source`,
+`--name`, `--yes`, or similar. Non-interactive mode is on the roadmap
+for a future minor release. If you need to drive scaffolding from CI
+today, write a small script that pipes answers into stdin, but be
+aware that this is brittle and will need updating when prompts change.
+
+## Related
+
+- [Which source?](/docs/concepts/which-source) for the three sources
+  in depth.
+- [Workspace Layout](/docs/concepts/workspace-layout) for the Custom
+  source tree.
+- [Config schema](/docs/reference/config-schema) for what
+  `bedrock.config.json` controls.
+- [Packs and Manifests](/docs/concepts/packs-and-manifests) for the
+  manifest fields the scaffolder rewrites.

@@ -5,7 +5,7 @@ import { Callout, Cards, Card } from "nextra-theme-docs";
 Bedrock CLI is a toolchain for building Minecraft Bedrock add-ons without
 fighting your tooling. It pairs a scaffolder (`create-mc-bedrock`) with a
 compiler (`@keyyard/bedrock-build`) so you can go from a blank folder to a
-hot-reloading TypeScript workspace — and eventually a packaged `.mcaddon` —
+hot-reloading TypeScript workspace, and eventually a packaged `.mcaddon`,
 without the usual setup tax.
 
 These docs cover scaffolding a project, the workspace layout, the build
@@ -39,16 +39,16 @@ distribution.
 <Callout type="info">
 **What's new in 2.0**
 
-- **New compiler** — [`@keyyard/bedrock-build`](/docs/reference/cli-build)
+- **New compiler.** [`@keyyard/bedrock-build`](/docs/reference/cli-build)
   bundles your TypeScript with esbuild, copies pack assets, and ships a
   proper CLI: `build`, `watch`, `deploy`, `pack`.
-- **Three sources** — [pick the starting point](/docs/concepts/which-source)
+- **Three sources.** [Pick the starting point](/docs/concepts/which-source)
   that matches the project: Custom (recommended), Microsoft Samples, or
   Community Templates.
-- **Hot reload** — `bedrock-build deploy --watch` rebuilds and re-syncs to
+- **Hot reload.** `bedrock-build deploy --watch` rebuilds and re-syncs to
   `com.mojang` on every save. See the
   [CLI reference](/docs/reference/cli-build).
-- **`.mcaddon` packaging** — `bedrock-build pack` produces a clean,
+- **`.mcaddon` packaging.** `bedrock-build pack` produces a clean,
   Minecraft-ready zip in one command. No more manual zipping.
 
 </Callout>

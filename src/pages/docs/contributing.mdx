@@ -1,3 +1,111 @@
+import { Callout } from "nextra-theme-docs";
+
 # Contributing
 
-Coming soon — being written in Wave 2 follow-up.
+Bedrock CLI is open source and welcomes contributions: bug reports,
+fixes, features, docs, and community templates. This page covers where
+to send each kind of contribution and what makes a PR easy to review.
+
+## Where to contribute
+
+The project lives across three repos. Pick the one that matches what
+you're changing.
+
+### Scaffolder bugs or new features
+
+[`Keyyard/create-mc-bedrock-cli`](https://github.com/Keyyard/create-mc-bedrock-cli)
+
+This is the `create-mc-bedrock` CLI: prompts, source pickers, manifest
+regeneration, the bundled Custom Workspace template, the website. Open
+issues and PRs here for anything about scaffolding behavior.
+
+### Compiler bugs or new features
+
+[`Keyyard/bedrock-build`](https://github.com/Keyyard/bedrock-build)
+
+This is `@keyyard/bedrock-build`: `build`, `watch`, `deploy`, `pack`,
+the esbuild integration, and config loading. Open issues and PRs here
+for anything about the compiler.
+
+### Community Templates
+
+[`Keyyard/custom-mc-scripting-templates`](https://github.com/Keyyard/custom-mc-scripting-templates)
+
+This is the repo of community-curated starter templates surfaced under
+the "Community Templates" source in the scaffolder. Add a new template
+by opening a PR with the template files and a short README explaining
+what it does.
+
+### Docs improvements
+
+Docs source lives in the
+[`Keyyard/create-mc-bedrock-cli`](https://github.com/Keyyard/create-mc-bedrock-cli)
+repo on the `website` branch, under `website/src/pages/docs/`. Open
+PRs against `website` for docs changes (typos, new pages, cookbook
+recipes).
+
+See the [Cookbook](/docs/cookbook) for the specific guide on adding
+recipes.
+
+## General PR guidelines
+
+- **Small, focused PRs land faster.** One concern per PR. A 10-line
+  bugfix and a 200-line refactor should be two PRs, not one.
+- **Describe the why, not just the what.** The diff already says what
+  changed. The PR body should explain why and what trade-offs you
+  considered.
+- **Run the build before submitting.** For scaffolder and compiler PRs:
+  `npm run build`. For docs: `cd website && npm run build`. If your PR
+  doesn't build locally, the CI is going to say the same thing.
+- **Add tests for behavior changes.** Both `create-mc-bedrock` and
+  `bedrock-build` have vitest test suites. New behavior should come
+  with a test that pins it down.
+- **Match the existing style.** No need to introduce a new linter or
+  formatter for a single PR. If the surrounding code uses a
+  convention, follow it.
+
+<Callout type="info">
+**Not sure where something fits?** Open an issue in the
+[`create-mc-bedrock-cli`](https://github.com/Keyyard/create-mc-bedrock-cli)
+repo first and ask. Easier to redirect an issue than re-do a PR.
+</Callout>
+
+## Reporting issues
+
+A good bug report has four things:
+
+1. **Reproduction steps.** The minimal sequence of commands that
+   triggers the issue. Ideally starting from `npx create-mc-bedrock`
+   or a tiny example workspace.
+2. **Node version** (`node --version`) and **OS** (Windows version,
+   macOS version, or Linux distro).
+3. **The exact command that failed** and the **full error output**.
+   Don't trim the stack trace.
+4. **What you expected to happen** versus what did happen.
+
+If you can't reproduce reliably, say so. "Happens about half the time"
+is still useful signal.
+
+## Community
+
+- **Discord:**
+  [discord.gg/EJ4swPKJNU](https://discord.gg/EJ4swPKJNU) for questions,
+  general discussion, sharing what you're building, and getting help
+  before opening an issue.
+- **GitHub Issues:** the right place for actionable bug reports and
+  feature requests. Use Discord first if you're not sure whether
+  something is a bug.
+
+## Code of conduct
+
+Be respectful and constructive. Assume good faith. Disagreements about
+code are expected; disagreements about people are not. If you see
+behavior that's out of line, ping a maintainer in Discord or via
+GitHub.
+
+## Related
+
+- [Cookbook](/docs/cookbook) for the recipe contribution flow.
+- [Changelog](/docs/changelog) for recent releases.
+- [Getting Started](/docs/getting-started) if you're contributing
+  while still learning the project.

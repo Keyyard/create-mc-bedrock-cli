@@ -1,3 +1,153 @@
+import { Callout } from "nextra-theme-docs";
+
 # Custom Deploy Path
 
-Coming soon — being written in Wave 2 follow-up.
+By default, [`bedrock-build deploy`](/docs/reference/cli-build) targets
+Minecraft for Windows (Bedrock retail) and auto-detects the install
+location. For anything else (macOS, Linux, Bedrock Preview, Bedrock
+Dedicated Server, Education Edition, or a non-standard install), you
+need a custom deploy path.
+
+This guide covers when you need one, how to configure it, and the
+common paths per platform.
+
+## When to use a custom path
+
+Pick `deploy.target: "custom"` if any of these apply:
+
+- You're on **macOS or Linux**. The retail auto-detect only works on
+  Windows in 2.0.
+- You use **Bedrock Preview** (the beta channel) rather than retail.
+- You target **Bedrock Dedicated Server** for testing.
+- You use **Education Edition**.
+- Your retail install is in a **non-standard location** (custom user
+  profile, sideloaded install, etc.) where the auto-detect glob can't
+  find it.
+
+If none of those apply, leave `deploy.target` as `"retail"` and you're
+done.
+
+## Configure it
+
+In [`bedrock.config.json`](/docs/reference/config-schema):
+
+```json
+"deploy": {
+  "target": "custom",
+  "customPath": "/absolute/path/to/com.mojang"
+}
+```
+
+The `customPath` must point at the `com.mojang` directory itself, the
+one that contains `development_behavior_packs/` and
+`development_resource_packs/`. Not the parent, not the
+`development_behavior_packs/` directly.
+
+## Validate it
+
+The compiler validates the path on every deploy and throws with exit
+code 3 if it doesn't exist:
+
+```text
+[bedrock-build] Deploy target not found: /path/to/com.mojang
+```
+
+If you see this, double-check that the directory exists and is the
+`com.mojang` directory you expect. See the
+[CLI reference for exit codes](/docs/reference/cli-build).
+
+## Where `com.mojang` lives on each platform
+
+These are starting points, not guarantees. Bedrock installs vary by
+launcher, package format, and platform version. If yours differs,
+trust your filesystem over this table.
+
+### Windows (retail Bedrock)
+
+```text
+C:\Users\<you>\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalState\games\com.mojang
+```
+
+You only need a custom path here if the auto-detect glob fails. For
+normal retail installs, leave `target` as `"retail"`.
+
+### Windows (Bedrock Preview)
+
+```text
+C:\Users\<you>\AppData\Local\Packages\Microsoft.MinecraftWindowsBeta_8wekyb3d8bbwe\LocalState\games\com.mojang
+```
+
+Note the `MinecraftWindowsBeta` package name. The retail auto-detect
+won't find this, so you need a custom path.
+
+### macOS (community launcher)
+
+Bedrock isn't officially on macOS. Community launchers (e.g.
+`mcpelauncher`) put files somewhere under `~/Library/Application
+Support/`. A common path:
+
+```text
+~/Library/Application Support/mcpelauncher/games/com.mojang
+```
+
+Substitute the actual launcher you're using. Check the launcher's
+docs for the exact path.
+
+### Linux
+
+Similar story to macOS: depends on the launcher. A common path for
+the community `mcpelauncher`:
+
+```text
+~/.local/share/mcpelauncher/games/com.mojang
+```
+
+Or, if you're using a Flatpak:
+
+```text
+~/.var/app/<flatpak-id>/data/mcpelauncher/games/com.mojang
+```
+
+### Bedrock Dedicated Server
+
+The server ships with its own `worlds/` and pack directories under the
+server install root. Point `customPath` at the directory that contains
+`development_behavior_packs/` and `development_resource_packs/`,
+typically the server install root itself.
+
+### Education Edition
+
+Education Edition uses a different package identifier on Windows.
+Locate the `com.mojang` directory under the Education Edition install
+and point `customPath` at it.
+
+<Callout type="info">
+**The compiler doesn't care which Bedrock fork.** As long as the
+target directory contains `development_behavior_packs/` and
+`development_resource_packs/`, the deploy step will write into them
+and Minecraft will pick them up. The "retail vs custom" split is just
+about whether to auto-detect or use an explicit path.
+</Callout>
+
+## Tip: keep the path out of git
+
+If you and a teammate use different machines or paths, commit the
+config with `"target": "retail"` and have anyone who needs a custom
+path keep a local-only `bedrock.config.local.json` and pass it via
+`--config`:
+
+```bash
+npx bedrock-build deploy --config bedrock.config.local.json --watch
+```
+
+Add `bedrock.config.local.json` to `.gitignore`. Cleaner than rewriting
+the shared config on every clone.
+
+## Related
+
+- [Config schema: `deploy.target` and `deploy.customPath`](/docs/reference/config-schema)
+  for the field reference.
+- [Hot reload setup](/docs/guides/hot-reload-setup) for the full
+  edit-save-reload loop, which works the same with a custom path.
+- [CLI reference: `deploy`](/docs/reference/cli-build) for the
+  command and exit codes.

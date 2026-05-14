@@ -4,7 +4,7 @@ import { Callout } from "nextra-theme-docs";
 
 The Custom source ships a specific workspace shape. The compiler
 ([`@keyyard/bedrock-build`](/docs/reference/cli-build)) is built around
-this layout — straying from it means hand-editing config to keep things
+this layout. Straying from it means hand-editing config to keep things
 wired up.
 
 This page walks through the layout, why each directory exists, and how
@@ -69,7 +69,7 @@ compiled artefacts in another.
 
 ### `packs/BP/` and `packs/RP/`
 
-Your pack sources — manifests, JSON definitions, textures, models,
+Your pack sources: manifests, JSON definitions, textures, models,
 animations, anything that ships in the pack. The compiler treats these
 as *static assets* and copies them straight into `dist/`. It does not
 modify your manifests, does not regenerate UUIDs, and does not touch
@@ -82,7 +82,7 @@ compiler never rewrites them. This avoids the classic "every dev
 machine has different UUIDs" problem.
 </Callout>
 
-The compiler skips `packs/BP/scripts/` when copying — that path is
+The compiler skips `packs/BP/scripts/` when copying. That path is
 reserved for the bundled output, and copying source `scripts/` over the
 freshly built `scripts/main.js` would clobber it.
 
@@ -92,7 +92,7 @@ Output only. **The compiler owns this directory** and may delete its
 contents on a `build --clean`. Treat `dist/` as ephemeral:
 
 - It belongs in `.gitignore` (the scaffolder already adds it).
-- Never edit files in `dist/` by hand — they'll be overwritten on the
+- Never edit files in `dist/` by hand. They'll be overwritten on the
   next build.
 - Nothing in your source tree should reference paths inside `dist/`.
 
@@ -132,7 +132,7 @@ Think of the layout as two-stage:
 
 1. **Source** lives in `src/` (TypeScript) and `packs/` (pack assets).
    This is what you edit and what goes in git.
-2. **Output** lives in `dist/`. This is what Minecraft consumes — first
+2. **Output** lives in `dist/`. This is what Minecraft consumes: first
    via `deploy` (copied into `com.mojang/development_*_packs/`), then
    via `pack` (zipped into a `.mcaddon`).
 

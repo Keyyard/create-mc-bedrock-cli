@@ -2,12 +2,14 @@
 
 <div align="center">
 
+[![npm: create-mc-bedrock](https://img.shields.io/npm/v/create-mc-bedrock?label=create-mc-bedrock&color=cb3837&logo=npm)](https://www.npmjs.com/package/create-mc-bedrock)
+[![npm: @keyyard/bedrock-build](https://img.shields.io/npm/v/@keyyard/bedrock-build?label=%40keyyard%2Fbedrock-build&color=cb3837&logo=npm)](https://www.npmjs.com/package/@keyyard/bedrock-build)
 [![GitHub Stars](https://img.shields.io/github/stars/keyyard/create-mc-bedrock-cli?style=social)](https://github.com/keyyard/create-mc-bedrock-cli)
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/keyyard/create-mc-bedrock-cli)
+
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
-
-[![Website](https://img.shields.io/badge/visit%20our%20website-8A2BE2)](https://bedrockcli.keyyard.xyz/)
+[![Discord](https://img.shields.io/badge/Discord-join-5865F2?logo=discord&logoColor=white)](https://discord.gg/EJ4swPKJNU)
+[![Website](https://img.shields.io/badge/website-bedrockcli.keyyard.xyz-8A2BE2)](https://bedrockcli.keyyard.xyz/)
 
 <br/>
 

@@ -1,6 +1,6 @@
 {
   "name": "create-mc-bedrock",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Interactive scaffolder for Minecraft Bedrock addons. Pick from a bundled Custom Workspace (powered by @keyyard/bedrock-build), Microsoft Official Samples, or Community Templates — get a ready-to-build project in seconds.",
   "main": "src/cli/index.js",
   "bin": {

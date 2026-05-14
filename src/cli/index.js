@@ -108,9 +108,11 @@ function printNextSteps(source, destination) {
   console.log('Next steps:');
   console.log(`  cd ${destination}`);
   if (source === 'custom') {
-    console.log('  npm run watch          # bundle & rebuild on save');
-    console.log('  npm run deploy:watch   # hot-reload to Minecraft Bedrock (Windows retail)');
-    console.log('  npm run pack           # produce a shareable .mcaddon');
+    console.log('  npm run build          # dev bundle into dist/');
+    console.log('  npm run watch          # rebuild on save');
+    console.log('  npm run deploy         # one-shot deploy to local Minecraft (Windows)');
+    console.log('  npm run deploy:watch   # rebuild + deploy on every save (hot reload)');
+    console.log('  npm run pack           # release build + zip to .mcaddon');
     console.log('');
     console.log('Docs: https://bedrockcli.keyyard.xyz/docs');
   } else {

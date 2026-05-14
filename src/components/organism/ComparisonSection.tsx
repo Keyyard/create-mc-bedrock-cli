@@ -69,7 +69,7 @@ const rows: { feature: string; cells: Record<string, Cell> }[] = [
 const MarkIcon: React.FC<{ mark: Cell["mark"] }> = ({ mark }) => {
   if (mark === "yes")
     return (
-      <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary/20 text-secondary text-xs font-bold">
+      <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold">
         ✓
       </span>
     );
@@ -89,13 +89,13 @@ const MarkIcon: React.FC<{ mark: Cell["mark"] }> = ({ mark }) => {
 const ComparisonSection: React.FC = () => (
   <section className="w-full max-w-6xl mx-auto px-4 py-16 md:py-24">
     <div className="text-center mb-12">
-      <p className="font-code text-xs uppercase tracking-[0.2em] text-secondary">
+      <p className="font-code text-xs uppercase tracking-[0.2em] text-emerald-400">
         {"// comparison"}
       </p>
-      <h2 className="mt-3 font-header text-3xl md:text-4xl font-bold tracking-tight text-dark">
+      <h2 className="mt-3 font-header text-3xl md:text-4xl font-bold tracking-tight text-white">
         How the sources stack up
       </h2>
-      <p className="mt-3 text-gray max-w-2xl mx-auto">
+      <p className="mt-3 text-zinc-300 max-w-2xl mx-auto">
         Different starting points, different trade-offs. Custom is our
         opinionated default, but it&apos;s not the right answer for every
         project.
@@ -103,11 +103,11 @@ const ComparisonSection: React.FC = () => (
     </div>
 
     {/* Desktop / tablet table */}
-    <div className="hidden md:block overflow-hidden rounded-2xl border border-lightgray bg-lightgray/60">
+    <div className="hidden md:block overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/60">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-lightgray bg-lightgray">
-            <th className="text-left font-semibold text-darkgray px-5 py-4">
+          <tr className="border-b border-zinc-800 bg-zinc-900">
+            <th className="text-left font-semibold text-gray-200 px-5 py-4">
               Feature
             </th>
             {columns.map((c) => (
@@ -115,8 +115,8 @@ const ComparisonSection: React.FC = () => (
                 key={c.key}
                 className={`text-left font-semibold px-5 py-4 ${
                   c.highlight
-                    ? "bg-secondary text-light"
-                    : "text-darkgray"
+                    ? "bg-emerald-500 text-emerald-950"
+                    : "text-gray-200"
                 }`}
               >
                 {c.label}
@@ -129,10 +129,10 @@ const ComparisonSection: React.FC = () => (
             <tr
               key={row.feature}
               className={
-                idx % 2 === 0 ? "bg-transparent" : "bg-light/40"
+                idx % 2 === 0 ? "bg-transparent" : "bg-zinc-950/40"
               }
             >
-              <td className="px-5 py-4 font-medium text-dark">
+              <td className="px-5 py-4 font-medium text-white">
                 {row.feature}
               </td>
               {columns.map((c) => {
@@ -141,12 +141,12 @@ const ComparisonSection: React.FC = () => (
                   <td
                     key={c.key}
                     className={`px-5 py-4 ${
-                      c.highlight ? "bg-secondary/15" : ""
+                      c.highlight ? "bg-emerald-500/15" : ""
                     }`}
                   >
                     <div className="flex items-center gap-2">
                       <MarkIcon mark={cell.mark} />
-                      <span className="text-darkgray text-xs">
+                      <span className="text-gray-200 text-xs">
                         {cell.label}
                       </span>
                     </div>
@@ -166,14 +166,14 @@ const ComparisonSection: React.FC = () => (
           key={c.key}
           className={`rounded-xl p-4 ${
             c.highlight
-              ? "border-2 border-secondary bg-lightgray"
-              : "border border-lightgray bg-lightgray/60"
+              ? "border-2 border-emerald-500 bg-zinc-900"
+              : "border border-zinc-800 bg-zinc-900/60"
           }`}
         >
           <div className="flex items-center gap-2 mb-3">
-            <h3 className="font-header font-semibold text-dark">{c.label}</h3>
+            <h3 className="font-header font-semibold text-white">{c.label}</h3>
             {c.highlight && (
-              <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-bold uppercase text-light">
+              <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-950">
                 Default
               </span>
             )}
@@ -188,8 +188,8 @@ const ComparisonSection: React.FC = () => (
                 >
                   <MarkIcon mark={cell.mark} />
                   <div>
-                    <div className="text-darkgray">{row.feature}</div>
-                    <div className="text-gray text-xs">{cell.label}</div>
+                    <div className="text-gray-200">{row.feature}</div>
+                    <div className="text-zinc-300 text-xs">{cell.label}</div>
                   </div>
                 </li>
               );
@@ -199,7 +199,7 @@ const ComparisonSection: React.FC = () => (
       ))}
     </div>
 
-    <p className="mt-6 text-center text-xs text-gray max-w-2xl mx-auto">
+    <p className="mt-6 text-center text-xs text-zinc-300 max-w-2xl mx-auto">
       Note: tools like Regolith are powerful for advanced multi-pack
       pipelines. We just optimize for fast onboarding instead.
     </p>

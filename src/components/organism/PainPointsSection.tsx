@@ -27,13 +27,13 @@ const pains: PainCard[] = [
 const PainPointsSection: React.FC = () => (
   <section className="w-full max-w-6xl mx-auto px-4 py-12 md:py-16">
     <div className="text-center mb-12">
-      <p className="font-code text-xs uppercase tracking-[0.2em] text-secondary">
+      <p className="font-code text-xs uppercase tracking-[0.2em] text-emerald-400">
         {"// pain"}
       </p>
-      <h2 className="mt-3 font-header text-3xl md:text-4xl font-bold tracking-tight text-dark">
+      <h2 className="mt-3 font-header text-3xl md:text-4xl font-bold tracking-tight text-white">
         Leave us the lazy setup work, focus on building.
       </h2>
-      <p className="mt-3 text-gray max-w-2xl mx-auto">
+      <p className="mt-3 text-zinc-300 max-w-2xl mx-auto">
         Spend your time creating, not setting up. All the essentials are
         handled for you, so you can jump straight into development.
       </p>
@@ -43,30 +43,30 @@ const PainPointsSection: React.FC = () => (
       {pains.map((p) => (
         <div
           key={p.pain}
-          className="group relative rounded-xl border border-lightgray bg-lightgray/60 p-6 hover:border-secondary/40 transition"
+          className="group relative rounded-xl border border-zinc-800 bg-zinc-900/60 p-6 hover:border-emerald-500/40 transition"
         >
           <div className="flex items-start gap-3">
-            <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-500/80 text-light text-xs font-bold">
+            <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-500/80 text-white text-xs font-bold">
               !
             </span>
-            <h3 className="font-header text-lg md:text-xl font-semibold text-dark">
+            <h3 className="font-header text-lg md:text-xl font-semibold text-white">
               {p.pain}
             </h3>
           </div>
-          <p className="mt-2 text-sm text-gray leading-relaxed">
+          <p className="mt-2 text-sm text-zinc-300 leading-relaxed">
             {p.detail}
           </p>
-          <div className="mt-5 border-t border-lightgray pt-4">
+          <div className="mt-5 border-t border-zinc-800 pt-4">
             <div className="flex items-center gap-2 mb-2">
-              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary/20 text-secondary text-xs font-bold">
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold">
                 {"✓"}
               </span>
-              <span className="text-sm font-medium text-secondary">
+              <span className="text-sm font-medium text-emerald-400">
                 How we fix it
               </span>
             </div>
-            <p className="text-sm text-darkgray mb-3">{p.fix}</p>
-            <pre className="overflow-x-auto rounded-md bg-light/60 border border-lightgray px-3 py-2 text-xs text-dark font-code">
+            <p className="text-sm text-gray-200 mb-3">{p.fix}</p>
+            <pre className="overflow-x-auto rounded-md bg-zinc-950/60 border border-zinc-800 px-3 py-2 text-xs text-white font-code">
               {p.code}
             </pre>
           </div>

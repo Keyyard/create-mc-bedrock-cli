@@ -84,13 +84,13 @@ const paths: Path[] = [
 const ChoosePathSection: React.FC = () => (
   <section className="w-full max-w-6xl mx-auto px-4 py-16 md:py-24">
     <div className="text-center mb-12">
-      <p className="font-code text-xs uppercase tracking-[0.2em] text-secondary">
+      <p className="font-code text-xs uppercase tracking-[0.2em] text-emerald-400">
         {"// paths"}
       </p>
-      <h2 className="mt-3 font-header text-3xl md:text-4xl font-bold tracking-tight text-dark">
+      <h2 className="mt-3 font-header text-3xl md:text-4xl font-bold tracking-tight text-white">
         One CLI, three starting points
       </h2>
-      <p className="mt-3 text-gray max-w-2xl mx-auto">
+      <p className="mt-3 text-zinc-300 max-w-2xl mx-auto">
         Pick the source that matches your goal. You can always switch later.
       </p>
     </div>
@@ -101,35 +101,35 @@ const ChoosePathSection: React.FC = () => (
           key={p.title}
           className={`relative flex flex-col rounded-xl p-6 transition ${
             p.recommended
-              ? "border-2 border-secondary bg-lightgray shadow-[0_0_0_1px_var(--highlight)] md:scale-[1.03]"
-              : "border border-lightgray bg-lightgray/60 hover:border-secondary/30"
+              ? "border-2 border-emerald-500 bg-zinc-900 shadow-[0_0_0_1px_rgba(16,185,129,0.25)] md:scale-[1.03]"
+              : "border border-zinc-800 bg-zinc-900/60 hover:border-emerald-500/30"
           }`}
         >
           {p.recommended && (
-            <span className="absolute -top-3 right-4 rounded-full bg-secondary px-3 py-1 text-xs font-bold uppercase tracking-wider text-light">
+            <span className="absolute -top-3 right-4 rounded-full bg-emerald-500 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-950">
               Recommended
             </span>
           )}
           <div
             className={`inline-flex h-11 w-11 items-center justify-center rounded-xl ${
               p.recommended
-                ? "bg-secondary/20 text-secondary"
-                : "bg-light text-secondary"
+                ? "bg-emerald-500/20 text-emerald-400"
+                : "bg-zinc-950 text-emerald-400"
             }`}
           >
             {p.icon}
           </div>
           <h3
-            className={`mt-4 text-xl text-dark ${
+            className={`mt-4 text-xl text-white ${
               p.recommended ? "font-code font-medium" : "font-header font-semibold"
             }`}
           >
             {p.title}
           </h3>
-          <p className="mt-2 text-sm text-gray leading-relaxed">
+          <p className="mt-2 text-sm text-zinc-300 leading-relaxed">
             {p.description}
           </p>
-          <p className="mt-4 text-xs font-medium text-secondary">
+          <p className="mt-4 text-xs font-medium text-emerald-400">
             {p.bestFor}
           </p>
         </div>

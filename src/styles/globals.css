@@ -9,13 +9,13 @@
    --------------------------------------------------------------------------- */
 
 :root {
-  --light: 242 247 242;          /* #F2F7F2 */
-  --lightgray: 228 239 229;      /* #E4EFE5 */
-  --gray: 83 111 90;             /* #536f5a */
-  --darkgray: 83 111 90;         /* #536f5a */
-  --dark: 49 69 49;              /* #314531 */
-  --secondary: 73 104 74;        /* #49684A */
-  --tertiary: 132 165 157;       /* #84a59d */
+  --light: 242 247 242;          /* #F2F7F2 — surface (sage tint OK on bg) */
+  --lightgray: 228 239 229;      /* #E4EFE5 — raised surface */
+  --gray: 100 100 100;           /* #646464 — neutral muted text */
+  --darkgray: 64 64 64;          /* #404040 — neutral body text */
+  --dark: 23 23 23;              /* #171717 — neutral near-black text */
+  --secondary: 73 104 74;        /* #49684A — sage ACCENT only */
+  --tertiary: 132 165 157;       /* #84a59d — teal-sage accent */
   --highlight-rgb: 143 169 151;  /* #8fa997 */
   --highlight-alpha: 0.15;
   --text-highlight-rgb: 255 242 54;  /* #fff236 */
@@ -23,13 +23,13 @@
 }
 
 .dark {
-  --light: 22 22 24;             /* #161618 */
-  --lightgray: 57 54 57;         /* #393639 */
-  --gray: 100 100 100;           /* #646464 */
-  --darkgray: 212 212 212;       /* #d4d4d4 */
-  --dark: 242 247 242;           /* #F2F7F2 */
-  --secondary: 123 164 124;      /* #7BA47C */
-  --tertiary: 132 165 157;       /* #84a59d */
+  --light: 22 22 24;             /* #161618 — surface */
+  --lightgray: 57 54 57;         /* #393639 — raised surface */
+  --gray: 163 163 163;           /* #a3a3a3 — neutral muted text */
+  --darkgray: 237 237 237;       /* #ededed — neutral body text */
+  --dark: 250 250 250;           /* #fafafa — neutral near-white text */
+  --secondary: 123 164 124;      /* #7BA47C — sage ACCENT only */
+  --tertiary: 132 165 157;       /* #84a59d — teal-sage accent */
   --highlight-rgb: 143 169 151;
   --highlight-alpha: 0.15;
   --text-highlight-rgb: 179 170 2;   /* #b3aa02 */
@@ -79,4 +79,62 @@ code, kbd, pre, samp {
 ::selection {
   background-color: rgb(var(--text-highlight-rgb) / var(--text-highlight-alpha));
   color: rgb(var(--dark));
+}
+
+/* ---------------------------------------------------------------------------
+   Docs color consolidation
+   Nextra ships ~9 distinct Shiki token colors per theme + 4 callout color
+   families (blue/yellow/red/gray). Collapse to a 4-color palette using the
+   sage tokens, keeping warning/error semantic via muted amber/rose.
+   --------------------------------------------------------------------------- */
+
+/* Shiki syntax tokens — point everything at the palette. */
+:root,
+.dark {
+  --shiki-color-text: rgb(var(--darkgray));
+  --shiki-color-background: transparent;
+  --shiki-token-keyword: rgb(var(--secondary));
+  --shiki-token-function: rgb(var(--secondary));
+  --shiki-token-constant: rgb(var(--secondary));
+  --shiki-token-link: rgb(var(--secondary));
+  --shiki-token-string: rgb(var(--tertiary));
+  --shiki-token-string-expression: rgb(var(--tertiary));
+  --shiki-token-parameter: rgb(var(--darkgray));
+  --shiki-token-punctuation: rgb(var(--gray));
+  --shiki-token-comment: rgb(var(--gray));
+}
+
+/* Callouts — flatten the blue/yellow/red palettes into the sage family
+   for default + info, keep muted warning/error signals so semantics stay. */
+
+/* Default + info (blue family in Nextra defaults) → sage. */
+.nextra-callout[class*="border-blue-"],
+.nextra-callout[class*="border-gray-"] {
+  border-color: rgb(var(--secondary) / 0.4) !important;
+  background-color: rgb(var(--secondary) / 0.08) !important;
+  color: rgb(var(--darkgray)) !important;
+}
+.nextra-callout[class*="border-blue-"] svg,
+.nextra-callout[class*="border-gray-"] svg {
+  color: rgb(var(--secondary)) !important;
+}
+
+/* Warning (yellow family) → muted amber. */
+.nextra-callout[class*="border-yellow-"] {
+  border-color: rgba(217, 159, 71, 0.4) !important;
+  background-color: rgba(217, 159, 71, 0.08) !important;
+  color: rgb(var(--darkgray)) !important;
+}
+.nextra-callout[class*="border-yellow-"] svg {
+  color: rgb(217, 159, 71) !important;
+}
+
+/* Error (red family) → muted rose. */
+.nextra-callout[class*="border-red-"] {
+  border-color: rgba(217, 122, 122, 0.4) !important;
+  background-color: rgba(217, 122, 122, 0.08) !important;
+  color: rgb(var(--darkgray)) !important;
+}
+.nextra-callout[class*="border-red-"] svg {
+  color: rgb(217, 122, 122) !important;
 }

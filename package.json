@@ -7,8 +7,7 @@
     "create-mc-bedrock": "src/cli/index.js"
   },
   "scripts": {
-    "start": "node src/cli/index.js",
-    "publish": "npm publish"
+    "start": "node src/cli/index.js"
   },
   "keywords": [
     "minecraft",
@@ -23,8 +22,7 @@
   "homepage": "https://bedrockcli.keyyard.xyz",
   "repository": {
     "type": "git",
-    "url": "https://github.com/keyyard/create-mc-bedrock-cli.git",
-    "directory": "/"
+    "url": "git+https://github.com/keyyard/create-mc-bedrock-cli.git"
   },
   "bugs": {
     "url": "https://github.com/keyyard/create-mc-bedrock-cli/issues"

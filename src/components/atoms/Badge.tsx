@@ -9,7 +9,7 @@ interface BadgeProps {
 
 const Badge: React.FC<BadgeProps> = ({ label, href, imgSrc, alt }) => {
   const badge = (
-    <span className="inline-flex items-center gap-2 px-2 py-1 rounded bg-emerald-100 dark:bg-emerald-800 border border-emerald-200 dark:border-emerald-700 text-xs font-semibold">
+    <span className="inline-flex items-center gap-2 px-2 py-1 rounded bg-emerald-900/50 border border-emerald-800/40 text-white text-xs font-semibold">
       <Image src={imgSrc} alt={alt} width={16} height={16} />
       {label}
     </span>

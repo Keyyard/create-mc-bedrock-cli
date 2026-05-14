@@ -1,0 +1,198 @@
+import { Callout } from "nextra-theme-docs";
+
+# CLI: `bedrock-build`
+
+`@keyyard/bedrock-build` is the compiler for Custom-source workspaces.
+It bundles TypeScript via esbuild, copies pack assets, deploys to
+Minecraft, and packages `.mcaddon` files.
+
+This page is the full CLI reference. For the config file it reads from,
+see the [Config Schema](/docs/reference/config-schema).
+
+## Usage
+
+```
+bedrock-build <command> [options]
+```
+
+### Commands
+
+| Command  | Purpose |
+|----------|---------|
+| `build`  | Compile sources and copy packs into `dist/`. |
+| `watch`  | Build, then rebuild on file changes. No deploy. |
+| `deploy` | Build, then copy `dist/packs/` to `com.mojang/development_*_packs/`. |
+| `pack`   | Build in release mode, then zip into `.mcaddon`. |
+
+### Global options
+
+| Flag | Description |
+|---|---|
+| `-c, --config <path>` | Path to `bedrock.config.json`. Default: `./bedrock.config.json`. |
+| `-v, --verbose` | Verbose logging. |
+| `-h, --help` | Show help. |
+| `--version` | Show version. |
+
+## `build`
+
+```bash
+bedrock-build build [options]
+```
+
+| Flag | Description |
+|---|---|
+| `--release` | Minified, no sourcemaps, `NODE_ENV=production`. Default: dev mode (sourcemaps on, no minify). |
+| `--clean` | Remove `<out>/` before building. Default: `false`. |
+
+**Behavior.** Loads and validates
+[`bedrock.config.json`](/docs/reference/config-schema). Bundles the
+entry file via esbuild — ES2020 ESM, with the `@minecraft/server-*`
+packages marked as external — to `<out>/packs/BP/scripts/main.js`.
+Copies `<packs.bp>/*` to `<out>/packs/BP/` (excluding any existing
+`scripts/`, to avoid clobbering the bundle), and copies
+`<packs.rp>/*` to `<out>/packs/RP/`. Only writes under `<out>/` — never
+modifies sources. Sourcemaps are inline in dev mode and off in release
+mode. Minification is off in dev mode and on in release mode.
+
+```bash
+# Dev build, fast iteration
+npx bedrock-build build
+
+# Production build
+npx bedrock-build build --release
+
+# Fully clean rebuild
+npx bedrock-build build --clean --release
+```
+
+## `watch`
+
+```bash
+bedrock-build watch [options]
+```
+
+No watch-specific flags in v1.
+
+**Behavior.** Runs a dev-mode build, then watches the entry file and
+its imports (via esbuild's watch context), `<packs.bp>/**/*` (excluding
+its `scripts/` folder), and `<packs.rp>/**/*` via chokidar. Source
+changes trigger an incremental esbuild rebuild. Pack file changes
+copy the changed file to its `dist/` mirror. Changes are debounced
+50ms. Each rebuild logs a timestamp and what changed. `Ctrl+C` exits
+cleanly with code 0.
+
+Watch mode never minifies and never deploys. For deploy-on-save, use
+`deploy --watch` instead.
+
+```bash
+npx bedrock-build watch
+```
+
+## `deploy`
+
+```bash
+bedrock-build deploy [options]
+```
+
+| Flag | Description |
+|---|---|
+| `--watch` | Rebuild and re-deploy on file changes. |
+| `--release` | Build in release mode before deploying. Default: dev mode. |
+
+**Behavior.** Runs `build` (honoring `--release`), then resolves the
+deploy target:
+
+- `deploy.target === "retail"` — globs
+  `%LOCALAPPDATA%\Packages\Microsoft.MinecraftUWP_*\LocalState\games\com.mojang\`
+  on Windows. Exits with [code 3](#exit-codes) if not found.
+- `deploy.target === "custom"` — uses
+  [`deploy.customPath`](/docs/reference/config-schema) directly. Exits
+  with [code 3](#exit-codes) if the path doesn't exist.
+
+The compiler then removes
+`<comMojang>/development_behavior_packs/<name>/` and
+`<comMojang>/development_resource_packs/<name>/` (clean slate) and
+copies the freshly built `dist/packs/BP/` and `dist/packs/RP/` into
+them. If `--watch` is set, it stays running and re-deploys on every
+rebuild.
+
+<Callout type="warning">
+**Windows retail only for 2.0.** The `retail` target relies on the
+Windows-specific `%LOCALAPPDATA%` path. Mac and Linux retail detection
+is a post-2.0 item. Custom paths work on any platform — set
+`deploy.target` to `"custom"` and `deploy.customPath` to your
+`com.mojang` directory.
+</Callout>
+
+```bash
+# Hot reload during development
+npx bedrock-build deploy --watch
+
+# One-shot release deploy (e.g. for a final playtest)
+npx bedrock-build deploy --release
+```
+
+## `pack`
+
+```bash
+bedrock-build pack [options]
+```
+
+| Flag | Description |
+|---|---|
+| `--output <path>` | Override the output `.mcaddon` path. Default: `<out>/<name>-<version>.mcaddon`. |
+
+**Behavior.** Always runs a release build first — there is no
+`--dev-pack`. Then creates a zip with two top-level subfolders:
+
+```
+<name>-<version>.mcaddon
+  <name>_BP/    ← contents of dist/packs/BP/
+  <name>_RP/    ← contents of dist/packs/RP/
+```
+
+Minecraft accepts this layout when the user double-clicks the
+`.mcaddon`. Logs the output path and file size on completion. Exits
+with [code 4](#exit-codes) on zip failure.
+
+```bash
+# Default output: dist/my-addon-1.0.0.mcaddon
+npx bedrock-build pack
+
+# Custom output path
+npx bedrock-build pack --output ./releases/my-addon.mcaddon
+```
+
+## Exit codes
+
+| Code | Meaning |
+|---|---|
+| 0 | Success. |
+| 1 | Generic error (config missing, build failure, etc.). |
+| 2 | Invalid config file (schema validation failure). |
+| 3 | Deploy target not found (`com.mojang` directory doesn't exist). |
+| 4 | Pack failure (zip step failed). |
+
+Use these in CI to handle specific failure modes — for example, exit
+code 2 is always a fixable config problem, while exit code 3 means the
+machine running the deploy doesn't have Minecraft installed in the
+expected place.
+
+## Common invocations
+
+```bash
+# First-time build to verify the workspace
+npx bedrock-build build
+
+# Day-to-day: rebuild and hot-reload into Minecraft on every save
+npx bedrock-build deploy --watch
+
+# Release: produce a shareable .mcaddon
+npx bedrock-build pack
+
+# CI: clean release build, fail fast on config errors
+npx bedrock-build build --clean --release
+
+# Override config path (monorepos, multiple add-ons, etc.)
+npx bedrock-build build --config ./addons/my-addon/bedrock.config.json
+```

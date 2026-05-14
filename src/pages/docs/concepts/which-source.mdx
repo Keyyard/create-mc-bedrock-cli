@@ -1,0 +1,128 @@
+import { Callout } from "nextra-theme-docs";
+
+# Which Source?
+
+`create-mc-bedrock` offers three starting points. They are not ranked —
+each one fits a different situation. This page is the honest version of
+the decision: when to pick each, when not to, and what you actually get.
+
+If you're not sure, **Custom** is the safe default for new projects.
+
+## Custom (recommended default)
+
+The new workspace shape introduced in 2.0. A `bedrock.config.json` at
+the root, TypeScript in `src/`, pack assets in `packs/BP` and
+`packs/RP`, and a build pipeline driven by
+[`@keyyard/bedrock-build`](/docs/reference/cli-build).
+
+**Pick this when:**
+
+- You're starting a new add-on from scratch.
+- You want hot reload to `com.mojang` on every save.
+- You want one command (`bedrock-build pack`) to produce a clean
+  `.mcaddon`.
+- You like a clear separation between source code (`src/`) and built
+  output (`dist/`).
+
+**Don't pick this when:**
+
+- You're following a Microsoft tutorial verbatim and need the file
+  layout the tutorial assumes.
+- You explicitly want a workspace that lines up with the public
+  Microsoft samples for easy diffing.
+
+**What you get:**
+
+- A scaffolded workspace following the
+  [layout in the Workspace Layout doc](/docs/concepts/workspace-layout).
+- `bedrock.config.json` pre-filled with sensible defaults — see the
+  [config schema](/docs/reference/config-schema).
+- A `package.json` with `@keyyard/bedrock-build` as a dev dependency,
+  resolved to the latest stable version at scaffold time.
+- Freshly generated manifest UUIDs, committed to git.
+- A `tsconfig.json` set up for ES2020 + ESM, ready for esbuild.
+
+## Microsoft Samples
+
+The official samples from
+[`microsoft/minecraft-scripting-samples`](https://github.com/microsoft/minecraft-scripting-samples).
+Maintained by Microsoft, used in their tutorials and official
+documentation.
+
+**Pick this when:**
+
+- You're working through an official Microsoft tutorial and want the
+  exact files the tutorial references.
+- You're learning the raw `@minecraft/server` API surface and don't
+  want a build tool in the way.
+- You want a workspace that other readers of the official docs will
+  recognize at a glance.
+
+**Don't pick this when:**
+
+- You want the build/deploy/pack ergonomics of `bedrock-build`. The
+  Microsoft samples don't ship with one.
+- You're bothered by API drift — sample code can lag behind the
+  current `@minecraft/server` API and may need touch-ups to compile
+  against the latest types.
+
+**What you get:**
+
+- One of the official Microsoft sample projects, cloned and ready to
+  open.
+- Whatever build setup that sample includes (varies — some use
+  `gulp`, some are pure-source, some have other approaches).
+- Manifest UUIDs regenerated for your local copy.
+
+<Callout type="info">
+**Heads up: APIs may drift.** Microsoft's samples are pinned to the
+state of `@minecraft/server` at the time they were written. The API
+evolves between Minecraft releases, so some samples may need small
+fixes to typecheck against the current types. That's not a flaw of
+the samples — it's just the cost of using anything that targets a
+moving API. Worth knowing before you pick this source.
+</Callout>
+
+## Community Templates
+
+Specialized starters from
+[`keyyard/custom-mc-scripting-templates`](https://github.com/Keyyard/custom-mc-scripting-templates).
+Curated by the community for specific use cases — different scripting
+patterns, alternative tooling setups, or themed starter content.
+
+**Pick this when:**
+
+- You want a starter that already includes a specific pattern (UI
+  framework wrapper, scoreboard helpers, event registry, etc.).
+- You've seen a template in the community-templates repo that lines
+  up with the project you have in mind.
+- You're comfortable that the template's conventions may differ from
+  the Custom source's defaults.
+
+**Don't pick this when:**
+
+- You want the canonical `bedrock-build` setup that the rest of these
+  docs assume. The Custom source is closer to that.
+- You're new to Bedrock add-ons and want the most opinionated, most
+  documented starting point. (Pick Custom for that.)
+
+**What you get:**
+
+- The chosen template, cloned into your project folder.
+- Whatever conventions that template defines — read the template's
+  own README before assuming the build commands match this site's
+  CLI reference.
+- Fresh manifest UUIDs for your project.
+
+## Quick decision
+
+| You want… | Pick |
+|---|---|
+| The shortest path to a working `bedrock-build` workspace | Custom |
+| To follow an official Microsoft tutorial | Microsoft Samples |
+| A specialized community starter | Community Templates |
+| Hot reload + `.mcaddon` packaging out of the box | Custom |
+| Files that match published MS docs verbatim | Microsoft Samples |
+
+All three sources are first-class. There's no wrong choice — there's
+just a fit for the project in front of you.

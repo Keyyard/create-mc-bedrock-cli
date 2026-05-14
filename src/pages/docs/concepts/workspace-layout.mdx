@@ -1,0 +1,140 @@
+import { Callout } from "nextra-theme-docs";
+
+# Workspace Layout
+
+The Custom source ships a specific workspace shape. The compiler
+([`@keyyard/bedrock-build`](/docs/reference/cli-build)) is built around
+this layout — straying from it means hand-editing config to keep things
+wired up.
+
+This page walks through the layout, why each directory exists, and how
+the pieces map onto a final `.mcaddon`.
+
+## The tree
+
+```
+<project>/
+  bedrock.config.json         ← compiler entry point
+  package.json
+  tsconfig.json
+  .gitignore
+  src/
+    main.ts                   ← TypeScript entry, bundled by esbuild
+  packs/
+    BP/                       ← behavior pack source
+      manifest.json           ← UUIDs frozen at scaffold time
+      blocks/
+      entities/
+      items/
+      ...
+    RP/                       ← resource pack source
+      manifest.json
+      textures/
+      models/
+      ...
+  dist/                       ← build output, gitignored
+    packs/
+      BP/
+        manifest.json
+        scripts/main.js       ← bundled output
+        blocks/ entities/ ...
+      RP/
+        manifest.json
+        textures/ models/ ...
+    <name>-<version>.mcaddon  ← produced by `bedrock-build pack`
+```
+
+## What each directory is for
+
+### `bedrock.config.json`
+
+The single source of truth for the compiler. Tells `bedrock-build` where
+the entry script is, where each pack's source lives, where to write
+output, and how to deploy. Full reference:
+[Config Schema](/docs/reference/config-schema).
+
+### `src/`
+
+Your TypeScript. The entry file is whatever `entry` points at in
+`bedrock.config.json` (default: `src/main.ts`). Everything `main.ts`
+imports is bundled into a single output file by esbuild.
+
+**`src/` is intentionally separate from `packs/BP/scripts/`.** The
+`scripts/` folder inside a pack is *output*, not source. Mixing them
+makes it ambiguous what's editable and what's generated, breaks watch
+loops (the compiler would see its own writes), and forces you to
+`.gitignore` part of a directory that otherwise belongs in version
+control. Keeping `src/` separate keeps source code in one tree and
+compiled artefacts in another.
+
+### `packs/BP/` and `packs/RP/`
+
+Your pack sources — manifests, JSON definitions, textures, models,
+animations, anything that ships in the pack. The compiler treats these
+as *static assets* and copies them straight into `dist/`. It does not
+modify your manifests, does not regenerate UUIDs, and does not touch
+the contents.
+
+<Callout type="info">
+**UUIDs are frozen at scaffold time.** `create-mc-bedrock` regenerates
+manifest UUIDs once, when the project is created, and commits them. The
+compiler never rewrites them. This avoids the classic "every dev
+machine has different UUIDs" problem.
+</Callout>
+
+The compiler skips `packs/BP/scripts/` when copying — that path is
+reserved for the bundled output, and copying source `scripts/` over the
+freshly built `scripts/main.js` would clobber it.
+
+### `dist/`
+
+Output only. **The compiler owns this directory** and may delete its
+contents on a `build --clean`. Treat `dist/` as ephemeral:
+
+- It belongs in `.gitignore` (the scaffolder already adds it).
+- Never edit files in `dist/` by hand — they'll be overwritten on the
+  next build.
+- Nothing in your source tree should reference paths inside `dist/`.
+
+The structure inside `dist/` mirrors what Minecraft expects: a
+`packs/BP/` and `packs/RP/` tree with `manifest.json` at each pack's
+root and bundled scripts under `packs/BP/scripts/`.
+
+### `package.json`, `tsconfig.json`, `.gitignore`
+
+Standard. `package.json` has `@keyyard/bedrock-build` as a dev
+dependency and pre-wired scripts like `npm run build`. `tsconfig.json`
+is set up for ES2020 modules so esbuild can transpile cleanly.
+`.gitignore` covers `dist/` and `node_modules/`.
+
+## How the layout maps to a `.mcaddon`
+
+When you run `bedrock-build pack`, the compiler produces:
+
+```
+<name>-<version>.mcaddon       ← zip file
+  <name>_BP/                   ← contents of dist/packs/BP/
+    manifest.json
+    scripts/main.js
+    blocks/ entities/ ...
+  <name>_RP/                   ← contents of dist/packs/RP/
+    manifest.json
+    textures/ models/ ...
+```
+
+The two-folder layout inside the `.mcaddon` is what Minecraft expects
+when a user double-clicks the file to import it. Both packs install in
+a single step.
+
+## Mental model
+
+Think of the layout as two-stage:
+
+1. **Source** lives in `src/` (TypeScript) and `packs/` (pack assets).
+   This is what you edit and what goes in git.
+2. **Output** lives in `dist/`. This is what Minecraft consumes — first
+   via `deploy` (copied into `com.mojang/development_*_packs/`), then
+   via `pack` (zipped into a `.mcaddon`).
+
+The compiler is the bridge between the two. Everything else flows from
+that split.

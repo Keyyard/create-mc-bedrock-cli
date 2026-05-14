@@ -1,0 +1,230 @@
+import { Callout } from "nextra-theme-docs";
+
+# Config Schema
+
+`bedrock.config.json` is the single configuration file for
+[`@keyyard/bedrock-build`](/docs/reference/cli-build). It lives at the
+project root and is read by every subcommand.
+
+This page is the full reference: every field, every default, every
+validation rule.
+
+## TypeScript interface
+
+```typescript
+interface BedrockConfig {
+  /** Project name, used for .mcaddon filename and manifest header.name */
+  name: string;
+
+  /** Project version, used for .mcaddon filename */
+  version: string;
+
+  /** Pack source directories (relative to config file) */
+  packs: {
+    bp: string;  // default: "packs/BP"
+    rp: string;  // default: "packs/RP"
+  };
+
+  /** TS entry point for the script module (relative to config file) */
+  entry: string;  // default: "src/main.ts"
+
+  /** Build output directory (relative to config file) */
+  out: string;  // default: "dist"
+
+  /** Deploy configuration */
+  deploy: {
+    target: "retail" | "custom";  // default: "retail"
+    customPath: string | null;     // required when target === "custom"
+  };
+
+  /** Minecraft scripting API target version */
+  minecraft?: {
+    serverVersion?: string;  // e.g., "1.19.0" — used for hints, not enforced
+  };
+}
+```
+
+## Field reference
+
+### `name`
+
+- **Type:** `string`
+- **Required:** yes
+- **Default:** none
+
+Project name. Used as the filename stem for `.mcaddon` output
+(`<name>-<version>.mcaddon`) and as the directory name inside the zip
+(`<name>_BP/`, `<name>_RP/`). It's also a sensible value to mirror in
+your `manifest.json` `header.name` field, though the compiler does not
+enforce that.
+
+```json
+"name": "my-addon"
+```
+
+### `version`
+
+- **Type:** `string`
+- **Required:** yes
+- **Default:** none
+- **Constraint:** must be a valid [semver](https://semver.org) string.
+
+Project version. Used in the `.mcaddon` filename. Validation will fail
+with [exit code 2](/docs/reference/cli-build) if this isn't a valid
+semver string.
+
+```json
+"version": "1.0.0"
+```
+
+### `packs`
+
+- **Type:** `{ bp: string; rp: string }`
+- **Required:** no (defaults applied)
+- **Default:** `{ "bp": "packs/BP", "rp": "packs/RP" }`
+
+Source paths to the behavior and resource pack folders, relative to
+the config file. Both directories must exist at build time and must
+each contain a `manifest.json`.
+
+```json
+"packs": {
+  "bp": "packs/BP",
+  "rp": "packs/RP"
+}
+```
+
+### `entry`
+
+- **Type:** `string`
+- **Required:** no
+- **Default:** `"src/main.ts"`
+
+Path to the TypeScript entry file, relative to the config file. This
+is what esbuild bundles. Everything `entry` imports gets pulled into
+a single output bundle written to `<out>/packs/BP/scripts/main.js`.
+
+```json
+"entry": "src/main.ts"
+```
+
+### `out`
+
+- **Type:** `string`
+- **Required:** no
+- **Default:** `"dist"`
+
+Output directory, relative to the config file. The compiler owns this
+path — `build --clean` removes it, and pack output is written under
+it. Should be in `.gitignore`. See
+[Workspace Layout](/docs/concepts/workspace-layout) for the structure
+written here.
+
+```json
+"out": "dist"
+```
+
+### `deploy.target`
+
+- **Type:** `"retail" | "custom"`
+- **Required:** no
+- **Default:** `"retail"`
+
+How the [`deploy` command](/docs/reference/cli-build) finds Minecraft.
+
+- **`"retail"`** — auto-detects the Bedrock retail install via
+  `%LOCALAPPDATA%\Packages\Microsoft.MinecraftUWP_*\LocalState\games\com.mojang\`.
+  Windows-only in 2.0.
+- **`"custom"`** — uses `deploy.customPath` as the `com.mojang`
+  directory. Works on any platform.
+
+### `deploy.customPath`
+
+- **Type:** `string | null`
+- **Required:** only when `deploy.target === "custom"`
+- **Default:** `null`
+
+Absolute or project-relative path to a `com.mojang` directory. Required
+(and must be a non-empty string) when `deploy.target` is `"custom"`.
+Ignored when `deploy.target` is `"retail"`.
+
+```json
+"deploy": {
+  "target": "custom",
+  "customPath": "C:\\Users\\me\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang"
+}
+```
+
+### `minecraft.serverVersion`
+
+- **Type:** `string`
+- **Required:** no
+- **Default:** none
+
+Hint for which `@minecraft/server` version the project targets, e.g.
+`"1.19.0"`. **Used for hints only — the compiler does not enforce or
+verify this.** Useful as documentation inside the config file.
+
+```json
+"minecraft": {
+  "serverVersion": "1.19.0"
+}
+```
+
+## Validation rules
+
+The compiler validates the config on every command. Failures exit with
+[code 2](/docs/reference/cli-build).
+
+- `name` is present and a non-empty string.
+- `version` is present and a valid semver string.
+- `packs.bp` and `packs.rp` exist as directories on disk at build time.
+- Each pack directory contains a `manifest.json`.
+- `entry` exists as a file at build time.
+- If `deploy.target === "custom"`, `deploy.customPath` is a non-empty
+  string. If `deploy.target === "retail"`, `customPath` is ignored
+  (it may be `null` or any value).
+
+If a non-required field is omitted, the default is applied silently.
+
+<Callout type="info">
+**Only `name` and `version` are strictly required to be present in the
+file.** Every other field has a default. You can ship a minimal config
+with just those two fields and the rest will fill in.
+</Callout>
+
+## Complete example
+
+A full config with every field set explicitly:
+
+```json
+{
+  "name": "my-addon",
+  "version": "1.0.0",
+  "packs": {
+    "bp": "packs/BP",
+    "rp": "packs/RP"
+  },
+  "entry": "src/main.ts",
+  "out": "dist",
+  "deploy": {
+    "target": "retail",
+    "customPath": null
+  },
+  "minecraft": {
+    "serverVersion": "1.19.0"
+  }
+}
+```
+
+A minimal config relying on defaults:
+
+```json
+{
+  "name": "my-addon",
+  "version": "1.0.0"
+}
+```
+
+Both are valid. The second resolves to the same effective config as
+the first.

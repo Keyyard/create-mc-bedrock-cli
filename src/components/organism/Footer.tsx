@@ -1,13 +1,19 @@
 import React from "react";
 import Image from "next/image";
+import { CLI_VERSION } from "@/data/version";
+
 const Footer: React.FC = () => (
-  <footer className="flex flex-col items-center text-center text-gray-400 border-t border-emerald-800/40 pb-2">
-      <p className="text-lg mt-2 text-gray-200">
-        Made with <span className="text-red-400">❤️</span> for the Minecraft
-        Bedrock development community
-      </p>
-    <div className="flex gap-4 my-2">
-      <a href="https://github.com/Keyyard/create-mc-bedrock-cli">
+  <footer className="flex flex-col items-center text-center text-gray-400 border-t border-emerald-800/40 pt-8 pb-6 px-4">
+    <p className="text-base text-gray-200">
+      Made with <span className="text-red-400">❤️</span> for the Minecraft
+      Bedrock development community
+    </p>
+    <div className="mt-4 flex flex-wrap gap-3 justify-center">
+      <a
+        href="https://github.com/Keyyard/create-mc-bedrock-cli"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <Image
           src="https://img.shields.io/badge/Github%20Repository-Red?style=for-the-badge&logo=Github&logoColor=white&labelColor=%23181717&color=white"
           alt="Github Repository"
@@ -15,8 +21,23 @@ const Footer: React.FC = () => (
           height={30}
         />
       </a>
+      <a
+        href="https://discord.gg/EJ4swPKJNU"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Image
+          src="https://img.shields.io/badge/Discord-Join-5865F2?style=for-the-badge&logo=discord&logoColor=white"
+          alt="Discord"
+          width={140}
+          height={30}
+        />
+      </a>
     </div>
-  <p className="text-sm text-gray-300">&copy; 2025 Keyyard. All rights reserved.</p>
+    <p className="mt-4 text-xs text-gray-400 flex items-center justify-center gap-2">
+      <span>&copy; 2025 Keyyard. All rights reserved.</span>
+      <span className="font-mono text-xs text-gray-500">v{CLI_VERSION}</span>
+    </p>
   </footer>
 );
 

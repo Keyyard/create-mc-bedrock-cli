@@ -1,0 +1,132 @@
+import { Callout, Steps } from "nextra-theme-docs";
+
+# Getting Started
+
+This walkthrough scaffolds a fresh Bedrock add-on, builds it, hot-reloads
+it into Minecraft, and packages it as a `.mcaddon`. It should take about
+five minutes.
+
+## Prerequisites
+
+- **Node.js 18 or later.** Check with `node --version`. Anything older
+  will not run the scaffolder or the compiler.
+- A working Minecraft for Windows (Bedrock retail) install if you want to
+  use the `deploy` command's hot-reload flow. Mac and Linux retail
+  detection is not in 2.0 — but the
+  [custom deploy path](/docs/reference/config-schema) works on every
+  platform.
+
+<Steps>
+
+### Scaffold a new project
+
+```bash
+npx create-mc-bedrock
+```
+
+The scaffolder is interactive. You'll see prompts for:
+
+- **Source.** Pick one of three starting points:
+  - **Custom** — the new default. A `bedrock.config.json` workspace wired
+    up to `@keyyard/bedrock-build`. Pick this unless you have a reason
+    not to.
+  - **Microsoft Samples** — the official samples from
+    [`microsoft/minecraft-scripting-samples`](https://github.com/microsoft/minecraft-scripting-samples).
+    Good for following an MS tutorial verbatim.
+  - **Community Templates** — specialized starters from
+    [`keyyard/custom-mc-scripting-templates`](https://github.com/Keyyard/custom-mc-scripting-templates).
+
+  More detail on the trade-offs: [Which source?](/docs/concepts/which-source).
+
+- **Project name.** Becomes the folder name and the value of
+  [`name` in `bedrock.config.json`](/docs/reference/config-schema).
+
+- **Install dependencies?** Yes/No. If you say yes, the scaffolder runs
+  `npm install` for you. Either way, manifest UUIDs are freshly
+  generated for this project — no copy-paste collisions.
+
+### Look at what you got
+
+After the scaffolder finishes, the workspace looks like this (Custom
+source):
+
+```
+my-addon/
+  bedrock.config.json
+  package.json
+  tsconfig.json
+  src/
+    main.ts                   ← your TypeScript entry point
+  packs/
+    BP/
+      manifest.json           ← UUIDs frozen at scaffold time
+      blocks/ entities/ items/ ...
+    RP/
+      manifest.json
+      textures/ models/ ...
+  dist/                       ← gitignored; owned by bedrock-build
+```
+
+Full breakdown: [Workspace Layout](/docs/concepts/workspace-layout).
+
+### Run your first build
+
+```bash
+npm run build
+# or, directly:
+npx bedrock-build build
+```
+
+The default build is **dev mode**: sourcemaps inline, no minification,
+fast. Output lands in `dist/packs/BP/` and `dist/packs/RP/`. Pass
+`--release` for a minified, no-sourcemap build. See
+[Dev vs Release builds in the CLI reference](/docs/reference/cli-build).
+
+### Hot-reload into Minecraft
+
+```bash
+npx bedrock-build deploy --watch
+```
+
+This builds the project, copies the result into Minecraft's
+`development_behavior_packs/` and `development_resource_packs/` folders,
+and then watches for changes. Every save triggers a rebuild and a re-sync.
+Reload your world in Minecraft to see updates.
+
+<Callout type="warning">
+**Windows retail only for 2.0.** The default `deploy` target resolves
+`%LOCALAPPDATA%\Packages\Microsoft.MinecraftUWP_*\LocalState\games\com.mojang\`,
+which only exists on Windows. Mac and Linux retail detection is a
+post-2.0 item. If you're on another platform, set
+`deploy.target` to `"custom"` and point `deploy.customPath` at your
+Minecraft install — see the
+[config schema](/docs/reference/config-schema) for details.
+</Callout>
+
+### Package a `.mcaddon`
+
+```bash
+npx bedrock-build pack
+```
+
+This runs a release build, then zips `dist/packs/BP/` and `dist/packs/RP/`
+into `dist/<name>-<version>.mcaddon`. The result is a single file you can
+share, upload, or import by double-clicking on a machine with Minecraft
+installed.
+
+`pack` always implies `--release` — there is no dev-mode pack.
+
+</Steps>
+
+## Next steps
+
+- **Learn the model.** Start with
+  [Workspace Layout](/docs/concepts/workspace-layout), then
+  [Which source?](/docs/concepts/which-source) to understand the
+  ecosystem.
+- **Reference material.** The
+  [CLI reference](/docs/reference/cli-build) and
+  [config schema](/docs/reference/config-schema) are the two pages
+  you'll bookmark.
+- **Cookbook.** Recipes for common tasks land in the
+  [Cookbook](/docs/cookbook) as they're written.

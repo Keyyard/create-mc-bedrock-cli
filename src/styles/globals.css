@@ -1,55 +1,11 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  scroll-behavior: smooth;
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: 'InterLocal', Inter, Arial, Helvetica, sans-serif;
+html, body {
+  font-family: var(--font-sans, system-ui, sans-serif);
 }
 
-@font-face {
-  font-family: 'InterLocal';
-  src: url('/fonts/Inter_18pt-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
+code, kbd, pre, samp {
+  font-family: var(--font-mono, ui-monospace, monospace);
 }
-@font-face {
-  font-family: 'InterLocal';
-  src: url('/fonts/Inter_18pt-Medium.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'InterLocal';
-  src: url('/fonts/Inter_18pt-Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Dark-mode fallbacks for elements that don't use Tailwind 'dark:' utilities */
-:root.dark, html.dark {
-  --background: #0a0a0a;
-  --foreground: #e6eef8;
-}
-
-html.dark body {
-  background: var(--background);
-  color: var(--foreground);
-}
-
-/* Make links readable by default in dark mode */
-html.dark a {
-  color: #9be7d7;
-}
-
-/* Optional helper for hiding scrollbars if used */
-.scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
-.scrollbar-hide::-webkit-scrollbar { display: none; }

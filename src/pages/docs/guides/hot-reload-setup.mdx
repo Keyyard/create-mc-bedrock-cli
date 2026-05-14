@@ -2,7 +2,7 @@ import { Callout, Steps } from "nextra-theme-docs";
 
 # Hot Reload Setup
 
-The fastest dev loop on Bedrock is `bedrock-build deploy --watch` plus
+The fastest dev loop on Bedrock is `npm run deploy:watch` plus
 `/reload` inside Minecraft. Save a TypeScript file, the compiler
 rebuilds and re-syncs the pack to `com.mojang`, type `/reload` in the
 world, and your script changes are live. No restart, no manual zip, no
@@ -41,9 +41,10 @@ Open [`bedrock.config.json`](/docs/reference/config-schema) and check
 }
 ```
 
-The compiler auto-detects
-`%LOCALAPPDATA%\Packages\Microsoft.MinecraftUWP_*\LocalState\games\com.mojang\`.
-No further config needed.
+The compiler auto-detects your Bedrock install across six known layouts
+(modern launcher under `%APPDATA%\Minecraft Bedrock`, legacy Microsoft
+Store UWP under `%LOCALAPPDATA%\Packages\Microsoft.MinecraftUWP_*`,
+Bedrock Preview, Education edition). No further config needed.
 
 **On macOS, Linux, Bedrock Preview, Bedrock Dedicated Server, or
 Education Edition:**
@@ -68,8 +69,8 @@ Packs** and **Settings > Resource Packs**, find your pack under
 
 Minecraft lists packs from `development_behavior_packs/` and
 `development_resource_packs/` separately from regular packs. That's why
-`bedrock-build deploy` writes there: those folders auto-refresh
-without re-importing.
+`npm run deploy` writes there: those folders auto-refresh without
+re-importing.
 
 <Callout type="info">
 **You only need to do this once per world.** After the pack is
@@ -83,12 +84,6 @@ In your project root:
 
 ```bash
 npm run deploy:watch
-```
-
-Or directly:
-
-```bash
-npx bedrock-build deploy --watch
 ```
 
 You'll see an initial build, then a line like `watching for changes...`.

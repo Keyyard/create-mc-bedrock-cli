@@ -8,6 +8,20 @@ Everything that shipped across the Bedrock CLI ecosystem, organized by component
   Looking for a per-package release feed? See the linked GitHub Releases for [`create-mc-bedrock`](https://github.com/Keyyard/create-mc-bedrock-cli/releases) and [`@keyyard/bedrock-build`](https://github.com/Keyyard/bedrock-build/releases).
 </Callout>
 
+## `@keyyard/bedrock-build@1.0.1` (2026-05-14)
+
+Bug fix release for retail deploy detection.
+
+**Fixed**
+
+- **Modern Minecraft Bedrock launcher detected.** 1.0.0 only searched the legacy Microsoft Store UWP path (`%LOCALAPPDATA%\Packages\Microsoft.MinecraftUWP_*`). Many users install via the modern launcher, which lives under `%APPDATA%\Minecraft Bedrock\Users\Shared\games\com.mojang`. Retail deploy now searches six candidate layouts in priority order (modern launcher, Bedrock Preview, Microsoft Store UWP, Microsoft Store UWP Beta, Education UWP, Education desktop), matching the detection logic in Microsoft's official `@minecraft/core-build-tasks`.
+- **Case-insensitive UWP fallback.** A wildcard fallback for `Microsoft.MinecraftUWP_*` now matches case-insensitively, so installs that present an uppercase publisher directory (`MICROSOFT.MINECRAFTUWP_*`) also resolve.
+- **Better error message.** When all candidate paths miss, the error now lists every path checked so it's clear what was tried.
+
+Full notes: [bedrock-build 1.0.1 release](https://github.com/Keyyard/bedrock-build/releases/tag/v1.0.1).
+
+---
+
 ## 2.0 release (2026-05-14)
 
 The major rework. Five components shipped together: the scaffolder, a new compiler package, a bundled Custom Workspace, a website rebuild with docs, and CI/CD plumbing.
@@ -54,12 +68,12 @@ Brand new package. The build tool that powers the Custom Workspace. Independent 
 
 **Commands** (see [CLI reference](/docs/reference/cli-build))
 
-- `bedrock-build build`: dev bundle into `dist/`
-- `bedrock-build build --release`: minified, no sourcemaps, `NODE_ENV=production`
-- `bedrock-build watch`: rebuild on source and pack changes
-- `bedrock-build deploy`: build, then copy to `com.mojang/development_*_packs/`
-- `bedrock-build deploy --watch`: hot reload to local Minecraft on save
-- `bedrock-build pack`: release build, then zip into `dist/<name>-<version>.mcaddon`
+- `npm run build`: dev bundle into `dist/`
+- `npm run release`: minified, no sourcemaps, `NODE_ENV=production`
+- `npm run watch`: rebuild on source and pack changes
+- `npm run deploy`: build, then copy to `com.mojang/development_*_packs/`
+- `npm run deploy:watch`: hot reload to local Minecraft on save
+- `npm run pack`: release build, then zip into `dist/<name>-<version>.mcaddon`
 
 **Highlights**
 
@@ -67,7 +81,7 @@ Brand new package. The build tool that powers the Custom Workspace. Independent 
 - **Dev and release modes.** Dev (default) is inline sourcemaps with no minify. Release adds minify and drops sourcemaps. `pack` always uses release. See [Dev vs Release builds](/docs/guides/dev-vs-release-builds).
 - **Retail and custom deploy targets.** Auto-detects the Bedrock retail install on Windows, or points at any `com.mojang` directory via `deploy.customPath`. Works on macOS, Linux, and BDS through the custom path. See [Custom deploy path](/docs/guides/custom-deploy-path).
 - **Watch + deploy.** chokidar watches the pack directories with a 50 ms debounce and mirrors changed files into `dist/` (or directly to the deploy target in `deploy --watch`). The esbuild watch context handles incremental source rebuilds. See [Hot reload setup](/docs/guides/hot-reload-setup).
-- **`.mcaddon` packaging.** `bedrock-build pack` produces a clean zip with the `<name>_BP/` + `<name>_RP/` two-folder structure Bedrock expects. See [Packaging a `.mcaddon`](/docs/guides/packaging-mcaddon).
+- **`.mcaddon` packaging.** `npm run pack` produces a clean zip with the `<name>_BP/` + `<name>_RP/` two-folder structure Bedrock expects. See [Packaging a `.mcaddon`](/docs/guides/packaging-mcaddon).
 - **Programmatic API.** Import `build`, `watch`, `deploy`, `pack`, `loadConfig` from `@keyyard/bedrock-build` to embed the compiler in your own scripts.
 - **TypeScript declarations** shipped from `dist/index.d.ts`.
 - **12 vitest tests** covering bundler, copier, build, watch, deploy, deploy-watch, and pack against a fixture workspace. SIGINT shutdown verified in watch and deploy-watch.

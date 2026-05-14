@@ -7,7 +7,7 @@ zip file with two subfolders (one BP, one RP), renamed so Minecraft
 recognizes it as installable. Double-click on a machine with Minecraft
 and both packs install in one step.
 
-`bedrock-build pack` produces one of these in a single command. This
+`npm run pack` produces one of these in a single command. This
 guide covers the output, the version bump workflow, and where to
 distribute the result.
 
@@ -17,16 +17,14 @@ distribute the result.
 npm run pack
 ```
 
-Or directly:
-
-```bash
-npx bedrock-build pack
-```
-
 Output lands at `dist/<name>-<version>.mcaddon`, where `<name>` and
 `<version>` come from
-[`bedrock.config.json`](/docs/reference/config-schema). Pass
-`--output ./somewhere-else.mcaddon` to override the path.
+[`bedrock.config.json`](/docs/reference/config-schema). To override the
+path, run the underlying binary with `--output`:
+
+```bash
+npx bedrock-build pack --output ./somewhere-else.mcaddon
+```
 
 ## What's inside
 
@@ -49,13 +47,13 @@ the user double-clicks the file.
 
 ## Release mode is mandatory
 
-`pack` always runs `bedrock-build build --release` first. There is no
-dev-mode `.mcaddon`. The reason: a shipped pack should be minified, with
-no inline sourcemaps, set up with `NODE_ENV=production`. Smaller file,
-faster cold start, no debug payload exposed to end users.
+`pack` always runs `npm run release` (`build --release`) first. There is
+no dev-mode `.mcaddon`. The reason: a shipped pack should be minified,
+with no inline sourcemaps, set up with `NODE_ENV=production`. Smaller
+file, faster cold start, no debug payload exposed to end users.
 
 If you want to share a build for testing without packaging, use
-`bedrock-build deploy` to push it into a friend's `com.mojang` directly,
+`npm run deploy` to push it into a friend's `com.mojang` directly,
 or zip `dist/packs/` by hand. See
 [Dev vs Release builds](/docs/guides/dev-vs-release-builds) for why
 the two modes exist.
@@ -77,10 +75,10 @@ A quick mental checklist when releasing:
 # 1. Update versions in bedrock.config.json + both manifest.json files.
 
 # 2. Verify everything still builds clean.
-npx bedrock-build build --clean --release
+npm run release -- --clean
 
 # 3. Pack.
-npx bedrock-build pack
+npm run pack
 
 # 4. Look at dist/<name>-<version>.mcaddon. That's your release artifact.
 ```

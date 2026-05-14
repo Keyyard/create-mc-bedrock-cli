@@ -41,7 +41,7 @@ the pieces map onto a final `.mcaddon`.
       RP/
         manifest.json
         textures/ models/ ...
-    <name>-<version>.mcaddon  ← produced by `bedrock-build pack`
+    <name>-<version>.mcaddon  ← produced by `npm run pack`
 ```
 
 ## What each directory is for
@@ -109,7 +109,7 @@ is set up for ES2020 modules so esbuild can transpile cleanly.
 
 ## How the layout maps to a `.mcaddon`
 
-When you run `bedrock-build pack`, the compiler produces:
+When you run `npm run pack`, the compiler produces:
 
 ```
 <name>-<version>.mcaddon       ← zip file

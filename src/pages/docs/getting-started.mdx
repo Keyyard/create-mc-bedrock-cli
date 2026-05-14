@@ -73,8 +73,6 @@ Full breakdown: [Workspace Layout](/docs/concepts/workspace-layout).
 
 ```bash
 npm run build
-# or, directly:
-npx bedrock-build build
 ```
 
 The default build is **dev mode**: sourcemaps inline, no minification,
@@ -85,7 +83,7 @@ fast. Output lands in `dist/packs/BP/` and `dist/packs/RP/`. Pass
 ### Hot-reload into Minecraft
 
 ```bash
-npx bedrock-build deploy --watch
+npm run deploy:watch
 ```
 
 This builds the project, copies the result into Minecraft's
@@ -94,19 +92,21 @@ and then watches for changes. Every save triggers a rebuild and a re-sync.
 Reload your world in Minecraft to see updates.
 
 <Callout type="warning">
-**Windows retail only for 2.0.** The default `deploy` target resolves
-`%LOCALAPPDATA%\Packages\Microsoft.MinecraftUWP_*\LocalState\games\com.mojang\`,
-which only exists on Windows. Mac and Linux retail detection is a
-post-2.0 item. If you're on another platform, set
+**Windows retail only for v1.** The default `deploy` target searches six
+known Bedrock install layouts on Windows (modern launcher, Microsoft Store
+UWP, Education edition, and Preview variants), matching the detection
+logic in Microsoft's official build tools. Mac and Linux retail detection
+is a post-2.0 item. If the auto-detect misses your install, set
 `deploy.target` to `"custom"` and point `deploy.customPath` at your
-Minecraft install. See the
-[config schema](/docs/reference/config-schema) for details.
+`com.mojang` directory. See the
+[config schema](/docs/reference/config-schema) and the
+[custom deploy path guide](/docs/guides/custom-deploy-path) for details.
 </Callout>
 
 ### Package a `.mcaddon`
 
 ```bash
-npx bedrock-build pack
+npm run pack
 ```
 
 This runs a release build, then zips `dist/packs/BP/` and `dist/packs/RP/`

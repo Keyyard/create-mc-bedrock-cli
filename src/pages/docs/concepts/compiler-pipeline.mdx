@@ -26,7 +26,7 @@ output. The compiler owns the `dist/` tree and only writes there.
 
 ## `build` mode
 
-The standard `bedrock-build build` invocation goes through these steps:
+The standard `npm run build` invocation goes through these steps:
 
 1. **Load config.** Parse
    [`bedrock.config.json`](/docs/reference/config-schema), apply
@@ -79,8 +79,8 @@ for the longer take.
 
 ## `watch` mode
 
-`bedrock-build watch` runs an initial dev build, then keeps two
-watchers alive:
+`npm run watch` runs an initial dev build, then keeps two watchers
+alive:
 
 - **esbuild's watch context** for the entry file and everything it
   imports. Source changes trigger an incremental rebuild, which is fast
@@ -94,20 +94,20 @@ events (common on Windows) collapses into one rebuild. Each rebuild
 logs a timestamp plus what changed. Ctrl+C exits cleanly.
 
 Watch mode never minifies and never deploys. If you want
-deploy-on-save, use `deploy --watch` (next section).
+deploy-on-save, use `npm run deploy:watch` (next section).
 
 ## `deploy` mode
 
-`bedrock-build deploy` runs a `build` first, then takes over the
-copying step at the other end of the pipeline:
+`npm run deploy` runs a `build` first, then takes over the copying step
+at the other end of the pipeline:
 
 1. Run `build` (honoring `--release` if passed).
 2. Resolve the deploy target from
-   [`deploy.target`](/docs/reference/config-schema): glob
-   `%LOCALAPPDATA%\Packages\Microsoft.MinecraftUWP_*\LocalState\games\com.mojang\`
-   for `retail`, or use
-   [`deploy.customPath`](/docs/reference/config-schema) directly for
-   `custom`.
+   [`deploy.target`](/docs/reference/config-schema): for `retail`, walk
+   six known Bedrock install layouts (modern launcher, Microsoft Store
+   UWP, Education, Preview variants) and pick the first that exists.
+   For `custom`, use [`deploy.customPath`](/docs/reference/config-schema)
+   directly.
 3. Remove `<comMojang>/development_behavior_packs/<name>/` and
    `<comMojang>/development_resource_packs/<name>/` (clean slate).
 4. Copy `dist/packs/BP/` and `dist/packs/RP/` into those locations.
@@ -122,7 +122,7 @@ flow including the `/reload` step inside Minecraft.
 
 ## `pack` mode
 
-`bedrock-build pack` is the distribution path. It always runs a release
+`npm run pack` is the distribution path. It always runs a release
 build, then zips the output into a `.mcaddon`:
 
 ```text

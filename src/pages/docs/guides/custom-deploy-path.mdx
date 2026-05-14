@@ -2,11 +2,12 @@ import { Callout } from "nextra-theme-docs";
 
 # Custom Deploy Path
 
-By default, [`bedrock-build deploy`](/docs/reference/cli-build) targets
-Minecraft for Windows (Bedrock retail) and auto-detects the install
-location. For anything else (macOS, Linux, Bedrock Preview, Bedrock
-Dedicated Server, Education Edition, or a non-standard install), you
-need a custom deploy path.
+By default, `npm run deploy` (see the
+[CLI reference](/docs/reference/cli-build)) targets Minecraft for
+Windows (Bedrock retail) and auto-detects the install location across
+six known layouts. If the auto-detect can't find your install (macOS,
+Linux, non-standard location, or a Bedrock variant the search list
+misses), you need a custom deploy path.
 
 This guide covers when you need one, how to configure it, and the
 common paths per platform.

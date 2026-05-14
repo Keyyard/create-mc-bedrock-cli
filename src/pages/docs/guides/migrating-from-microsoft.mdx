@@ -19,8 +19,8 @@ don't:
 - **Fewer config files.** A single
   [`bedrock.config.json`](/docs/reference/config-schema) instead of
   per-sample build scripts.
-- **Hot reload built in.** `bedrock-build deploy --watch` handles the
-  whole rebuild-and-sync loop. See
+- **Hot reload built in.** `npm run deploy:watch` handles the whole
+  rebuild-and-sync loop. See
   [Hot reload setup](/docs/guides/hot-reload-setup).
 - **Faster builds.** esbuild (used by `bedrock-build`) is roughly an
   order of magnitude faster than `tsc` for the same code.

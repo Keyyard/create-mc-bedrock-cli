@@ -23,9 +23,9 @@ For the full pipeline, see
 ## Dev mode (default)
 
 ```bash
-npx bedrock-build build         # dev
-npx bedrock-build watch         # dev
-npx bedrock-build deploy        # dev (unless --release)
+npm run build         # dev
+npm run watch         # dev
+npm run deploy        # dev (unless --release)
 ```
 
 **What you get:**
@@ -48,9 +48,9 @@ npx bedrock-build deploy        # dev (unless --release)
 ## Release mode (`--release`)
 
 ```bash
-npx bedrock-build build --release
-npx bedrock-build deploy --release
-npx bedrock-build pack          # always implies --release
+npm run release                       # bedrock-build build --release
+npm run deploy -- --release           # pass --release through npm
+npm run pack                          # always implies --release
 ```
 
 **What you get:**
@@ -62,8 +62,8 @@ npx bedrock-build pack          # always implies --release
 
 **Use it for:**
 
-- Producing a `.mcaddon` for distribution. `bedrock-build pack` runs
-  release for you, so this is usually transparent.
+- Producing a `.mcaddon` for distribution. `npm run pack` runs release
+  for you, so this is usually transparent.
 - A final pre-release deploy to playtest the actual shipped build,
   not the dev build with sourcemaps.
 - CI builds that publish or upload artifacts.
@@ -101,12 +101,12 @@ You want them on while you're working, off when you ship.
 
 | Goal | Command |
 |---|---|
-| Iterate locally with hot reload | `bedrock-build deploy --watch` |
-| Iterate locally without deploying | `bedrock-build watch` |
-| One-shot dev build | `bedrock-build build` |
-| One-shot release build | `bedrock-build build --release` |
-| Clean release build for CI | `bedrock-build build --clean --release` |
-| Produce a distribution `.mcaddon` | `bedrock-build pack` |
+| Iterate locally with hot reload | `npm run deploy:watch` |
+| Iterate locally without deploying | `npm run watch` |
+| One-shot dev build | `npm run build` |
+| One-shot release build | `npm run release` |
+| Clean release build for CI | `npm run release -- --clean` |
+| Produce a distribution `.mcaddon` | `npm run pack` |
 
 ## Related
 

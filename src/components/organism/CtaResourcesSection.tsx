@@ -20,11 +20,21 @@ const resources: Resource[] = [
     href: "https://discord.gg/EJ4swPKJNU",
     external: true,
   },
+  {
+    label: "create-mc-bedrock on npm",
+    href: "https://www.npmjs.com/package/create-mc-bedrock",
+    external: true,
+  },
+  {
+    label: "@keyyard/bedrock-build on npm",
+    href: "https://www.npmjs.com/package/@keyyard/bedrock-build",
+    external: true,
+  },
 ];
 
 const CtaResourcesSection: React.FC = () => (
   <section className="w-full max-w-5xl mx-auto px-4 py-12 md:py-16">
-    <div className="relative overflow-hidden rounded-2xl border border-emerald-800/40 bg-emerald-900/40 p-8 md:p-12 text-center">
+    <div className="relative overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/80 p-8 md:p-12 text-center">
       <h2 className="text-3xl md:text-4xl font-bold text-white">
         Ready to ship your add-on?
       </h2>
@@ -47,7 +57,7 @@ const CtaResourcesSection: React.FC = () => (
         </a>
         <a
           href="/docs"
-          className="inline-flex items-center justify-center w-full sm:w-auto px-7 py-3 rounded-full border border-emerald-800/40 bg-white/5 hover:bg-white/10 text-white font-semibold text-base backdrop-blur-sm transition"
+          className="inline-flex items-center justify-center w-full sm:w-auto px-7 py-3 rounded-full border border-emerald-400/40 bg-white/5 hover:bg-white/10 text-white font-semibold text-base backdrop-blur-sm transition"
         >
           Read the docs
         </a>
@@ -57,7 +67,7 @@ const CtaResourcesSection: React.FC = () => (
         {resources.map((r, i) => (
           <React.Fragment key={r.label}>
             {i > 0 && (
-              <span className="text-emerald-800" aria-hidden="true">
+              <span className="text-zinc-700" aria-hidden="true">
                 •
               </span>
             )}

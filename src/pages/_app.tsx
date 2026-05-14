@@ -24,7 +24,7 @@ export default function App({ Component, pageProps }: AppProps) {
           content="The fastest way to start Minecraft Bedrock Addon development."
         />
       </Head>
-      <div className={`${inter.variable} ${jetbrains.variable} bg-emerald-950 min-h-screen`}>
+      <div className={`${inter.variable} ${jetbrains.variable} bg-zinc-950 min-h-screen`}>
         <Component {...pageProps} />
       </div>
     </>

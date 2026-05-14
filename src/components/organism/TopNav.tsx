@@ -37,7 +37,7 @@ const TopNav: React.FC = () => {
     <nav
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         scrolled
-          ? "bg-emerald-950/80 backdrop-blur-md border-b border-emerald-800/40"
+          ? "bg-black/70 backdrop-blur-md border-b border-zinc-800"
           : "bg-transparent border-b border-transparent"
       }`}
     >
@@ -102,7 +102,7 @@ const TopNav: React.FC = () => {
 
       {/* Mobile drawer */}
       {open && (
-        <div className="md:hidden border-t border-emerald-800/40 bg-emerald-950/90 backdrop-blur-md">
+        <div className="md:hidden border-t border-zinc-800 bg-zinc-950/95 backdrop-blur-md">
           <ul className="px-4 py-3 space-y-1">
             {links.map((l) => (
               <li key={l.label}>

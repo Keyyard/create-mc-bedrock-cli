@@ -101,8 +101,8 @@ const ChoosePathSection: React.FC = () => (
           key={p.title}
           className={`relative flex flex-col rounded-xl p-6 transition ${
             p.recommended
-              ? "border-2 border-emerald-500 bg-emerald-900/50 md:scale-[1.03]"
-              : "border border-emerald-800/40 bg-emerald-900/30 hover:border-emerald-500/30"
+              ? "border-2 border-emerald-500 bg-zinc-900 shadow-[0_0_0_1px_rgba(16,185,129,0.15)] md:scale-[1.03]"
+              : "border border-zinc-800 bg-zinc-900/60 hover:border-emerald-500/30"
           }`}
         >
           {p.recommended && (
@@ -114,7 +114,7 @@ const ChoosePathSection: React.FC = () => (
             className={`inline-flex h-11 w-11 items-center justify-center rounded-xl ${
               p.recommended
                 ? "bg-emerald-500/20 text-emerald-300"
-                : "bg-emerald-900/50 text-emerald-400"
+                : "bg-zinc-800 text-emerald-400"
             }`}
           >
             {p.icon}

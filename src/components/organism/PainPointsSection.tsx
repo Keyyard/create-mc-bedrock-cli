@@ -43,7 +43,7 @@ const PainPointsSection: React.FC = () => (
       {pains.map((p) => (
         <div
           key={p.pain}
-          className="group relative rounded-xl border border-emerald-800/40 bg-emerald-900/30 p-6 hover:border-emerald-500/40 transition"
+          className="group relative rounded-xl border border-zinc-800 bg-zinc-900/80 p-6 hover:border-emerald-500/40 transition"
         >
           <div className="flex items-start gap-3">
             <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-500/80 text-white text-xs font-bold">
@@ -56,7 +56,7 @@ const PainPointsSection: React.FC = () => (
           <p className="mt-2 text-sm text-gray-400 leading-relaxed">
             {p.detail}
           </p>
-          <div className="mt-5 border-t border-emerald-800/40 pt-4">
+          <div className="mt-5 border-t border-zinc-800 pt-4">
             <div className="flex items-center gap-2 mb-2">
               <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold">
                 {"✓"}
@@ -66,7 +66,7 @@ const PainPointsSection: React.FC = () => (
               </span>
             </div>
             <p className="text-sm text-gray-200 mb-3">{p.fix}</p>
-            <pre className="overflow-x-auto rounded-md bg-emerald-950/80 border border-emerald-800/40 px-3 py-2 text-xs text-emerald-200 font-mono">
+            <pre className="overflow-x-auto rounded-md bg-black/60 border border-zinc-800 px-3 py-2 text-xs text-emerald-200 font-mono">
               {p.code}
             </pre>
           </div>

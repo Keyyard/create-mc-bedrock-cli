@@ -3,7 +3,7 @@ import Image from "next/image";
 import { CLI_VERSION } from "@/data/version";
 
 const Footer: React.FC = () => (
-  <footer className="flex flex-col items-center text-center text-gray-400 border-t border-emerald-800/40 pt-8 pb-6 px-4">
+  <footer className="flex flex-col items-center text-center text-gray-400 border-t border-zinc-800 pt-8 pb-6 px-4">
     <p className="text-base text-gray-200">
       Made with <span className="text-red-400">❤️</span> for the Minecraft
       Bedrock development community
@@ -30,6 +30,30 @@ const Footer: React.FC = () => (
           src="https://img.shields.io/badge/Discord-Join-5865F2?style=for-the-badge&logo=discord&logoColor=white"
           alt="Discord"
           width={140}
+          height={30}
+        />
+      </a>
+      <a
+        href="https://www.npmjs.com/package/create-mc-bedrock"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Image
+          src="https://img.shields.io/npm/v/create-mc-bedrock?label=create-mc-bedrock&color=cb3837&logo=npm&style=for-the-badge"
+          alt="npm: create-mc-bedrock"
+          width={210}
+          height={30}
+        />
+      </a>
+      <a
+        href="https://www.npmjs.com/package/@keyyard/bedrock-build"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Image
+          src="https://img.shields.io/npm/v/@keyyard/bedrock-build?label=%40keyyard%2Fbedrock-build&color=cb3837&logo=npm&style=for-the-badge"
+          alt="npm: @keyyard/bedrock-build"
+          width={240}
           height={30}
         />
       </a>

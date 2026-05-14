@@ -103,10 +103,10 @@ const ComparisonSection: React.FC = () => (
     </div>
 
     {/* Desktop / tablet table */}
-    <div className="hidden md:block overflow-hidden rounded-2xl border border-emerald-800/40 bg-emerald-900/30">
+    <div className="hidden md:block overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/60">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-emerald-800/40 bg-emerald-900/50">
+          <tr className="border-b border-zinc-800 bg-zinc-900">
             <th className="text-left font-semibold text-gray-200 px-5 py-4">
               Feature
             </th>
@@ -129,7 +129,7 @@ const ComparisonSection: React.FC = () => (
             <tr
               key={row.feature}
               className={
-                idx % 2 === 0 ? "bg-transparent" : "bg-emerald-950/10"
+                idx % 2 === 0 ? "bg-transparent" : "bg-zinc-950/40"
               }
             >
               <td className="px-5 py-4 font-medium text-white">
@@ -141,7 +141,7 @@ const ComparisonSection: React.FC = () => (
                   <td
                     key={c.key}
                     className={`px-5 py-4 ${
-                      c.highlight ? "bg-emerald-900/40" : ""
+                      c.highlight ? "bg-emerald-500/10" : ""
                     }`}
                   >
                     <div className="flex items-center gap-2">
@@ -166,8 +166,8 @@ const ComparisonSection: React.FC = () => (
           key={c.key}
           className={`rounded-xl p-4 ${
             c.highlight
-              ? "border-2 border-emerald-500 bg-emerald-900/50"
-              : "border border-emerald-800/40 bg-emerald-900/30"
+              ? "border-2 border-emerald-500 bg-zinc-900"
+              : "border border-zinc-800 bg-zinc-900/60"
           }`}
         >
           <div className="flex items-center gap-2 mb-3">

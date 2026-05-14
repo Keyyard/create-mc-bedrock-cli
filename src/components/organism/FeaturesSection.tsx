@@ -116,8 +116,8 @@ const FeaturesSection: React.FC = () => (
               {f.description}
             </p>
           </div>
-          <div className="relative rounded-lg border border-emerald-800/40 bg-black/80 overflow-hidden shadow-[inset_0_0_30px_rgba(16,185,129,0.04)]">
-            <div className="flex items-center gap-1.5 px-4 py-2 border-b border-emerald-800/40 bg-black/60">
+          <div className="relative rounded-lg border border-zinc-800 bg-black/80 overflow-hidden shadow-[inset_0_0_30px_rgba(16,185,129,0.04)]">
+            <div className="flex items-center gap-1.5 px-4 py-2 border-b border-zinc-800 bg-zinc-950/60">
               <span className="h-2.5 w-2.5 rounded-full bg-red-500/70" />
               <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/70" />
               <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/70" />

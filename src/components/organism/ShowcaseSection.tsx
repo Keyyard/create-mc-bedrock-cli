@@ -20,7 +20,7 @@ const CardImage: React.FC<CardImageProps> = ({ src, alt }) => {
 
   if (errored || !src) {
     return (
-      <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-emerald-900 flex items-center justify-center">
+      <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-zinc-900 flex items-center justify-center">
         <span className="text-emerald-200 font-mono text-xs uppercase tracking-wider">
           {alt || "No preview"}
         </span>
@@ -71,7 +71,7 @@ const ShowcaseSection: React.FC = () => (
         {showcase.map((entry) => (
           <div
             key={entry.url}
-            className="group flex flex-col rounded-xl border border-emerald-900/40 bg-black/30 overflow-hidden hover:border-emerald-500/40 transition"
+            className="group flex flex-col rounded-xl border border-zinc-800 bg-zinc-900/60 overflow-hidden hover:border-emerald-500/40 transition"
           >
             <CardImage src={entry.image} alt={entry.name} />
             <div className="flex items-center justify-between p-4 gap-3">

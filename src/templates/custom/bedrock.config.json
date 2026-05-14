@@ -1,0 +1,17 @@
+{
+  "name": "{{PROJECT_NAME}}",
+  "version": "1.0.0",
+  "packs": {
+    "bp": "packs/BP",
+    "rp": "packs/RP"
+  },
+  "entry": "src/main.ts",
+  "out": "dist",
+  "deploy": {
+    "target": "retail",
+    "customPath": null
+  },
+  "minecraft": {
+    "serverVersion": "1.19.0"
+  }
+}

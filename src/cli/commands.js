@@ -1,18 +1,84 @@
 import inquirer from 'inquirer';
-import { getSourceOptions, getCustomCategories, getCustomTemplates } from '../services/gitService.js';
-// Prompt for category if custom source is selected
+import path from 'path';
+import {
+  getSourceOptions,
+  getCommunityCategories,
+  getCommunityTemplates
+} from '../services/gitService.js';
+
+/**
+ * Source picker: Custom Workspace / Microsoft Samples / Community Templates.
+ */
+export async function promptSource() {
+  return inquirer.prompt([
+    {
+      type: 'list',
+      name: 'source',
+      message: 'Select a template source:',
+      choices: getSourceOptions()
+    }
+  ]);
+}
+
+/**
+ * Project name — used for `bedrock.config.json.name`, `package.json.name`,
+ * and manifest `header.name` for the Custom path. For Microsoft / Community
+ * it's still threaded into the manifest rewriter.
+ *
+ * Defaults to `my-bedrock-addon`. Validation is intentionally light — npm
+ * itself enforces stricter rules at install time.
+ */
+export async function promptProjectName(defaultName = 'my-bedrock-addon') {
+  const { projectName } = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'projectName',
+      message: 'Project name:',
+      default: defaultName,
+      validate: (input) => {
+        const trimmed = String(input).trim();
+        if (!trimmed) return 'Project name cannot be empty.';
+        if (/[\\/:*?"<>|]/.test(trimmed)) {
+          return 'Project name cannot contain \\ / : * ? " < > |';
+        }
+        return true;
+      },
+      filter: (input) => String(input).trim()
+    }
+  ]);
+  return projectName;
+}
+
+/**
+ * Destination folder — defaults to `./<projectName>`.
+ */
+export async function promptDestination(defaultPath) {
+  const { destination } = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'destination',
+      message: 'Destination folder:',
+      default: defaultPath,
+      filter: (input) => String(input).trim() || defaultPath
+    }
+  ]);
+  return destination;
+}
+
+/**
+ * Community Templates: category picker. Skips empty categories.
+ */
 export async function promptCategory() {
-  let categories = await getCustomCategories();
-  // Filter out categories with no templates
+  let categories = await getCommunityCategories();
   const filteredCategories = [];
   for (const cat of categories) {
-    const templates = await getCustomTemplates(cat.value);
+    const templates = await getCommunityTemplates(cat.value);
     if (templates && templates.length > 0) {
       filteredCategories.push(cat);
     }
   }
   if (!filteredCategories.length) {
-    throw new Error('No categories with templates found in custom templates.');
+    throw new Error('No categories with templates found in Community Templates.');
   }
   const { category } = await inquirer.prompt([
     {
@@ -25,9 +91,11 @@ export async function promptCategory() {
   return category;
 }
 
-// Prompt for template within a category
+/**
+ * Community Templates: template picker inside a category.
+ */
 export async function promptTemplate(category) {
-  const templates = await getCustomTemplates(category);
+  const templates = await getCommunityTemplates(category);
   if (!templates.length) {
     throw new Error('No templates found in this category.');
   }
@@ -42,17 +110,40 @@ export async function promptTemplate(category) {
   return template;
 }
 
-export async function promptSource() {
-  return inquirer.prompt([
+/**
+ * Microsoft Samples: sample picker.
+ */
+export async function promptSample(samples) {
+  const { sample } = await inquirer.prompt([
     {
       type: 'list',
-      name: 'source',
-      message: 'Select a template source:',
-      choices: getSourceOptions()
+      name: 'sample',
+      message: 'Select a sample to clone:',
+      choices: samples
     }
   ]);
+  return sample;
 }
 
+/**
+ * Post-scaffold: offer to run `npm install` for the user.
+ */
+export async function promptAutoInstall() {
+  const { install } = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'install',
+      message: 'Install dependencies now?',
+      default: true
+    }
+  ]);
+  return install;
+}
+
+/**
+ * Legacy helper kept so external callers don't break. Returns the same shape
+ * as the v1 `promptUser`.
+ */
 export async function promptUser(samples) {
   return inquirer.prompt([
     {
@@ -69,3 +160,6 @@ export async function promptUser(samples) {
     }
   ]);
 }
+
+// Re-export path so callers don't need their own import for default destinations.
+export { path };

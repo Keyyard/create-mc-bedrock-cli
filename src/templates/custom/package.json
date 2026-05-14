@@ -1,0 +1,22 @@
+{
+  "name": "{{PROJECT_NAME}}",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bedrock-build build",
+    "watch": "bedrock-build watch",
+    "deploy": "bedrock-build deploy",
+    "deploy:watch": "bedrock-build deploy --watch",
+    "pack": "bedrock-build pack",
+    "release": "bedrock-build build --release"
+  },
+  "dependencies": {
+    "@minecraft/server": "{{VERSION:@minecraft/server}}",
+    "@minecraft/server-ui": "{{VERSION:@minecraft/server-ui}}"
+  },
+  "devDependencies": {
+    "@keyyard/bedrock-build": "{{VERSION:@keyyard/bedrock-build}}",
+    "typescript": "{{VERSION:typescript}}"
+  }
+}

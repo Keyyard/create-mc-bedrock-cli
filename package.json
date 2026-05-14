@@ -1,7 +1,7 @@
 {
   "name": "create-mc-bedrock",
-  "version": "1.4.2",
-  "description": "create-mc-bedrock is a simple and interactive CLI tool to help you quickly set up Minecraft Bedrock workspaces with given templates from both Microsoft's and Customs!",
+  "version": "2.0.0",
+  "description": "Interactive scaffolder for Minecraft Bedrock addons. Pick from a bundled Custom Workspace (powered by @keyyard/bedrock-build), Microsoft Official Samples, or Community Templates — get a ready-to-build project in seconds.",
   "main": "src/cli/index.js",
   "bin": {
     "create-mc-bedrock": "src/cli/index.js"
@@ -14,7 +14,10 @@
     "minecraft",
     "bedrock",
     "cli",
-    "create"
+    "create",
+    "scaffolder",
+    "addon",
+    "bedrock-build"
   ],
   "author": "keyyard",
   "homepage": "https://bedrockcli.keyyard.xyz",
@@ -27,7 +30,7 @@
     "url": "https://github.com/keyyard/create-mc-bedrock-cli/issues"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
   },
   "files": [
     "src/",
@@ -37,7 +40,7 @@
   "license": "MIT",
   "dependencies": {
     "inquirer": "^9.3.7",
-  "unzipper": "^0.12.0",
+    "unzipper": "^0.12.0",
     "uuid": "^9.0.0"
   },
   "type": "module"

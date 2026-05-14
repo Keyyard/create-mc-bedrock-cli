@@ -3,7 +3,7 @@
 <div align="center">
 
 [![GitHub Stars](https://img.shields.io/github/stars/keyyard/create-mc-bedrock-cli?style=social)](https://github.com/keyyard/create-mc-bedrock-cli)
-[![Version](https://img.shields.io/badge/version-1.4.2-blue.svg)](https://github.com/keyyard/create-mc-bedrock-cli)
+[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/keyyard/create-mc-bedrock-cli)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
 
@@ -15,111 +15,78 @@
 
 </div>
 
-**The Fastest Way to Start Minecraft Bedrock Addon Development! 🚀**
-</div>
+**The fastest way to start a Minecraft Bedrock addon. Three sources, one command, zero boilerplate.**
 
 ---
 
-**Tired of manually setting up Minecraft Bedrock workspaces?**  
-With `create-mc-bedrock`, you can bootstrap your next project in seconds, using official Microsoft samples and fresh manifest UUIDs every time.
+## What's new in 2.0
 
-## Table of Contents
-- [✨ Why Use Create MC Bedrock CLI?](#-why-use-create-mc-bedrock-cli)
-- [🚀 How It Works](#-how-it-works)
-- [📸 Showcase](#-showcase)
-- [🛠️ Features](#-features)
-- [📦 Requirements](#-requirements)
-- [💡 Pro Tips](#-pro-tips)
-- [🤝 Contributing](#-contributing)
-- [📄 License](#-license)
-- [🙏 Credits](#-credits)
+- **Three sources** — Custom Workspace (recommended), Microsoft Official Samples, Community Templates.
+- **Bundled Custom Workspace** powered by [`@keyyard/bedrock-build`](https://www.npmjs.com/package/@keyyard/bedrock-build) — TypeScript bundling, hot-reload deploy to local Minecraft, one-shot `.mcaddon` packaging.
+- **Pinned dependencies** — the scaffolder queries the npm registry and writes resolved versions into your `package.json`, so every new project starts on current-stable `@minecraft/server`.
+- **Auto-install prompt** after scaffold.
 
-## ✨ Why Use Create MC Bedrock CLI?
+## Quick start
 
-### ⚡ **Instant Project Setup**
+```bash
+npx create-mc-bedrock
+```
 
-No more copy-pasting or manual configuration. Select a sample, pick a folder, and your workspace is ready to go—complete with unique manifest UUIDs.
+You'll be asked for:
 
-### 🧠 **Focus on Building, Not Boilerplate**
+1. **Source** — pick one of three:
+   - **Custom Workspace (recommended)** — bundled, ships with the `bedrock-build` compiler (hot reload, deploy, `.mcaddon` pack).
+   - **Microsoft Official Samples** — cloned from [`microsoft/minecraft-scripting-samples`](https://github.com/microsoft/minecraft-scripting-samples).
+   - **Community Templates** — cloned from [`Keyyard/custom-mc-scripting-templates`](https://github.com/Keyyard/custom-mc-scripting-templates).
+2. **Project name** — used for `bedrock.config.json`, `package.json`, and manifest headers.
+3. **Destination folder** — defaults to `./<project-name>`.
+4. (After scaffold) **Install dependencies now?** — `y` to run `npm install`, `n` to skip.
 
-Spend your time creating, not setting up. All the essentials are handled for you, so you can jump straight into development.
+Manifest UUIDs are regenerated for every scaffold and BP↔RP dependency UUIDs are kept consistent.
 
-### 🔒 **Always Unique, Always Clean**
+## Custom Workspace at a glance
 
-Every project is generated with new manifest UUIDs, ensuring no conflicts and a smooth import into Minecraft.
+```
+my-addon/
+  bedrock.config.json
+  package.json
+  tsconfig.json
+  src/
+    main.ts                ← entry — bundled into BP/scripts/main.js
+  packs/
+    BP/  manifest.json + behavior pack files
+    RP/  manifest.json + resource pack files
+  dist/                    ← build output (gitignored)
+```
 
-### 🗂️ **Official Samples, Your Way**
+Useful scripts the scaffolder writes for you:
 
-Choose from a curated list of Microsoft’s best scripting samples. Your selected template is cloned directly into your chosen folder—no nested directories, no confusion.
+```bash
+npm run build           # dev build
+npm run watch           # rebuild on save
+npm run deploy          # build + copy to local Minecraft
+npm run deploy:watch    # hot reload to local Minecraft
+npm run pack            # release build + zip into .mcaddon
+npm run release         # release build only
+```
 
----
+See the full [`bedrock.config.json` reference](https://bedrockcli.keyyard.xyz/docs) for compiler options.
 
-## 🚀 How It Works
+## Requirements
 
-1. **Run the CLI:**
-   ```bash
-   npx create-mc-bedrock
-   ```
-2. **Follow the Prompts:**
-   - Select a sample project (⭐ `ts-starter` is recommended for TypeScript users!)
-   - Choose your destination folder
-3. **Start Coding:**
-   - Your workspace is ready, with all manifests updated and temp files cleaned up.
+- Node.js 18 or higher.
+- Windows for `deploy` retail (custom deploy paths work everywhere). Mac/Linux retail deploy is on the roadmap.
 
----
+## Contributing
 
-## 📸 Showcase
+Want to add a Community Template? Open a PR against [`Keyyard/custom-mc-scripting-templates`](https://github.com/Keyyard/custom-mc-scripting-templates).
 
-<div align="center">
-    <img src="medias/gif.gif" alt="Create MC Bedrock CLI in action" width="600" />
-    <img src="medias/img1.png" alt="Create MC Bedrock CLI screenshot" width="600" />
-    <img src="medias/img2.png" alt="Create MC Bedrock CLI screenshot" width="600" />
-</div>
+Found a bug in the scaffolder or compiler? File an issue here or join the [Discord](https://discord.gg/EJ4swPKJNU).
 
----
+## Credits
 
-## 🛠️ Features
-
-- Interactive CLI with sample selection
-- Direct cloning to your specified folder (no more nested directories)
-- Automatic manifest UUID regeneration for every project
-- Supports both JavaScript and TypeScript samples
-- Cleans up temporary files after setup
-
----
-
-## 📦 Requirements
-
-- Node.js 18 or higher
-
----
-
-## 💡 Pro Tips
-
-- Use the ⭐ `ts-starter` template for a modern TypeScript setup.
-- Run the CLI with `npx` for the latest version every time.
-- All generated projects are ready to open in VS Code—just `cd` into your folder and run `code .`
-
----
-
-## 🤝 Contributing
-
-We’d love your help to make Create MC Bedrock CLI even better!  
-Whether you have ideas, spot a bug, or want to share new samples, your contributions are always welcome.
-
-Want to add a new workspace template?  
-Simply open a pull request to the [Custom MC Scripting Templates](https://github.com/Keyyard/custom-mc-scripting-templates) repository.
-
-Every suggestion, issue, or PR helps the community grow—jump in and let’s build something awesome together!
-
----
-
-## 🙏 Credits
-
-- **Beyond64** ([OsmaanGani](https://github.com/OsmaanGani)): Package banner artist
-- **PottedPropagule** ([PottedPropagule](https://github.com/PottedPropagule)): Issue reporter and helpful feedback
-
----
+- **Beyond64** ([OsmaanGani](https://github.com/OsmaanGani)) — package banner artist
+- **PottedPropagule** ([PottedPropagule](https://github.com/PottedPropagule)) — issue reporter and helpful feedback
 
 ## ⭐ Stargazers Over Time
 
@@ -132,9 +99,7 @@ Every suggestion, issue, or PR helps the community grow—jump in and let’s bu
 </a>
 
 <div align="center">
-  **Made with ❤️ for the Minecraft Bedrock dev community**  
+  Made for the Minecraft Bedrock dev community.
   <br/>
-  <a href="https://github.com/keyyard/create-mc-bedrock-cli/stargazers">
-    ⭐ Star us on GitHub
-  </a>
+  <a href="https://github.com/keyyard/create-mc-bedrock-cli/stargazers">⭐ Star us on GitHub</a>
 </div>

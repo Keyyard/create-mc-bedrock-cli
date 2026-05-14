@@ -3,24 +3,41 @@ import fs from 'fs/promises';
 import { cleanupTempFiles } from '../utils/helpers.js';
 import { getTemplateLabel, sortTemplates } from './templateLabels.js';
 
+/**
+ * Source registry. Order here determines display order in the CLI.
+ *
+ * `custom` is the new bundled Custom Workspace (powered by @keyyard/bedrock-build)
+ * and is marked `bundled: true` so the orchestrator skips remote fetch entirely.
+ */
 export const sources = {
+  custom: {
+    name: '⭐ Custom Workspace (recommended)',
+    bundled: true
+  },
   microsoft: {
-    name: 'Microsoft Official Templates',
+    name: 'Microsoft Official Samples',
     repo: 'https://github.com/microsoft/minecraft-scripting-samples.git',
     tempRepoPath: './temp-repo-microsoft'
   },
-  custom: {
-    name: '⭐ Custom Templates',
+  community: {
+    name: 'Community Templates',
     repo: 'https://github.com/Keyyard/custom-mc-scripting-templates.git',
-    tempRepoPath: './temp-repo-custom'
+    tempRepoPath: './temp-repo-community'
   }
 };
+
+/**
+ * Fetch a remote source's zip and unpack to its tempRepoPath. No-op for
+ * bundled sources (Custom Workspace).
+ */
 export async function fetchSamples(sourceKey) {
   const source = sources[sourceKey];
+  if (!source) throw new Error(`Unknown source: ${sourceKey}`);
+  if (source.bundled) return; // Custom Workspace ships inside this package.
+
   console.log(`Fetching available samples from ${source.name}...`);
   await cleanupTempFiles();
   try {
-    // Store the actual extracted repo root path
     const repoRoot = await downloadAndExtractRepo(source.repo, source.tempRepoPath);
     source.repoRoot = repoRoot;
   } catch (error) {
@@ -29,28 +46,17 @@ export async function fetchSamples(sourceKey) {
 }
 
 /**
- * Retrieves a list of available samples from the specified source.
- * 
- * This function reads the contents of the temporary repository directory
- * for the given source, filters out non-directory entries and those
- * starting with a dot, and maps them into a list of sample objects.
- * The samples are sorted to prioritize the 'ts-starter' sample.
- * 
- * @param {string} sourceKey - The key identifying the source repository.
- * @returns {Promise<Array<{name: string, value: string}>>} A promise that resolves
- *          to an array of sample objects, each containing a name and a value.
+ * Get top-level template categories for the Community Templates source.
+ * Filters out hidden dirs.
  */
-
-
-// New: Get categories for custom templates
-export async function getCustomCategories() {
-  const source = sources.custom;
+export async function getCommunityCategories() {
+  const source = sources.community;
   try {
     const rootPath = source.repoRoot || source.tempRepoPath;
     const entries = await fs.readdir(rootPath, { withFileTypes: true });
     return entries
-      .filter(entry => entry.isDirectory() && !entry.name.startsWith('.'))
-      .map(entry => ({
+      .filter((entry) => entry.isDirectory() && !entry.name.startsWith('.'))
+      .map((entry) => ({
         name: formatCategoryName(entry.name),
         value: entry.name
       }));
@@ -60,16 +66,18 @@ export async function getCustomCategories() {
   }
 }
 
-// New: Get templates within a selected custom category
-export async function getCustomTemplates(category) {
-  const source = sources.custom;
+/**
+ * Get templates inside a Community Templates category.
+ */
+export async function getCommunityTemplates(category) {
+  const source = sources.community;
   const rootPath = source.repoRoot || source.tempRepoPath;
   const categoryPath = `${rootPath}/${category}`;
   try {
     const entries = await fs.readdir(categoryPath, { withFileTypes: true });
     let templates = entries
-      .filter(entry => entry.isDirectory() && !entry.name.startsWith('.'))
-      .map(entry => ({
+      .filter((entry) => entry.isDirectory() && !entry.name.startsWith('.'))
+      .map((entry) => ({
         name: getTemplateLabel(entry.name),
         value: entry.name
       }));
@@ -81,27 +89,32 @@ export async function getCustomTemplates(category) {
   }
 }
 
-// Helper to format category names for display
+// Backwards-compatible aliases used by older imports. Prefer the
+// `getCommunity*` names going forward.
+export const getCustomCategories = getCommunityCategories;
+export const getCustomTemplates = getCommunityTemplates;
+
 function formatCategoryName(name) {
-  // Convert kebab-case or snake_case to Title Case
-  return name
-    .replace(/[-_]/g, ' ')
-    .replace(/\b\w/g, l => l.toUpperCase());
+  return name.replace(/[-_]/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
 }
 
-// For Microsoft source, keep the old getSamples behavior
+/**
+ * Microsoft Samples: list top-level sample folders. Also tolerates a
+ * `category` argument and proxies to `getCommunityTemplates` for the
+ * community source (legacy usage).
+ */
 export async function getSamples(sourceKey, category) {
   const source = sources[sourceKey];
-  if (sourceKey === 'custom' && category) {
-    return getCustomTemplates(category);
+  if (!source) throw new Error(`Unknown source: ${sourceKey}`);
+  if (sourceKey === 'community' && category) {
+    return getCommunityTemplates(category);
   }
   try {
-    // Use the actual repo root if available, otherwise fallback to tempRepoPath
     const rootPath = source.repoRoot || source.tempRepoPath;
     const entries = await fs.readdir(rootPath, { withFileTypes: true });
     let samples = entries
-      .filter(entry => entry.isDirectory() && !entry.name.startsWith('.'))
-      .map(entry => ({
+      .filter((entry) => entry.isDirectory() && !entry.name.startsWith('.'))
+      .map((entry) => ({
         name: getTemplateLabel(entry.name),
         value: entry.name
       }));
@@ -114,8 +127,7 @@ export async function getSamples(sourceKey, category) {
 }
 
 /**
- * Returns a list of source options for the user to select from.
- * @returns {import('inquirer').ListChoice[]} A list of source options.
+ * Returns source options in display order (custom first).
  */
 export function getSourceOptions() {
   return Object.entries(sources).map(([key, source]) => ({

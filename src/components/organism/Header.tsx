@@ -4,16 +4,6 @@ import { CLI_VERSION } from "@/data/version";
 
 const BADGES = [
   {
-    alt: "npm: create-mc-bedrock",
-    src: "https://img.shields.io/npm/v/create-mc-bedrock?label=create-mc-bedrock&color=cb3837&logo=npm",
-    href: "https://www.npmjs.com/package/create-mc-bedrock",
-  },
-  {
-    alt: "npm: @keyyard/bedrock-build",
-    src: "https://img.shields.io/npm/v/@keyyard/bedrock-build?label=%40keyyard%2Fbedrock-build&color=cb3837&logo=npm",
-    href: "https://www.npmjs.com/package/@keyyard/bedrock-build",
-  },
-  {
     alt: "Version",
     src: `https://img.shields.io/badge/version-${CLI_VERSION}-blue.svg`,
     href: "https://github.com/keyyard/create-mc-bedrock-cli",

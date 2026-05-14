@@ -2,7 +2,6 @@
 
 <div align="center">
 
-   [![npm: @keyyard/bedrock-build](https://img.shields.io/npm/v/@keyyard/bedrock-build?label=%40keyyard%2Fbedrock-build&color=cb3837&logo=npm)](https://www.npmjs.com/package/@keyyard/bedrock-build)
 [![GitHub Stars](https://img.shields.io/github/stars/keyyard/create-mc-bedrock-cli?style=social)](https://github.com/keyyard/create-mc-bedrock-cli)
 
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)

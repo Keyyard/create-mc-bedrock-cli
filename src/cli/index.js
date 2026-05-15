@@ -108,6 +108,7 @@ function printNextSteps(source, destination) {
   console.log('Next steps:');
   console.log(`  cd ${destination}`);
   if (source === 'custom') {
+    console.log('  npm run folders        # interactive picker for canonical pack folders (entities, items, ...)');
     console.log('  npm run build          # dev bundle into dist/');
     console.log('  npm run watch          # rebuild on save');
     console.log('  npm run deploy         # one-shot deploy to local Minecraft (Windows)');

@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "folders": "bedrock-build folders",
     "build": "bedrock-build build",
     "watch": "bedrock-build watch",
     "deploy": "bedrock-build deploy",

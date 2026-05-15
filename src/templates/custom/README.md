@@ -10,6 +10,14 @@ Install dependencies:
 npm install
 ```
 
+Scaffold canonical Bedrock pack folders interactively (no more guessing whether it's `entity` or `entities`):
+
+```bash
+npm run folders
+```
+
+Pick the folders you need from the list and they get created under `packs/BP/` and `packs/RP/`.
+
 Build once into `dist/`:
 
 ```bash
@@ -37,7 +45,7 @@ npm run pack
 
 ## Project layout
 
-```
+```text
 {{PROJECT_NAME}}/
   bedrock.config.json   ← compiler config
   src/

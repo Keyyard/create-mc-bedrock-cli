@@ -31,6 +31,7 @@ Commands:
   watch               Build, then rebuild on file changes (no deploy)
   deploy              Build, then copy dist/packs to com.mojang/development_*_packs/
   pack                Build --release, then zip into .mcaddon
+  folders             Interactive picker that scaffolds canonical pack folders
 
 Global options:
   -c, --config <path>   Path to bedrock.config.json (default: ./bedrock.config.json)
@@ -81,6 +82,16 @@ bedrock-build pack [options]
 ```
 
 `pack` always implies `--release`. There is no `--dev-pack`.
+
+### `folders` flags
+
+```
+bedrock-build folders
+
+  (no flags — interactive)
+```
+
+`folders` is interactive only. There is no non-interactive form for v1.
 
 ### Exit codes
 
@@ -248,6 +259,30 @@ On non-Windows platforms with `deploy.target === "retail"`, throw with exit code
 
 Use `archiver` for zipping. No native zip binary dependency.
 
+### 5.5 `folders`
+
+1. Load and validate config (same loader as the other commands).
+2. Show two `@clack/prompts` `multiselect` prompts in order: Behavior pack folders, then Resource pack folders.
+3. Each option is a canonical Bedrock subfolder (see lists below). Folders that already exist on disk are still listed but suffixed with `(exists)`.
+4. After both prompts resolve, `mkdir -p` every picked path. Already-existing picks are silently skipped.
+5. Print a one-line summary: `✓ <N> created, <M> already existed`.
+
+**Side effects:** Only creates directories under `<packs.bp>/` and `<packs.rp>/`. Never deletes, never writes files. Cancel (Ctrl+C / Esc) aborts before any mkdir.
+
+**No `.gitkeep` is created.** Empty directories will not survive `git add`. This is intentional: users who pick a folder will populate it before committing.
+
+#### Canonical BP folders
+
+`animation_controllers`, `animations`, `biomes`, `blocks`, `cameras/presets`, `dialogue`, `entities` (plural), `feature_rules`, `features`, `functions`, `items`, `loot_tables`, `recipes`, `spawn_rules`, `structures`, `texts`, `trading`.
+
+`scripts/` is intentionally **excluded** — owned by the bundler.
+
+#### Canonical RP folders
+
+`animation_controllers`, `animations`, `attachables`, `entity` (singular), `fogs`, `font`, `materials`, `models/entity` (singular), `models/blocks`, `particles`, `render_controllers`, `sounds`, `texts`, `textures/blocks`, `textures/entity` (singular), `textures/items`, `ui`.
+
+The plural/singular split (`BP/entities` vs. `RP/entity`, `textures/entity`, `models/entity`) is the primary footgun this command exists to solve.
+
 ---
 
 ## 6. Dependencies (locked)
@@ -257,6 +292,7 @@ Production:
 - `chokidar` ^4.0.0
 - `archiver` ^7.0.0
 - `picocolors` ^1.1.0 (for terminal coloring — small, no deps)
+- `@clack/prompts` ^0.7.0 (interactive picker for the `folders` command)
 
 Dev:
 - `typescript` ^5.6.0

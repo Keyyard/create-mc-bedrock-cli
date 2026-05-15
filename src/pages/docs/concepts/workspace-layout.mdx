@@ -75,6 +75,13 @@ as *static assets* and copies them straight into `dist/`. It does not
 modify your manifests, does not regenerate UUIDs, and does not touch
 the contents.
 
+The subfolder names inside each pack follow Bedrock's canonical layout
+(`entities/`, `items/`, `textures/`, `models/entity/`, etc.) and there
+are some footguns: BP uses `entities/` (plural) but RP uses `entity/`
+(singular), `models/entity/` and `textures/entity/` are also singular.
+Don't try to remember it. Run [`npm run folders`](/docs/reference/cli-build#folders)
+and tick the ones you need from a checklist.
+
 <Callout type="info">
 **UUIDs are frozen at scaffold time.** `create-mc-bedrock` regenerates
 manifest UUIDs once, when the project is created, and commits them. The

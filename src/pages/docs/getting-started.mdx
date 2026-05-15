@@ -69,6 +69,19 @@ my-addon/
 
 Full breakdown: [Workspace Layout](/docs/concepts/workspace-layout).
 
+### Add the folders you need (optional)
+
+Bedrock pack folders have a few footguns (`BP/entities/` plural,
+`RP/entity/` singular, etc.). Instead of guessing, run:
+
+```bash
+npm run folders
+```
+
+You'll get an interactive picker with the canonical layout. Tick the
+folders you want and they're created under `packs/BP/` and `packs/RP/`.
+Full reference: [`folders` command](/docs/reference/cli-build#folders).
+
 ### Run your first build
 
 ```bash

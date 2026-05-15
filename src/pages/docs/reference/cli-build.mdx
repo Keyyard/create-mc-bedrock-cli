@@ -17,12 +17,13 @@ bedrock-build <command> [options]
 
 ### Commands
 
-| Command  | Purpose |
-|----------|---------|
-| `build`  | Compile sources and copy packs into `dist/`. |
-| `watch`  | Build, then rebuild on file changes. No deploy. |
-| `deploy` | Build, then copy `dist/packs/` to `com.mojang/development_*_packs/`. |
-| `pack`   | Build in release mode, then zip into `.mcaddon`. |
+| Command   | Purpose |
+|-----------|---------|
+| `build`   | Compile sources and copy packs into `dist/`. |
+| `watch`   | Build, then rebuild on file changes. No deploy. |
+| `deploy`  | Build, then copy `dist/packs/` to `com.mojang/development_*_packs/`. |
+| `pack`    | Build in release mode, then zip into `.mcaddon`. |
+| `folders` | Interactive picker for canonical Bedrock pack folders. |
 
 ### Global options
 
@@ -162,6 +163,39 @@ npx bedrock-build pack
 # Custom output path
 npx bedrock-build pack --output ./releases/my-addon.mcaddon
 ```
+
+## `folders`
+
+```bash
+bedrock-build folders
+```
+
+No flags. Interactive only.
+
+**Behavior.** Shows two multiselect prompts (Behavior pack, then Resource
+pack) listing the canonical Bedrock subfolders. Tick the ones you want
+and the command creates them under `<packs.bp>/` and `<packs.rp>/`
+respectively. Folders that already exist are marked `(exists)` in the
+list and are silently skipped if picked again.
+
+The picker is what saves you from having to remember which side uses
+plural vs. singular: `BP/entities/`, `RP/entity/`, `RP/textures/entity/`,
+`RP/models/entity/`. The list also covers everything in between:
+`animation_controllers`, `attachables`, `feature_rules`, `loot_tables`,
+`render_controllers`, `spawn_rules`, `trading`, and the rest.
+
+`packs/BP/scripts/` is intentionally **not** offered because it is owned
+by the bundler ([`build`](#build) writes `main.js` directly into it).
+
+```bash
+# From a scaffolded project
+npm run folders
+
+# Or directly
+npx bedrock-build folders
+```
+
+Cancel either prompt (Ctrl+C / Esc) to abort without touching the disk.
 
 ## Exit codes
 

@@ -1,16 +1,16 @@
 import React from "react";
-import type { DocsThemeConfig } from "nextra-theme-docs";
+import { ThemeSwitch, type DocsThemeConfig } from "nextra-theme-docs";
 
 const config: DocsThemeConfig = {
   logo: <span style={{ fontWeight: 700 }}>Bedrock CLI</span>,
   project: {
-    link: "https://github.com/keyyard/create-mc-bedrock-cli",
+    link: "https://github.com/Keyyard/create-mc-bedrock-cli",
   },
   chat: {
     link: "https://discord.gg/EJ4swPKJNU",
   },
   docsRepositoryBase:
-    "https://github.com/keyyard/create-mc-bedrock-cli/tree/main/website",
+    "https://github.com/Keyyard/create-mc-bedrock-cli/tree/main/website",
   useNextSeoProps() {
     return {
       titleTemplate: "%s | Bedrock CLI",
@@ -26,7 +26,12 @@ const config: DocsThemeConfig = {
       />
     </>
   ),
-  darkMode: true,
+  // `darkMode: false` hides the sidebar's built-in theme switch.
+  // The navbar one below replaces it, top-right placement.
+  darkMode: false,
+  navbar: {
+    extraContent: <ThemeSwitch />,
+  },
   nextThemes: {
     defaultTheme: "dark",
   },

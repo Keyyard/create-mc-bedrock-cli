@@ -18,8 +18,8 @@
   --tertiary: 16 185 129;        /* #10b981. Emerald-500. Secondary accent / gradients. */
   --highlight-rgb: 16 185 129;   /* #10b981. Emerald-500. */
   --highlight-alpha: 0.12;
-  --text-highlight-rgb: 251 191 36;  /* #fbbf24. Amber-400. */
-  --text-highlight-alpha: 0.5;
+  --text-highlight-rgb: 5 150 105;   /* #059669. Emerald-600. Matches body accent. */
+  --text-highlight-alpha: 0.25;
 }
 
 .dark {
@@ -32,8 +32,8 @@
   --tertiary: 52 211 153;        /* #34d399. Emerald-400. Secondary accent / gradients. */
   --highlight-rgb: 16 185 129;   /* #10b981. */
   --highlight-alpha: 0.12;
-  --text-highlight-rgb: 251 191 36;  /* #fbbf24. */
-  --text-highlight-alpha: 0.45;
+  --text-highlight-rgb: 16 185 129;  /* #10b981. Emerald-500. */
+  --text-highlight-alpha: 0.3;
 }
 
 /* ---------------------------------------------------------------------------

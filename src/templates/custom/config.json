@@ -1,0 +1,19 @@
+{
+  "type": "minecraftBedrock",
+  "name": "{{PROJECT_NAME}}",
+  "authors": [],
+  "targetVersion": "1.21.0",
+  "packs": {
+    "behaviorPack": "packs/BP",
+    "resourcePack": "packs/RP"
+  },
+  "bedrock-cli": {
+    "version": "1.0.0",
+    "entry": "src/main.ts",
+    "out": "dist",
+    "deploy": {
+      "target": "retail",
+      "customPath": null
+    }
+  }
+}

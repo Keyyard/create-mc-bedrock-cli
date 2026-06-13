@@ -47,7 +47,7 @@ npm run pack
 
 ```text
 {{PROJECT_NAME}}/
-  bedrock.config.json   ← compiler config
+  config.json           ← compiler config
   src/
     main.ts             ← entry — bundled into BP/scripts/main.js
   packs/
@@ -58,4 +58,4 @@ npm run pack
 
 ## Learn more
 
-Full documentation, cookbook recipes, and the `bedrock.config.json` reference live at <https://bedrockcli.keyyard.xyz/docs>.
+Full documentation, cookbook recipes, and the `config.json` reference live at <https://bedrockcli.keyyard.xyz/docs>.

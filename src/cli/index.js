@@ -9,6 +9,7 @@ import {
 } from '../services/gitService.js';
 import {
   promptSource,
+  promptLanguage,
   promptProjectName,
   promptDestination,
   promptCategory,
@@ -47,7 +48,8 @@ async function run() {
 
     if (source === 'custom') {
       // Bundled Custom Workspace path — no remote fetch needed.
-      await scaffoldCustom(targetPath, projectName);
+      const language = await promptLanguage();
+      await scaffoldCustom(targetPath, projectName, language);
       scaffolded = true;
     } else {
       // Microsoft / Community: remote fetch first.

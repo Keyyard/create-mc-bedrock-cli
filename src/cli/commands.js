@@ -21,7 +21,26 @@ export async function promptSource() {
 }
 
 /**
- * Project name — used for `bedrock.config.json.name`, `package.json.name`,
+ * Language picker for the Custom Workspace: TypeScript (default) or JavaScript.
+ * Only shown for the `custom` source.
+ */
+export async function promptLanguage() {
+  const { language } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'language',
+      message: 'Language:',
+      choices: [
+        { name: 'TypeScript (recommended)', value: 'typescript' },
+        { name: 'JavaScript', value: 'javascript' }
+      ]
+    }
+  ]);
+  return language;
+}
+
+/**
+ * Project name — used for `config.json.name`, `package.json.name`,
  * and manifest `header.name` for the Custom path. For Microsoft / Community
  * it's still threaded into the manifest rewriter.
  *

@@ -91,12 +91,13 @@ working directory named after the project. Press Enter to accept.
     JavaScript
 ```
 
-Sets the scripting language for the Custom source. **TypeScript**
-generates `src/main.ts` and a `tsconfig.json`. **JavaScript** generates
-`src/main.js` and drops the `tsconfig.json` entirely. Either way the
-entry is recorded under `bedrock-cli.entry` in `config.json`, and
-esbuild bundles both. See
-[`entry` in the config schema](/docs/reference/config-schema).
+Sets the **starter** language for the Custom source. **TypeScript**
+opens to `src/main.ts`; **JavaScript** opens to `src/main.js`. Either
+way the workspace supports both languages at once: the bundled
+`tsconfig.json` has `allowJs`, the `typescript` dev dependency is
+included, and esbuild bundles a mixed `.ts`/`.js` import graph. The
+chosen entry is recorded under `bedrock-cli.entry` in `config.json`.
+See [`entry` in the config schema](/docs/reference/config-schema).
 
 ### 7. Auto-install dependencies?
 
@@ -130,10 +131,11 @@ The full Custom Workspace as described in
   packs/RP/textures/item_texture.json
 ```
 
-If you chose **JavaScript** at the Language prompt, the entry is
-`src/main.js` instead of `src/main.ts` and no `tsconfig.json` is
-generated. The `config.json` records the chosen entry under
-`bedrock-cli.entry`. Everything else is identical.
+If you chose **JavaScript** at the Language prompt, the starter entry
+is `src/main.js` instead of `src/main.ts` (recorded under
+`bedrock-cli.entry`). Everything else, including `tsconfig.json` and the
+`typescript` dep, is identical: you can add `.ts` files to a JavaScript
+workspace and `.js` files to a TypeScript one, and both build.
 
 ### For Microsoft Samples
 

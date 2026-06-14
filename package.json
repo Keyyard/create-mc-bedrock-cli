@@ -16,6 +16,11 @@
     "create",
     "scaffolder",
     "addon",
+    "add-on",
+    "typescript",
+    "javascript",
+    "deploy",
+    "mcaddon",
     "bedrock-build"
   ],
   "author": "keyyard",

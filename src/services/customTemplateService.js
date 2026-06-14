@@ -79,13 +79,17 @@ export async function scaffoldCustom(destination, projectName, language = 'types
 }
 
 /**
- * Convert the freshly-copied TypeScript template into a JavaScript one:
+ * Make JavaScript the starter language. The workspace supports BOTH languages
+ * either way (the bundled `tsconfig.json` has `allowJs`, and esbuild bundles a
+ * mixed .ts/.js import graph); this only swaps the example entry file so a JS
+ * picker opens to `main.js` instead of `main.ts`:
  *  - rename `src/main.ts` -> `src/main.js` (the template entry has no type
  *    annotations, so the content is already valid JS)
- *  - drop `tsconfig.json`
  *  - point `config.json`'s `bedrock-cli.entry` at `src/main.js`
- *  - remove the `typescript` devDependency from `package.json`
  *  - update the `main.ts` mention in `README.md`
+ *
+ * `tsconfig.json` and the `typescript` dep are intentionally KEPT so the same
+ * workspace can also hold `.ts` files with full editor/type support.
  *
  * @param {string} targetDir  absolute scaffold root
  */
@@ -96,23 +100,11 @@ async function applyJavascriptVariant(targetDir) {
     if (err.code !== 'ENOENT') throw err;
   });
 
-  await fs.rm(path.join(targetDir, 'tsconfig.json'), { force: true });
-
   await editJson(path.join(targetDir, 'config.json'), (cfg) => {
     if (cfg['bedrock-cli'] && typeof cfg['bedrock-cli'] === 'object') {
       cfg['bedrock-cli'].entry = 'src/main.js';
     }
     return cfg;
-  });
-
-  await editJson(path.join(targetDir, 'package.json'), (pkg) => {
-    if (pkg.devDependencies) {
-      delete pkg.devDependencies.typescript;
-      if (Object.keys(pkg.devDependencies).length === 0) {
-        delete pkg.devDependencies;
-      }
-    }
-    return pkg;
   });
 
   await editText(path.join(targetDir, 'README.md'), (md) =>

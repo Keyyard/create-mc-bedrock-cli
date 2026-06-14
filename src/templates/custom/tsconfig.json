@@ -8,6 +8,8 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": false,
     "outDir": "dist",
     "rootDir": "src"
   },

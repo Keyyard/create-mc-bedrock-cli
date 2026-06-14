@@ -34,7 +34,7 @@ Commands:
   folders             Interactive picker that scaffolds canonical pack folders
 
 Global options:
-  -c, --config <path>   Path to bedrock.config.json (default: ./bedrock.config.json)
+  -c, --config <path>   Path to config (default: ./config.json, then ./bedrock.config.json)
   -v, --verbose         Verbose logging
   -h, --help            Show help
   --version             Show version
@@ -105,52 +105,73 @@ bedrock-build folders
 
 ---
 
-## 3. `bedrock.config.json` schema
+## 3. Config schema (`config.json`)
+
+The config follows the [Bedrock-OSS Project Config Standard](https://github.com/Bedrock-OSS/project-config-standard). Compiler settings live under a `bedrock-cli` namespace key. The canonical filename is `config.json`; the legacy `bedrock.config.json` is still read as a fallback (see "Legacy" below).
+
+On-disk standard shape:
 
 ```ts
-interface BedrockConfig {
+interface ProjectConfig {
+  type: "minecraftBedrock";
+
   /** Project name, used for .mcaddon filename and manifest header.name */
   name: string;
 
-  /** Project version, used for .mcaddon filename */
-  version: string;
+  /** Optional author names. */
+  authors?: string[];
+
+  /** Minecraft version targeted. Hint only, not enforced. */
+  targetVersion?: string;
 
   /** Pack source directories (relative to config file) */
   packs: {
-    bp: string;  // default: "packs/BP"
-    rp: string;  // default: "packs/RP"
+    behaviorPack: string;  // default: "packs/BP"
+    resourcePack: string;  // default: "packs/RP"
   };
 
-  /** TS entry point for the script module (relative to config file) */
-  entry: string;  // default: "src/main.ts"
+  /** Compiler settings. */
+  "bedrock-cli": {
+    /** Project version for the .mcaddon filename. Falls back to package.json, then "0.0.0". */
+    version?: string;
 
-  /** Build output directory (relative to config file) */
-  out: string;  // default: "dist"
+    /** TS or JS entry, relative to config file. */
+    entry?: string;  // default: probes "src/main.ts" then "src/main.js"
 
-  /** Deploy configuration */
-  deploy: {
-    target: "retail" | "custom";  // default: "retail"
-    customPath: string | null;     // required when target === "custom"
-  };
+    /** Build output directory (relative to config file) */
+    out?: string;  // default: "dist"
 
-  /** Minecraft scripting API target version */
-  minecraft?: {
-    serverVersion?: string;  // e.g., "1.19.0" — used for hints, not enforced
+    /** Deploy configuration */
+    deploy?: {
+      target: "retail" | "custom";  // default: "retail"
+      customPath: string | null;     // required when target === "custom"
+    };
   };
 }
 ```
 
+Both TypeScript and JavaScript entries are supported (esbuild bundles either).
+
+### Internal normalized form
+
+The loader normalizes either on-disk shape into a single internal `BedrockConfig` (`name`, `version`, `packs.bp`/`packs.rp`, `entry`, `out`, `deploy`, optional `minecraft.serverVersion`). Commands consume only the normalized form, so they are agnostic to which on-disk shape was used.
+
 ### Validation rules
 
-- `name` and `version` are required. `version` must be valid semver.
-- `packs.bp` and `packs.rp` must exist as directories on disk at build time.
+- `name` is required and a non-empty string.
+- The resolved `version` must be valid semver.
+- The behavior and resource pack dirs must exist on disk at build time.
 - Each pack directory must contain a `manifest.json`.
-- `entry` must exist as a file at build time.
+- `entry` must resolve to a file that exists at build time.
 - If `deploy.target === "custom"`, `deploy.customPath` must be a non-empty string. If `deploy.target === "retail"`, `customPath` is ignored.
 
 ### Defaults
 
-If a field is omitted, apply defaults silently. Only `name` and `version` are required to be present.
+If a field is omitted, the default is applied silently. Only `name` must be present: `version` falls back to `package.json` then `"0.0.0"`, and `entry` is auto-probed.
+
+### Legacy
+
+The flat `bedrock.config.json` (top-level `name`/`version`/`entry`/`out`/`deploy`, `packs.bp`/`packs.rp`, `minecraft.serverVersion`) is read unchanged and normalized. The loader resolves `config.json` first, then `bedrock.config.json`. When both standard and legacy fields appear in one file, the standard fields win.
 
 ---
 
@@ -158,7 +179,7 @@ If a field is omitted, apply defaults silently. Only `name` and `version` are re
 
 ```
 <project>/
-  bedrock.config.json
+  config.json
   package.json
   tsconfig.json
   src/
@@ -363,7 +384,7 @@ packages/bedrock-build/        ← or its own repo, TBD
 ```ts
 import { build, watch, deploy, pack, loadConfig } from "@keyyard/bedrock-build";
 
-const config = await loadConfig("./bedrock.config.json");
+const config = await loadConfig("./config.json");
 await build(config, { release: false, clean: true });
 ```
 

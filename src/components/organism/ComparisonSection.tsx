@@ -3,64 +3,73 @@ import React from "react";
 type Cell = { mark: "yes" | "partial" | "no"; label: string };
 
 const columns = [
-  { key: "custom", label: "keyyard/bedrock-build", highlight: true },
-  { key: "ms", label: "Microsoft Samples" },
-  { key: "community", label: "Community Templates" },
-  { key: "raw", label: "Raw Setup" },
+  { key: "bedrock", label: "Bedrock CLI", highlight: true },
+  { key: "regolith", label: "Regolith" },
+  { key: "mct", label: "mct (Microsoft)" },
+  { key: "raw", label: "Raw setup" },
 ];
 
 const rows: { feature: string; cells: Record<string, Cell> }[] = [
   {
-    feature: "Hot reload",
+    feature: "Zero-setup runtime",
     cells: {
-      custom: { mark: "yes", label: "Built-in --watch" },
-      ms: { mark: "yes", label: "Gulp watcher to com.mojang" },
-      community: { mark: "partial", label: "Template-dependent" },
+      bedrock: { mark: "yes", label: "Just Node.js" },
+      regolith: { mark: "partial", label: "Filters add runtimes" },
+      mct: { mark: "partial", label: "Node + config" },
       raw: { mark: "no", label: "DIY" },
+    },
+  },
+  {
+    feature: "TypeScript and JavaScript",
+    cells: {
+      bedrock: { mark: "yes", label: "Both, pre-wired" },
+      regolith: { mark: "partial", label: "Via filters" },
+      mct: { mark: "partial", label: "TS-focused" },
+      raw: { mark: "no", label: "Set it up yourself" },
+    },
+  },
+  {
+    feature: "Deploy to com.mojang on save",
+    cells: {
+      bedrock: { mark: "yes", label: "deploy --watch" },
+      regolith: { mark: "partial", label: "watch + export target" },
+      mct: { mark: "partial", label: "Watch, manual reload" },
+      raw: { mark: "no", label: "DIY" },
+    },
+  },
+  {
+    feature: "Finds the right game folder",
+    cells: {
+      bedrock: { mark: "yes", label: "GDK/Preview/UWP/Edu" },
+      regolith: { mark: "partial", label: "Configured target" },
+      mct: { mark: "partial", label: "Recent versions" },
+      raw: { mark: "no", label: "Manual" },
     },
   },
   {
     feature: ".mcaddon packaging",
     cells: {
-      custom: { mark: "yes", label: "One command" },
-      ms: { mark: "no", label: "Not included" },
-      community: { mark: "partial", label: "Sometimes scripted" },
+      bedrock: { mark: "yes", label: "One command" },
+      regolith: { mark: "partial", label: "Export config" },
+      mct: { mark: "partial", label: "Separate step" },
       raw: { mark: "no", label: "Zip by hand" },
     },
   },
   {
-    feature: "TypeScript",
+    feature: "No lock-in (plain packs)",
     cells: {
-      custom: { mark: "yes", label: "Strict, pre-wired" },
-      ms: { mark: "partial", label: "Some samples only" },
-      community: { mark: "partial", label: "Varies" },
-      raw: { mark: "no", label: "Set it up yourself" },
-    },
-  },
-  {
-    feature: "Manifest UUIDs handled",
-    cells: {
-      custom: { mark: "yes", label: "Auto-generated" },
-      ms: { mark: "no", label: "Copy-paste risk" },
-      community: { mark: "partial", label: "Per template" },
-      raw: { mark: "no", label: "Manual" },
-    },
-  },
-  {
-    feature: "Deploy automation",
-    cells: {
-      custom: { mark: "yes", label: "Retail + custom path" },
-      ms: { mark: "no", label: "Not included" },
-      community: { mark: "partial", label: "Sometimes" },
-      raw: { mark: "no", label: "Not included" },
+      bedrock: { mark: "yes", label: "Packs in, packs out" },
+      regolith: { mark: "partial", label: "Filter pipeline" },
+      mct: { mark: "yes", label: "Standard packs" },
+      raw: { mark: "yes", label: "Standard packs" },
     },
   },
   {
     feature: "Learning curve",
     cells: {
-      custom: { mark: "yes", label: "Low: 4 commands" },
-      ms: { mark: "partial", label: "Medium" },
-      community: { mark: "partial", label: "Varies" },
+      bedrock: { mark: "yes", label: "Low: 4 commands" },
+      regolith: { mark: "partial", label: "Filters + config" },
+      mct: { mark: "partial", label: "Medium" },
       raw: { mark: "no", label: "Steep" },
     },
   },
@@ -93,12 +102,11 @@ const ComparisonSection: React.FC = () => (
         {"// comparison"}
       </p>
       <h2 className="mt-3 font-header text-3xl md:text-4xl font-bold tracking-tight text-white">
-        How the sources stack up
+        How Bedrock CLI compares
       </h2>
       <p className="mt-3 text-zinc-300 max-w-2xl mx-auto">
-        Different starting points, different trade-offs. Custom is our
-        opinionated default, but it&apos;s not the right answer for every
-        project.
+        Same goal, different trade-offs. Bedrock CLI optimizes for the shortest
+        path from source to in-game for script add-ons.
       </p>
     </div>
 
@@ -200,8 +208,9 @@ const ComparisonSection: React.FC = () => (
     </div>
 
     <p className="mt-6 text-center text-xs text-zinc-300 max-w-2xl mx-auto">
-      Note: tools like Regolith are powerful for advanced multi-pack
-      pipelines. We just optimize for fast onboarding instead.
+      Note: Regolith and Dash are powerful for advanced multi-pack pipelines and
+      asset transforms. Bedrock CLI is the complement, not a replacement: it
+      ships plain standard packs those tools can also consume.
     </p>
   </section>
 );

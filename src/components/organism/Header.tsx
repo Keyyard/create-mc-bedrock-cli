@@ -60,8 +60,9 @@ const Header: React.FC = () => (
       </h1>
 
       <p className="mt-6 max-w-2xl text-base md:text-lg text-zinc-300">
-        The fastest way to bootstrap, build, and ship Minecraft Bedrock
-        add-ons.
+        Scaffold, build, and deploy Minecraft Bedrock add-ons in TypeScript or
+        JavaScript. One command to start, one to ship straight into the right
+        Minecraft folder.
       </p>
 
       <div className="mt-8 flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
@@ -93,6 +94,21 @@ const Header: React.FC = () => (
           </a>.
         </p>
       </div>
+
+      <ul className="mt-6 flex flex-wrap justify-center gap-2 text-xs">
+        {[
+          "TypeScript or JavaScript",
+          "Deploys to every Minecraft layout",
+          "No lock-in",
+        ].map((chip) => (
+          <li
+            key={chip}
+            className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-emerald-200"
+          >
+            {chip}
+          </li>
+        ))}
+      </ul>
 
       <div className="mt-10 flex flex-wrap gap-2 justify-center opacity-80">
         {BADGES.map((badge) => (

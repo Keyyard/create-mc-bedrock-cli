@@ -31,10 +31,10 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>Create Bedrock CLI</title>
+        <title>Bedrock CLI</title>
         <meta
           name="description"
-          content="The fastest way to start Minecraft Bedrock Addon development."
+          content="The zero-setup way to build and deploy Minecraft Bedrock add-ons in TypeScript or JavaScript."
         />
       </Head>
       <div

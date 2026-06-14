@@ -3,8 +3,8 @@ import { Callout } from "nextra-theme-docs";
 # CLI: `bedrock-build`
 
 `@keyyard/bedrock-build` is the compiler for Custom-source workspaces.
-It bundles TypeScript via esbuild, copies pack assets, deploys to
-Minecraft, and packages `.mcaddon` files.
+It bundles TypeScript or JavaScript via esbuild, copies pack assets,
+deploys to Minecraft, and packages `.mcaddon` files.
 
 This page is the full CLI reference. For the config file it reads from,
 see the [Config Schema](/docs/reference/config-schema).
@@ -29,7 +29,7 @@ bedrock-build <command> [options]
 
 | Flag | Description |
 |---|---|
-| `-c, --config <path>` | Path to `bedrock.config.json`. Default: `./bedrock.config.json`. |
+| `-c, --config <path>` | Path to the config file. Default: `./config.json` (then `./bedrock.config.json`). |
 | `-v, --verbose` | Verbose logging. |
 | `-h, --help` | Show help. |
 | `--version` | Show version. |
@@ -46,12 +46,12 @@ bedrock-build build [options]
 | `--clean` | Remove `<out>/` before building. Default: `false`. |
 
 **Behavior.** Loads and validates
-[`bedrock.config.json`](/docs/reference/config-schema). Bundles the
+[`config.json`](/docs/reference/config-schema). Bundles the
 entry file via esbuild (ES2020 ESM, with the `@minecraft/server-*`
 packages marked as external) to `<out>/packs/BP/scripts/main.js`.
-Copies `<packs.bp>/*` to `<out>/packs/BP/` (excluding any existing
-`scripts/`, to avoid clobbering the bundle), and copies
-`<packs.rp>/*` to `<out>/packs/RP/`. Only writes under `<out>/`, never
+Copies `<packs.behaviorPack>/*` to `<out>/packs/BP/` (excluding any
+existing `scripts/`, to avoid clobbering the bundle), and copies
+`<packs.resourcePack>/*` to `<out>/packs/RP/`. Only writes under `<out>/`, never
 modifies sources. Sourcemaps are inline in dev mode and off in release
 mode. Minification is off in dev mode and on in release mode.
 
@@ -75,8 +75,9 @@ bedrock-build watch [options]
 No watch-specific flags in v1.
 
 **Behavior.** Runs a dev-mode build, then watches the entry file and
-its imports (via esbuild's watch context), `<packs.bp>/**/*` (excluding
-its `scripts/` folder), and `<packs.rp>/**/*` via chokidar. Source
+its imports (via esbuild's watch context), `<packs.behaviorPack>/**/*`
+(excluding its `scripts/` folder), and `<packs.resourcePack>/**/*` via
+chokidar. Source
 changes trigger an incremental esbuild rebuild. Pack file changes
 copy the changed file to its `dist/` mirror. Changes are debounced
 50ms. Each rebuild logs a timestamp and what changed. `Ctrl+C` exits
@@ -103,11 +104,11 @@ bedrock-build deploy [options]
 **Behavior.** Runs `build` (honoring `--release`), then resolves the
 deploy target:
 
-- `deploy.target === "retail"`: globs
+- `bedrock-cli.deploy.target === "retail"`: globs
   `%LOCALAPPDATA%\Packages\Microsoft.MinecraftUWP_*\LocalState\games\com.mojang\`
   on Windows. Exits with [code 3](#exit-codes) if not found.
-- `deploy.target === "custom"`: uses
-  [`deploy.customPath`](/docs/reference/config-schema) directly. Exits
+- `bedrock-cli.deploy.target === "custom"`: uses
+  [`bedrock-cli.deploy.customPath`](/docs/reference/config-schema) directly. Exits
   with [code 3](#exit-codes) if the path doesn't exist.
 
 The compiler then removes
@@ -121,8 +122,8 @@ rebuild.
 **Windows retail only for 2.0.** The `retail` target relies on the
 Windows-specific `%LOCALAPPDATA%` path. Mac and Linux retail detection
 is a post-2.0 item. Custom paths work on any platform. Set
-`deploy.target` to `"custom"` and `deploy.customPath` to your
-`com.mojang` directory.
+`bedrock-cli.deploy.target` to `"custom"` and `bedrock-cli.deploy.customPath`
+to your `com.mojang` directory.
 </Callout>
 
 ```bash
@@ -174,9 +175,9 @@ No flags. Interactive only.
 
 **Behavior.** Shows two multiselect prompts (Behavior pack, then Resource
 pack) listing the canonical Bedrock subfolders. Tick the ones you want
-and the command creates them under `<packs.bp>/` and `<packs.rp>/`
-respectively. Folders that already exist are marked `(exists)` in the
-list and are silently skipped if picked again.
+and the command creates them under `<packs.behaviorPack>/` and
+`<packs.resourcePack>/` respectively. Folders that already exist are
+marked `(exists)` in the list and are silently skipped if picked again.
 
 The picker is what saves you from having to remember which side uses
 plural vs. singular: `BP/entities/`, `RP/entity/`, `RP/textures/entity/`,
@@ -228,5 +229,5 @@ npx bedrock-build pack
 npx bedrock-build build --clean --release
 
 # Override config path (monorepos, multiple add-ons, etc.)
-npx bedrock-build build --config ./addons/my-addon/bedrock.config.json
+npx bedrock-build build --config ./addons/my-addon/config.json
 ```

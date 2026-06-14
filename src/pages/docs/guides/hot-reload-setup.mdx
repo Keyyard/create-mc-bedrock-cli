@@ -3,10 +3,10 @@ import { Callout, Steps } from "nextra-theme-docs";
 # Hot Reload Setup
 
 The fastest dev loop on Bedrock is `npm run deploy:watch` plus
-`/reload` inside Minecraft. Save a TypeScript file, the compiler
-rebuilds and re-syncs the pack to `com.mojang`, type `/reload` in the
-world, and your script changes are live. No restart, no manual zip, no
-re-import.
+`/reload` inside Minecraft. Save a TypeScript or JavaScript file, the
+compiler rebuilds and re-syncs the pack to `com.mojang`, type `/reload`
+in the world, and your script changes are live. No restart, no manual
+zip, no re-import.
 
 This guide walks through getting that loop running.
 
@@ -29,15 +29,17 @@ For the full breakdown of the pipeline, see
 
 ### Step 1: pick a deploy target
 
-Open [`bedrock.config.json`](/docs/reference/config-schema) and check
-`deploy.target`.
+Open [`config.json`](/docs/reference/config-schema) and check
+`bedrock-cli.deploy.target`.
 
 **On Windows with Minecraft Bedrock retail:**
 
 ```json
-"deploy": {
-  "target": "retail",
-  "customPath": null
+"bedrock-cli": {
+  "deploy": {
+    "target": "retail",
+    "customPath": null
+  }
 }
 ```
 
@@ -50,9 +52,11 @@ Bedrock Preview, Education edition). No further config needed.
 Education Edition:**
 
 ```json
-"deploy": {
-  "target": "custom",
-  "customPath": "/absolute/path/to/com.mojang"
+"bedrock-cli": {
+  "deploy": {
+    "target": "custom",
+    "customPath": "/absolute/path/to/com.mojang"
+  }
 }
 ```
 
@@ -127,8 +131,8 @@ content edits work fine with `/reload`.
   and confirm the JSON parses. Minecraft silently skips packs with
   invalid manifests.
 - **Wrong folder.** Confirm
-  [`deploy.customPath`](/docs/reference/config-schema) points at the
-  `com.mojang` directory itself, not at its parent or at
+  [`bedrock-cli.deploy.customPath`](/docs/reference/config-schema)
+  points at the `com.mojang` directory itself, not at its parent or at
   `development_behavior_packs/` directly.
 
 ### `/reload` doesn't seem to do anything

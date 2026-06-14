@@ -2,129 +2,177 @@ import { Callout } from "nextra-theme-docs";
 
 # Config Schema
 
-`bedrock.config.json` is the single configuration file for
+`config.json` is the single configuration file for
 [`@keyyard/bedrock-build`](/docs/reference/cli-build). It lives at the
 project root and is read by every subcommand.
 
-This page is the full reference: every field, every default, every
-validation rule.
+It follows the
+[Bedrock-OSS Project Config Standard](https://github.com/Bedrock-OSS/project-config-standard)
+so the same file can be shared with other ecosystem tools (bridge, Regolith,
+Lantern). Compiler-specific settings live under a `bedrock-cli` namespace key.
 
-## TypeScript interface
+<Callout type="info">
+**Filename:** bedrock-build looks for `config.json` first, then falls back to
+the legacy `bedrock.config.json`. New projects scaffolded by
+`create-mc-bedrock` ship `config.json`. See
+[Legacy configs](#legacy-configs) if you have an older project.
+</Callout>
+
+## Shape
 
 ```typescript
-interface BedrockConfig {
-  /** Project name, used for .mcaddon filename and manifest header.name */
+interface ProjectConfig {
+  /** Project type marker from the standard. */
+  type: "minecraftBedrock";
+
+  /** Project name, used for the .mcaddon filename and manifest header.name */
   name: string;
 
-  /** Project version, used for .mcaddon filename */
-  version: string;
+  /** Optional list of author names. */
+  authors?: string[];
 
-  /** Pack source directories (relative to config file) */
+  /** Minecraft version this project targets, e.g. "1.21.0". Hint only. */
+  targetVersion?: string;
+
+  /** Pack source directories (relative to the config file). */
   packs: {
-    bp: string;  // default: "packs/BP"
-    rp: string;  // default: "packs/RP"
+    behaviorPack: string;  // default: "packs/BP"
+    resourcePack: string;  // default: "packs/RP"
   };
 
-  /** TS entry point for the script module (relative to config file) */
-  entry: string;  // default: "src/main.ts"
+  /** Compiler settings for bedrock-build. */
+  "bedrock-cli": {
+    /** Project version for the .mcaddon filename. Falls back to package.json. */
+    version?: string;
 
-  /** Build output directory (relative to config file) */
-  out: string;  // default: "dist"
+    /** TS or JS entry, relative to the config file. */
+    entry?: string;  // default: probes "src/main.ts" then "src/main.js"
 
-  /** Deploy configuration */
-  deploy: {
-    target: "retail" | "custom";  // default: "retail"
-    customPath: string | null;     // required when target === "custom"
-  };
+    /** Build output directory. */
+    out?: string;  // default: "dist"
 
-  /** Minecraft scripting API target version */
-  minecraft?: {
-    serverVersion?: string;  // e.g., "1.19.0", used for hints only, not enforced
+    /** Deploy configuration. */
+    deploy?: {
+      target: "retail" | "custom";  // default: "retail"
+      customPath: string | null;     // required when target === "custom"
+    };
   };
 }
 ```
 
 ## Field reference
 
+### `type`
+
+- **Type:** `"minecraftBedrock"`
+
+The project-type marker from the standard. Lets shared tooling recognize the
+file as a Bedrock project config.
+
+```json
+"type": "minecraftBedrock"
+```
+
 ### `name`
 
 - **Type:** `string`
 - **Required:** yes
-- **Default:** none
 
 Project name. Used as the filename stem for `.mcaddon` output
-(`<name>-<version>.mcaddon`) and as the directory name inside the zip
-(`<name>_BP/`, `<name>_RP/`). It's also a sensible value to mirror in
-your `manifest.json` `header.name` field, though the compiler does not
-enforce that.
+(`<name>-<version>.mcaddon`) and the directory name inside the zip
+(`<name>_BP/`, `<name>_RP/`). A sensible value to mirror in your
+`manifest.json` `header.name`, though the compiler does not enforce that.
 
 ```json
 "name": "my-addon"
 ```
 
-### `version`
+### `authors`
 
-- **Type:** `string`
-- **Required:** yes
-- **Default:** none
-- **Constraint:** must be a valid [semver](https://semver.org) string.
+- **Type:** `string[]`
+- **Required:** no
 
-Project version. Used in the `.mcaddon` filename. Validation will fail
-with [exit code 2](/docs/reference/cli-build) if this isn't a valid
-semver string.
+Optional list of author names from the standard. Not consumed by the compiler.
 
 ```json
-"version": "1.0.0"
+"authors": ["you"]
+```
+
+### `targetVersion`
+
+- **Type:** `string`
+- **Required:** no
+
+The Minecraft version the project targets, e.g. `"1.21.0"`. **Used as a hint
+only. The compiler does not enforce or verify it.** (This replaces the legacy
+`minecraft.serverVersion` field, which is still read for older configs.)
+
+```json
+"targetVersion": "1.21.0"
 ```
 
 ### `packs`
 
-- **Type:** `{ bp: string; rp: string }`
+- **Type:** `{ behaviorPack: string; resourcePack: string }`
 - **Required:** no (defaults applied)
-- **Default:** `{ "bp": "packs/BP", "rp": "packs/RP" }`
+- **Default:** `{ "behaviorPack": "packs/BP", "resourcePack": "packs/RP" }`
 
-Source paths to the behavior and resource pack folders, relative to
-the config file. Both directories must exist at build time and must
-each contain a `manifest.json`.
+Source paths to the behavior and resource pack folders, relative to the config
+file. Both directories must exist at build time and must each contain a
+`manifest.json`.
 
 ```json
 "packs": {
-  "bp": "packs/BP",
-  "rp": "packs/RP"
+  "behaviorPack": "packs/BP",
+  "resourcePack": "packs/RP"
 }
 ```
 
-### `entry`
+### `bedrock-cli.version`
 
 - **Type:** `string`
 - **Required:** no
-- **Default:** `"src/main.ts"`
+- **Constraint:** must be a valid [semver](https://semver.org) string.
 
-Path to the TypeScript entry file, relative to the config file. This
-is what esbuild bundles. Everything `entry` imports gets pulled into
-a single output bundle written to `<out>/packs/BP/scripts/main.js`.
+Project version, used in the `.mcaddon` filename. If omitted, bedrock-build
+falls back to the `version` in your `package.json`, then to `"0.0.0"`.
+Validation fails with [exit code 2](/docs/reference/cli-build) if the resolved
+value isn't valid semver.
 
 ```json
-"entry": "src/main.ts"
+"bedrock-cli": { "version": "1.0.0" }
 ```
 
-### `out`
+### `bedrock-cli.entry`
+
+- **Type:** `string`
+- **Required:** no
+- **Default:** probes `"src/main.ts"`, then `"src/main.js"`
+
+Path to the script entry file, relative to the config file. **TypeScript or
+JavaScript** — esbuild bundles both. Everything `entry` imports is pulled into
+a single bundle written to `<out>/packs/BP/scripts/main.js`. If omitted,
+bedrock-build uses `src/main.ts` when present, otherwise `src/main.js`.
+
+```json
+"bedrock-cli": { "entry": "src/main.ts" }
+```
+
+### `bedrock-cli.out`
 
 - **Type:** `string`
 - **Required:** no
 - **Default:** `"dist"`
 
-Output directory, relative to the config file. The compiler owns this
-path. `build --clean` removes it, and pack output is written under it.
-Should be in `.gitignore`. See
-[Workspace Layout](/docs/concepts/workspace-layout) for the structure
-written here.
+Output directory, relative to the config file. The compiler owns this path:
+`build --clean` removes it, and all build output is written under it. Should be
+in `.gitignore`. See [Workspace Layout](/docs/concepts/workspace-layout).
 
 ```json
-"out": "dist"
+"bedrock-cli": { "out": "dist" }
 ```
 
-### `deploy.target`
+### `bedrock-cli.deploy.target`
 
 - **Type:** `"retail" | "custom"`
 - **Required:** no
@@ -132,42 +180,28 @@ written here.
 
 How the [`deploy` command](/docs/reference/cli-build) finds Minecraft.
 
-- **`"retail"`**: auto-detects the Bedrock retail install via
-  `%LOCALAPPDATA%\Packages\Microsoft.MinecraftUWP_*\LocalState\games\com.mojang\`.
-  Windows-only in 2.0.
-- **`"custom"`**: uses `deploy.customPath` as the `com.mojang`
-  directory. Works on any platform.
+- **`"retail"`**: auto-detects the install across every known Bedrock layout in
+  priority order: the modern Minecraft Bedrock launcher, Bedrock Preview,
+  Microsoft Store (UWP), and Education editions. Windows-only.
+- **`"custom"`**: uses `deploy.customPath` as the `com.mojang` directory. Works
+  on any platform.
 
-### `deploy.customPath`
+### `bedrock-cli.deploy.customPath`
 
 - **Type:** `string | null`
 - **Required:** only when `deploy.target === "custom"`
 - **Default:** `null`
 
-Absolute or project-relative path to a `com.mojang` directory. Required
-(and must be a non-empty string) when `deploy.target` is `"custom"`.
-Ignored when `deploy.target` is `"retail"`.
+Absolute or project-relative path to a `com.mojang` directory. Required (and a
+non-empty string) when `deploy.target` is `"custom"`. Ignored when
+`deploy.target` is `"retail"`.
 
 ```json
-"deploy": {
-  "target": "custom",
-  "customPath": "C:\\Users\\me\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang"
-}
-```
-
-### `minecraft.serverVersion`
-
-- **Type:** `string`
-- **Required:** no
-- **Default:** none
-
-Hint for which `@minecraft/server` version the project targets, e.g.
-`"1.19.0"`. **Used for hints only. The compiler does not enforce or
-verify this.** Useful as documentation inside the config file.
-
-```json
-"minecraft": {
-  "serverVersion": "1.19.0"
+"bedrock-cli": {
+  "deploy": {
+    "target": "custom",
+    "customPath": "C:\\Users\\me\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang"
+  }
 }
 ```
 
@@ -177,42 +211,41 @@ The compiler validates the config on every command. Failures exit with
 [code 2](/docs/reference/cli-build).
 
 - `name` is present and a non-empty string.
-- `version` is present and a valid semver string.
-- `packs.bp` and `packs.rp` exist as directories on disk at build time.
+- The resolved version is a valid semver string.
+- The behavior and resource pack directories exist on disk at build time.
 - Each pack directory contains a `manifest.json`.
-- `entry` exists as a file at build time.
-- If `deploy.target === "custom"`, `deploy.customPath` is a non-empty
-  string. If `deploy.target === "retail"`, `customPath` is ignored
-  (it may be `null` or any value).
+- `entry` resolves to a file that exists at build time.
+- If `deploy.target === "custom"`, `deploy.customPath` is a non-empty string.
+  If `deploy.target === "retail"`, `customPath` is ignored.
 
 If a non-required field is omitted, the default is applied silently.
 
 <Callout type="info">
-**Only `name` and `version` are strictly required to be present in the
-file.** Every other field has a default. You can ship a minimal config
-with just those two fields and the rest will fill in.
+**Only `name` is strictly required.** Every other field has a default or a
+fallback (version comes from `package.json`; entry is auto-probed). A config
+with just `type`, `name`, and `packs` is enough.
 </Callout>
 
 ## Complete example
 
-A full config with every field set explicitly:
-
 ```json
 {
+  "type": "minecraftBedrock",
   "name": "my-addon",
-  "version": "1.0.0",
+  "authors": ["you"],
+  "targetVersion": "1.21.0",
   "packs": {
-    "bp": "packs/BP",
-    "rp": "packs/RP"
+    "behaviorPack": "packs/BP",
+    "resourcePack": "packs/RP"
   },
-  "entry": "src/main.ts",
-  "out": "dist",
-  "deploy": {
-    "target": "retail",
-    "customPath": null
-  },
-  "minecraft": {
-    "serverVersion": "1.19.0"
+  "bedrock-cli": {
+    "version": "1.0.0",
+    "entry": "src/main.ts",
+    "out": "dist",
+    "deploy": {
+      "target": "retail",
+      "customPath": null
+    }
   }
 }
 ```
@@ -221,10 +254,34 @@ A minimal config relying on defaults:
 
 ```json
 {
+  "type": "minecraftBedrock",
   "name": "my-addon",
-  "version": "1.0.0"
+  "packs": {
+    "behaviorPack": "packs/BP",
+    "resourcePack": "packs/RP"
+  }
 }
 ```
 
-Both are valid. The second resolves to the same effective config as
-the first.
+## Legacy configs
+
+Projects scaffolded before the standard adoption use a flat
+`bedrock.config.json`:
+
+```json
+{
+  "name": "my-addon",
+  "version": "1.0.0",
+  "packs": { "bp": "packs/BP", "rp": "packs/RP" },
+  "entry": "src/main.ts",
+  "out": "dist",
+  "deploy": { "target": "retail", "customPath": null },
+  "minecraft": { "serverVersion": "1.19.0" }
+}
+```
+
+**These still work, unchanged.** bedrock-build reads the legacy shape
+(`packs.bp`/`packs.rp`, top-level `version`/`entry`/`out`/`deploy`,
+`minecraft.serverVersion`) and normalizes it internally. To migrate, rename the
+file to `config.json` and move the compiler fields under a `bedrock-cli` key.
+When both shapes are present in one file, the standard fields win.

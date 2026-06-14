@@ -70,7 +70,7 @@ template picker inside that category.
 ```
 
 Becomes the folder name for the new project and the value of
-[`name` in `bedrock.config.json`](/docs/reference/config-schema). It's
+[`name` in `config.json`](/docs/reference/config-schema). It's
 also propagated into the manifest `header.name` fields as
 `<name> BP` and `<name> RP`.
 
@@ -83,7 +83,22 @@ also propagated into the manifest `header.name` fields as
 Where the project lands. Defaults to a subdirectory of the current
 working directory named after the project. Press Enter to accept.
 
-### 6. Auto-install dependencies?
+### 6. Language
+
+```
+? Language?
+  > TypeScript
+    JavaScript
+```
+
+Sets the scripting language for the Custom source. **TypeScript**
+generates `src/main.ts` and a `tsconfig.json`. **JavaScript** generates
+`src/main.js` and drops the `tsconfig.json` entirely. Either way the
+entry is recorded under `bedrock-cli.entry` in `config.json`, and
+esbuild bundles both. See
+[`entry` in the config schema](/docs/reference/config-schema).
+
+### 7. Auto-install dependencies?
 
 ```
 ? Install dependencies now? (Y/n)
@@ -103,7 +118,7 @@ The full Custom Workspace as described in
 
 ```
 <project>/
-  bedrock.config.json
+  config.json
   package.json
   tsconfig.json
   .gitignore
@@ -114,6 +129,11 @@ The full Custom Workspace as described in
   packs/RP/pack_icon.png
   packs/RP/textures/item_texture.json
 ```
+
+If you chose **JavaScript** at the Language prompt, the entry is
+`src/main.js` instead of `src/main.ts` and no `tsconfig.json` is
+generated. The `config.json` records the chosen entry under
+`bedrock-cli.entry`. Everything else is identical.
 
 ### For Microsoft Samples
 
@@ -204,6 +224,6 @@ aware that this is brittle and will need updating when prompts change.
 - [Workspace Layout](/docs/concepts/workspace-layout) for the Custom
   source tree.
 - [Config schema](/docs/reference/config-schema) for what
-  `bedrock.config.json` controls.
+  `config.json` controls.
 - [Packs and Manifests](/docs/concepts/packs-and-manifests) for the
   manifest fields the scaffolder rewrites.

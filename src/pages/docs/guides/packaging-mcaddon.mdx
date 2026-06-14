@@ -19,7 +19,7 @@ npm run pack
 
 Output lands at `dist/<name>-<version>.mcaddon`, where `<name>` and
 `<version>` come from
-[`bedrock.config.json`](/docs/reference/config-schema). To override the
+[`config.json`](/docs/reference/config-schema). To override the
 path, run the underlying binary with `--output`:
 
 ```bash
@@ -62,7 +62,7 @@ the two modes exist.
 
 Before packing, bump the version in three places so they stay in sync:
 
-1. **`bedrock.config.json`**: the `version` field. This controls the
+1. **`config.json`**: the `bedrock-cli.version` field. This controls the
    `.mcaddon` filename.
 2. **`packs/BP/manifest.json`**: `header.version` (array form, e.g.
    `[1, 1, 0]`). This is what Minecraft reads to detect updates.
@@ -72,7 +72,7 @@ Before packing, bump the version in three places so they stay in sync:
 A quick mental checklist when releasing:
 
 ```bash
-# 1. Update versions in bedrock.config.json + both manifest.json files.
+# 1. Update versions in config.json + both manifest.json files.
 
 # 2. Verify everything still builds clean.
 npm run release -- --clean

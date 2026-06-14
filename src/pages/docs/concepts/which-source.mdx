@@ -10,8 +10,8 @@ If you're not sure, **Custom** is the safe default for new projects.
 
 ## Custom (recommended default)
 
-The new workspace shape introduced in 2.0. A `bedrock.config.json` at
-the root, TypeScript in `src/`, pack assets in `packs/BP` and
+The new workspace shape introduced in 2.0. A `config.json` at
+the root, TypeScript or JavaScript in `src/`, pack assets in `packs/BP` and
 `packs/RP`, and a build pipeline driven by
 [`@keyyard/bedrock-build`](/docs/reference/cli-build).
 
@@ -35,7 +35,7 @@ the root, TypeScript in `src/`, pack assets in `packs/BP` and
 
 - A scaffolded workspace following the
   [layout in the Workspace Layout doc](/docs/concepts/workspace-layout).
-- `bedrock.config.json` pre-filled with sensible defaults. See the
+- `config.json` pre-filled with sensible defaults. See the
   [config schema](/docs/reference/config-schema).
 - A `package.json` with `@keyyard/bedrock-build` as a dev dependency,
   resolved to the latest stable version at scaffold time.

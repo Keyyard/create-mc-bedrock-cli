@@ -14,7 +14,7 @@ the pieces map onto a final `.mcaddon`.
 
 ```
 <project>/
-  bedrock.config.json         ← compiler entry point
+  config.json                 ← compiler entry point
   package.json
   tsconfig.json
   .gitignore
@@ -46,18 +46,22 @@ the pieces map onto a final `.mcaddon`.
 
 ## What each directory is for
 
-### `bedrock.config.json`
+### `config.json`
 
 The single source of truth for the compiler. Tells `bedrock-build` where
 the entry script is, where each pack's source lives, where to write
-output, and how to deploy. Full reference:
-[Config Schema](/docs/reference/config-schema).
+output, and how to deploy. The `bedrock-cli` keys (entry, out, deploy)
+live under the `bedrock-cli` namespace, while pack source paths live in
+`packs.behaviorPack` and `packs.resourcePack`. Older projects with a
+`bedrock.config.json` are still read as a fallback, so they keep working.
+Full reference: [Config Schema](/docs/reference/config-schema).
 
 ### `src/`
 
-Your TypeScript. The entry file is whatever `entry` points at in
-`bedrock.config.json` (default: `src/main.ts`). Everything `main.ts`
-imports is bundled into a single output file by esbuild.
+Your TypeScript or JavaScript. The entry file is whatever
+`bedrock-cli.entry` points at in `config.json` (default: `src/main.ts`,
+though `src/main.js` works too). Everything the entry file imports is
+bundled into a single output file by esbuild.
 
 **`src/` is intentionally separate from `packs/BP/scripts/`.** The
 `scripts/` folder inside a pack is *output*, not source. Mixing them

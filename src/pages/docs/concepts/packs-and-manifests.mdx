@@ -20,7 +20,7 @@ custom logic is just an RP) and keeps roles clear.
 | **Behavior Pack** (`packs/BP/`) | Scripts (`scripts/main.js`), entity behaviors, custom items, custom blocks, loot tables, recipes, trade tables, anything that affects game logic. |
 | **Resource Pack** (`packs/RP/`) | Textures, models, animations, sounds, particles, UI files, fonts, anything visual or audible. |
 
-Practically, the BP is where your TypeScript ends up after
+Practically, the BP is where your TypeScript or JavaScript ends up after
 [`bedrock-build`](/docs/reference/cli-build) bundles it. The RP is where
 the art and audio for the same feature lives. A custom item, for
 example, needs JSON in the BP (defining its behavior) **and** a texture
@@ -177,9 +177,9 @@ copies them verbatim into `dist/`.
 
 ## Where this is configured
 
-In [`bedrock.config.json`](/docs/reference/config-schema), the
-[`packs.bp`](/docs/reference/config-schema) and
-[`packs.rp`](/docs/reference/config-schema) fields point at the BP and
+In [`config.json`](/docs/reference/config-schema), the
+[`packs.behaviorPack`](/docs/reference/config-schema) and
+[`packs.resourcePack`](/docs/reference/config-schema) fields point at the BP and
 RP source directories. The compiler expects to find a `manifest.json`
 at the root of each one.
 

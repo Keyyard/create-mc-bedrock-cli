@@ -27,7 +27,7 @@ npx create-mc-bedrock
 The scaffolder is interactive. You'll see prompts for:
 
 - **Source.** Pick one of three starting points:
-  - **Custom**: the new default. A `bedrock.config.json` workspace wired
+  - **Custom**: the new default. A `config.json` workspace wired
     up to `@keyyard/bedrock-build`. Pick this unless you have a reason
     not to.
   - **Microsoft Samples**: the official samples from
@@ -39,7 +39,10 @@ The scaffolder is interactive. You'll see prompts for:
   More detail on the trade-offs: [Which source?](/docs/concepts/which-source).
 
 - **Project name.** Becomes the folder name and the value of
-  [`name` in `bedrock.config.json`](/docs/reference/config-schema).
+  [`name` in `config.json`](/docs/reference/config-schema).
+
+- **Language.** TypeScript or JavaScript. Either way the entry point is
+  bundled by esbuild, so pick whichever you prefer.
 
 - **Install dependencies?** Yes/No. If you say yes, the scaffolder runs
   `npm install` for you. Either way, manifest UUIDs are freshly
@@ -52,11 +55,11 @@ source):
 
 ```
 my-addon/
-  bedrock.config.json
+  config.json
   package.json
   tsconfig.json
   src/
-    main.ts                   ← your TypeScript entry point
+    main.ts                   ← your TypeScript or JavaScript entry point
   packs/
     BP/
       manifest.json           ← UUIDs frozen at scaffold time
@@ -110,7 +113,8 @@ known Bedrock install layouts on Windows (modern launcher, Microsoft Store
 UWP, Education edition, and Preview variants), matching the detection
 logic in Microsoft's official build tools. Mac and Linux retail detection
 is a post-2.0 item. If the auto-detect misses your install, set
-`deploy.target` to `"custom"` and point `deploy.customPath` at your
+`bedrock-cli.deploy.target` to `"custom"` and point
+`bedrock-cli.deploy.customPath` at your
 `com.mojang` directory. See the
 [config schema](/docs/reference/config-schema) and the
 [custom deploy path guide](/docs/guides/custom-deploy-path) for details.

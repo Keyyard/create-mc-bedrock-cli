@@ -20,29 +20,31 @@ packs/BP/*  ─► copy   ─► dist/packs/BP/
 packs/RP/*  ─► copy   ─► dist/packs/RP/
 ```
 
-Two operations, run in parallel for speed. One bundles TypeScript into
-a single JavaScript file. The other mirrors pack assets from source to
-output. The compiler owns the `dist/` tree and only writes there.
+Two operations, run in parallel for speed. One bundles TypeScript or
+JavaScript into a single JavaScript file. The other mirrors pack assets
+from source to output. The compiler owns the `dist/` tree and only
+writes there.
 
 ## `build` mode
 
 The standard `npm run build` invocation goes through these steps:
 
 1. **Load config.** Parse
-   [`bedrock.config.json`](/docs/reference/config-schema), apply
+   [`config.json`](/docs/reference/config-schema) (falling back to a
+   legacy `bedrock.config.json` if present), apply
    defaults, validate required fields, and fail fast with exit code 2
    on schema problems.
 2. **Optional clean.** If `--clean` is passed, remove `<out>/`
    recursively before writing anything.
 3. **Bundle the entry.** Run esbuild on
-   [`entry`](/docs/reference/config-schema) (default
-   `src/main.ts`) and write the result to
-   `<out>/packs/BP/scripts/main.js`.
-4. **Copy BP assets.** Walk `<packs.bp>/` and copy everything into
-   `<out>/packs/BP/`, except for any `scripts/` folder at the BP root
-   (that's reserved for the bundled output).
-5. **Copy RP assets.** Walk `<packs.rp>/` and copy everything into
-   `<out>/packs/RP/`.
+   [`bedrock-cli.entry`](/docs/reference/config-schema) (default
+   `src/main.ts`, though `src/main.js` works too) and write the result
+   to `<out>/packs/BP/scripts/main.js`.
+4. **Copy BP assets.** Walk `<packs.behaviorPack>/` and copy everything
+   into `<out>/packs/BP/`, except for any `scripts/` folder at the BP
+   root (that's reserved for the bundled output).
+5. **Copy RP assets.** Walk `<packs.resourcePack>/` and copy everything
+   into `<out>/packs/RP/`.
 6. **Log the result.** Elapsed time plus a one-line summary.
 
 ### The esbuild config
@@ -72,7 +74,8 @@ output and break the runtime resolver.
 | **release** (`--release`) | none | yes | `production` | distribution, `.mcaddon` packaging, CI |
 
 Inline sourcemaps make the bundled JS bigger but let you map runtime
-errors back to TypeScript lines, which matters during development.
+errors back to your TypeScript or JavaScript source lines, which
+matters during development.
 Release mode strips them and minifies for smaller, faster-loading
 packs. See [Dev vs Release builds](/docs/guides/dev-vs-release-builds)
 for the longer take.
@@ -85,9 +88,10 @@ alive:
 - **esbuild's watch context** for the entry file and everything it
   imports. Source changes trigger an incremental rebuild, which is fast
   (typically single-digit milliseconds after the first cold build).
-- **chokidar** for `<packs.bp>/**/*` (excluding its `scripts/` folder)
-  and `<packs.rp>/**/*`. Pack file changes copy that single file to its
-  `dist/` mirror. No full re-walk on each save.
+- **chokidar** for `<packs.behaviorPack>/**/*` (excluding its
+  `scripts/` folder) and `<packs.resourcePack>/**/*`. Pack file changes
+  copy that single file to its `dist/` mirror. No full re-walk on each
+  save.
 
 Changes are debounced 50ms so a save that triggers a flurry of file
 events (common on Windows) collapses into one rebuild. Each rebuild
@@ -103,10 +107,11 @@ at the other end of the pipeline:
 
 1. Run `build` (honoring `--release` if passed).
 2. Resolve the deploy target from
-   [`deploy.target`](/docs/reference/config-schema): for `retail`, walk
-   six known Bedrock install layouts (modern launcher, Microsoft Store
-   UWP, Education, Preview variants) and pick the first that exists.
-   For `custom`, use [`deploy.customPath`](/docs/reference/config-schema)
+   [`bedrock-cli.deploy.target`](/docs/reference/config-schema): for
+   `retail`, walk six known Bedrock install layouts (modern launcher,
+   Microsoft Store UWP, Education, Preview variants) and pick the first
+   that exists. For `custom`, use
+   [`bedrock-cli.deploy.customPath`](/docs/reference/config-schema)
    directly.
 3. Remove `<comMojang>/development_behavior_packs/<name>/` and
    `<comMojang>/development_resource_packs/<name>/` (clean slate).
@@ -148,16 +153,20 @@ want is `deploy --watch` to test changes live.
 ## Where this is configured
 
 The compiler's behavior is driven entirely by
-[`bedrock.config.json`](/docs/reference/config-schema). The most
+[`config.json`](/docs/reference/config-schema). The most
 relevant fields:
 
-- [`entry`](/docs/reference/config-schema): the TypeScript entry file
-  esbuild bundles.
-- [`packs.bp` and `packs.rp`](/docs/reference/config-schema): the
-  source directories copied into `dist/`.
-- [`out`](/docs/reference/config-schema): where everything lands.
-- [`deploy.target` and `deploy.customPath`](/docs/reference/config-schema):
+- [`bedrock-cli.entry`](/docs/reference/config-schema): the TypeScript
+  or JavaScript entry file esbuild bundles.
+- [`packs.behaviorPack` and `packs.resourcePack`](/docs/reference/config-schema):
+  the source directories copied into `dist/`.
+- [`bedrock-cli.out`](/docs/reference/config-schema): where everything
+  lands.
+- [`bedrock-cli.deploy.target` and `bedrock-cli.deploy.customPath`](/docs/reference/config-schema):
   where the `deploy` command sends output.
+
+See the [config schema reference](/docs/reference/config-schema) for
+the full field list.
 
 ## Related
 

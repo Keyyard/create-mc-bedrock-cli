@@ -17,7 +17,7 @@ don't:
 - **Opinionated, documented layout.** One workspace shape across every
   project. See [Workspace Layout](/docs/concepts/workspace-layout).
 - **Fewer config files.** A single
-  [`bedrock.config.json`](/docs/reference/config-schema) instead of
+  [`config.json`](/docs/reference/config-schema) instead of
   per-sample build scripts.
 - **Hot reload built in.** `npm run deploy:watch` handles the whole
   rebuild-and-sync loop. See
@@ -33,8 +33,8 @@ Microsoft Samples source exists for that case. See
 
 ## What you'll copy
 
-- Your TypeScript files from the sample's `scripts/` directory into
-  the new project's `src/`.
+- Your TypeScript or JavaScript files from the sample's `scripts/`
+  directory into the new project's `src/`.
 - Your behavior pack content (items, blocks, entities, loot tables,
   recipes, etc.) into the new `packs/BP/`.
 - Your resource pack content (textures, models, animations, sounds)
@@ -73,8 +73,10 @@ sample) and copy them into the new project's `src/` directory.
 If the sample's entry was `scripts/main.ts`, drop it into `src/main.ts`
 (overwriting the stub). If it was named differently, either rename it
 to `main.ts` or update the
-[`entry`](/docs/reference/config-schema) field in
-`bedrock.config.json` to point at the new filename.
+[`entry`](/docs/reference/config-schema) field (under the
+`bedrock-cli` key in `config.json`) to point at the new filename.
+TypeScript or JavaScript both work as the entry: esbuild bundles
+either.
 
 ### Step 3: copy BP content
 

@@ -30,12 +30,15 @@ done.
 
 ## Configure it
 
-In [`bedrock.config.json`](/docs/reference/config-schema):
+In [`config.json`](/docs/reference/config-schema), under the
+`bedrock-cli` namespace:
 
 ```json
-"deploy": {
-  "target": "custom",
-  "customPath": "/absolute/path/to/com.mojang"
+"bedrock-cli": {
+  "deploy": {
+    "target": "custom",
+    "customPath": "/absolute/path/to/com.mojang"
+  }
 }
 ```
 
@@ -134,14 +137,14 @@ about whether to auto-detect or use an explicit path.
 
 If you and a teammate use different machines or paths, commit the
 config with `"target": "retail"` and have anyone who needs a custom
-path keep a local-only `bedrock.config.local.json` and pass it via
+path keep a local-only `config.local.json` and pass it via
 `--config`:
 
 ```bash
-npx bedrock-build deploy --config bedrock.config.local.json --watch
+npx bedrock-build deploy --config config.local.json --watch
 ```
 
-Add `bedrock.config.local.json` to `.gitignore`. Cleaner than rewriting
+Add `config.local.json` to `.gitignore`. Cleaner than rewriting
 the shared config on every clone.
 
 ## Related

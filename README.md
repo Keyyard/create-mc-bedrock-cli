@@ -22,7 +22,7 @@
 ## What's new in 2.0
 
 - **Three sources** — Custom Workspace (recommended), Microsoft Official Samples, Community Templates.
-- **Bundled Custom Workspace** powered by [`@keyyard/bedrock-build`](https://www.npmjs.com/package/@keyyard/bedrock-build) — TypeScript bundling, hot-reload deploy to local Minecraft, one-shot `.mcaddon` packaging.
+- **Bundled Custom Workspace** powered by [`@keyyard/bedrock-build`](https://github.com/Keyyard/bedrock-build) — TypeScript bundling, hot-reload deploy to local Minecraft, one-shot `.mcaddon` packaging.
 - **Pinned dependencies** — the scaffolder queries the npm registry and writes resolved versions into your `package.json`, so every new project starts on current-stable `@minecraft/server`.
 - **Auto-install prompt** after scaffold.
 

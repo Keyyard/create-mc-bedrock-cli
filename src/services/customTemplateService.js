@@ -28,16 +28,15 @@ const TEXT_SUBSTITUTION_FILES = new Set([
  * resolves the real latest at scaffold time; the `fallback` is only used when
  * offline / the registry is unreachable.
  *
- * NOTE: the `@keyyard/bedrock-build` fallback is intentionally pinned to the
- * last REAL published version (not the unpublished 3.0 line). A fallback that
- * points at an unpublished version would resolve to nothing offline / in the
- * pre-publish window — worse than a stale-but-real fallback. Bump it in the
- * same wave that publishes the compiler (PLAN-3.0 §7/§9).
+ * NOTE: the `@keyyard/bedrock-build` fallback must point at a REAL published
+ * version. It is on the 3.0 line (which ships the create:* generators) now that
+ * 3.0 is published; bump it in lockstep with future compiler releases
+ * (PLAN-3.0 sections 7/9).
  */
 const VERSION_PACKAGES = [
   { name: '@minecraft/server', fallback: '^1.19.0' },
   { name: '@minecraft/server-ui', fallback: '^1.4.0' },
-  { name: '@keyyard/bedrock-build', fallback: '^1.2.1' },
+  { name: '@keyyard/bedrock-build', fallback: '^3.0.0' },
   { name: 'typescript', fallback: '^5.6.0' }
 ];
 

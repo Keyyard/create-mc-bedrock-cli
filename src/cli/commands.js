@@ -1,28 +1,8 @@
 import inquirer from 'inquirer';
 import path from 'path';
-import {
-  getSourceOptions,
-  getCommunityCategories,
-  getCommunityTemplates
-} from '../services/gitService.js';
 
 /**
- * Source picker: Custom Workspace / Microsoft Samples / Community Templates.
- */
-export async function promptSource() {
-  return inquirer.prompt([
-    {
-      type: 'list',
-      name: 'source',
-      message: 'Select a template source:',
-      choices: getSourceOptions()
-    }
-  ]);
-}
-
-/**
- * Language picker for the Custom Workspace: TypeScript (default) or JavaScript.
- * Only shown for the `custom` source.
+ * Language picker for the starter: TypeScript (default) or JavaScript.
  */
 export async function promptLanguage() {
   const { language } = await inquirer.prompt([
@@ -40,9 +20,8 @@ export async function promptLanguage() {
 }
 
 /**
- * Project name — used for `config.json.name`, `package.json.name`,
- * and manifest `header.name` for the Custom path. For Microsoft / Community
- * it's still threaded into the manifest rewriter.
+ * Project name — used for `config.json.name`, `package.json.name`, and the
+ * manifest `header.name`.
  *
  * Defaults to `my-bedrock-addon`. Validation is intentionally light — npm
  * itself enforces stricter rules at install time.
@@ -85,66 +64,6 @@ export async function promptDestination(defaultPath) {
 }
 
 /**
- * Community Templates: category picker. Skips empty categories.
- */
-export async function promptCategory() {
-  let categories = await getCommunityCategories();
-  const filteredCategories = [];
-  for (const cat of categories) {
-    const templates = await getCommunityTemplates(cat.value);
-    if (templates && templates.length > 0) {
-      filteredCategories.push(cat);
-    }
-  }
-  if (!filteredCategories.length) {
-    throw new Error('No categories with templates found in Community Templates.');
-  }
-  const { category } = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'category',
-      message: 'Select a template category:',
-      choices: filteredCategories
-    }
-  ]);
-  return category;
-}
-
-/**
- * Community Templates: template picker inside a category.
- */
-export async function promptTemplate(category) {
-  const templates = await getCommunityTemplates(category);
-  if (!templates.length) {
-    throw new Error('No templates found in this category.');
-  }
-  const { template } = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'template',
-      message: 'Select a template:',
-      choices: templates
-    }
-  ]);
-  return template;
-}
-
-/**
- * Microsoft Samples: sample picker.
- */
-export async function promptSample(samples) {
-  const { sample } = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'sample',
-      message: 'Select a sample to clone:',
-      choices: samples
-    }
-  ]);
-  return sample;
-}
-
-/**
  * Post-scaffold: offer to run `npm install` for the user.
  */
 export async function promptAutoInstall() {
@@ -157,27 +76,6 @@ export async function promptAutoInstall() {
     }
   ]);
   return install;
-}
-
-/**
- * Legacy helper kept so external callers don't break. Returns the same shape
- * as the v1 `promptUser`.
- */
-export async function promptUser(samples) {
-  return inquirer.prompt([
-    {
-      type: 'list',
-      name: 'sample',
-      message: 'Select a sample to clone:',
-      choices: samples
-    },
-    {
-      type: 'input',
-      name: 'destination',
-      message: 'Enter the destination folder:',
-      default: './'
-    }
-  ]);
 }
 
 // Re-export path so callers don't need their own import for default destinations.

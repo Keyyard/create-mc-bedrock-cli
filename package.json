@@ -1,7 +1,7 @@
 {
   "name": "create-mc-bedrock",
-  "version": "2.2.1",
-  "description": "Interactive scaffolder for Minecraft Bedrock addons. Pick from a bundled Custom Workspace (powered by @keyyard/bedrock-build), Microsoft Official Samples, or Community Templates to get a ready-to-build project in seconds.",
+  "version": "3.0.0",
+  "description": "Interactive scaffolder for Minecraft Bedrock addons. Lays down one opinionated starter (powered by @keyyard/bedrock-build) with create:* generators wired in, so you can build content in seconds.",
   "main": "src/cli/index.js",
   "bin": {
     "create-mc-bedrock": "src/cli/index.js"
@@ -43,7 +43,6 @@
   "license": "MIT",
   "dependencies": {
     "inquirer": "^9.3.7",
-    "unzipper": "^0.12.0",
     "uuid": "^9.0.0"
   },
   "type": "module"

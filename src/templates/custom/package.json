@@ -10,7 +10,13 @@
     "deploy": "bedrock-build deploy",
     "deploy:watch": "bedrock-build deploy --watch",
     "pack": "bedrock-build pack",
-    "release": "bedrock-build build --release"
+    "release": "bedrock-build build --release",
+    "create:weapon": "bedrock-build create weapon",
+    "create:tool": "bedrock-build create tool",
+    "create:armor": "bedrock-build create armor",
+    "create:item": "bedrock-build create item",
+    "create:entity": "bedrock-build create entity",
+    "create:block": "bedrock-build create block"
   },
   "dependencies": {
     "@minecraft/server": "{{VERSION:@minecraft/server}}",

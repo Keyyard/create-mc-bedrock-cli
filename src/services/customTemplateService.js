@@ -16,18 +16,28 @@ import { updateManifestFiles } from './manifestService.js';
 const TEXT_SUBSTITUTION_FILES = new Set([
   'config.json',
   'package.json',
-  'README.md'
+  'README.md',
+  // Seeded resource-pack lang file carries the project name for pack.name /
+  // pack.description. Path uses POSIX separators; normalized before reading.
+  'packs/RP/texts/en_US.lang'
 ]);
 
 /**
  * npm packages whose latest stable version we resolve at scaffold time and
- * bake into the generated `package.json`. `@keyyard/bedrock-build` may not
- * be published yet during 2.0 development; it has a permissive fallback.
+ * bake into the generated `package.json`. `registryService.getLatestVersion`
+ * resolves the real latest at scaffold time; the `fallback` is only used when
+ * offline / the registry is unreachable.
+ *
+ * NOTE: the `@keyyard/bedrock-build` fallback is intentionally pinned to the
+ * last REAL published version (not the unpublished 3.0 line). A fallback that
+ * points at an unpublished version would resolve to nothing offline / in the
+ * pre-publish window — worse than a stale-but-real fallback. Bump it in the
+ * same wave that publishes the compiler (PLAN-3.0 §7/§9).
  */
 const VERSION_PACKAGES = [
   { name: '@minecraft/server', fallback: '^1.19.0' },
   { name: '@minecraft/server-ui', fallback: '^1.4.0' },
-  { name: '@keyyard/bedrock-build', fallback: '^0.1.0' },
+  { name: '@keyyard/bedrock-build', fallback: '^1.2.1' },
   { name: 'typescript', fallback: '^5.6.0' }
 ];
 

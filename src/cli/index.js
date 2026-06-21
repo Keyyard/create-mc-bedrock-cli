@@ -3,85 +3,37 @@ import path from 'path';
 import fs from 'fs/promises';
 import { displayAsciiArt } from '../utils/logger.js';
 import {
-  fetchSamples,
-  getSamples,
-  sources
-} from '../services/gitService.js';
-import {
-  promptSource,
   promptLanguage,
   promptProjectName,
   promptDestination,
-  promptCategory,
-  promptTemplate,
-  promptSample,
   promptAutoInstall
 } from './commands.js';
-import { moveSample } from '../services/fileService.js';
-import { updateManifestFiles } from '../services/manifestService.js';
 import { scaffoldCustom } from '../services/customTemplateService.js';
 import { runNpmInstall } from '../services/installService.js';
-import { cleanupTempFiles } from '../utils/helpers.js';
 
 async function run() {
   await displayAsciiArt();
 
-  let scaffolded = false;
-  let targetPath;
-  let chosenSource;
-  let projectName;
+  let destination;
 
   try {
-    await cleanupTempFiles();
+    // 1) Project name (used everywhere)
+    const projectName = await promptProjectName();
 
-    // 1) Source
-    const { source } = await promptSource();
-    chosenSource = source;
-
-    // 2) Project name (used everywhere)
-    projectName = await promptProjectName();
-
-    // 3) Destination (defaults to ./<projectName>)
+    // 2) Destination (defaults to ./<projectName>)
     const defaultDest = `./${projectName}`;
-    const destination = await promptDestination(defaultDest);
-    targetPath = path.resolve(destination);
+    destination = await promptDestination(defaultDest);
+    const targetPath = path.resolve(destination);
 
-    if (source === 'custom') {
-      // Bundled Custom Workspace path — no remote fetch needed.
-      const language = await promptLanguage();
-      await scaffoldCustom(targetPath, projectName, language);
-      scaffolded = true;
-    } else {
-      // Microsoft / Community: remote fetch first.
-      await fetchSamples(source);
+    // 3) Language (TS / JS)
+    const language = await promptLanguage();
 
-      let samplePath;
-      if (source === 'community') {
-        const category = await promptCategory();
-        const template = await promptTemplate(category);
-        const repoRoot = sources.community.repoRoot || './temp-repo-community';
-        samplePath = path.join(repoRoot, category, template);
-      } else {
-        // microsoft
-        const samples = await getSamples('microsoft');
-        if (samples.length === 0) {
-          console.error('No samples found in the repository.');
-          return;
-        }
-        const sample = await promptSample(samples);
-        const repoRoot = sources.microsoft.repoRoot || './temp-repo-microsoft';
-        samplePath = path.join(repoRoot, sample);
-      }
+    // 4) Scaffold the single opinionated starter.
+    await scaffoldCustom(targetPath, projectName, language);
 
-      await moveSample(samplePath, targetPath);
-      await updateManifestFiles(targetPath, projectName);
-      scaffolded = true;
-    }
-
-    // 4) Auto-install prompt — only for projects that have a package.json
-    //    sitting at the root of the scaffolded output.
+    // 5) Auto-install prompt.
     const hasPackageJson = await fileExists(path.join(targetPath, 'package.json'));
-    if (scaffolded && hasPackageJson) {
+    if (hasPackageJson) {
       const wantInstall = await promptAutoInstall();
       if (wantInstall) {
         console.log('Running npm install...');
@@ -96,31 +48,33 @@ async function run() {
       }
     }
 
-    printNextSteps(source, destination);
+    printNextSteps(destination);
   } catch (error) {
     console.error(error.message);
   } finally {
-    await cleanupTempFiles();
     process.exit(0);
   }
 }
 
-function printNextSteps(source, destination) {
+function printNextSteps(destination) {
   console.log('');
   console.log('Next steps:');
   console.log(`  cd ${destination}`);
-  if (source === 'custom') {
-    console.log('  npm run folders        # interactive picker for canonical pack folders (entities, items, ...)');
-    console.log('  npm run build          # dev bundle into dist/');
-    console.log('  npm run watch          # rebuild on save');
-    console.log('  npm run deploy         # one-shot deploy to local Minecraft (Windows)');
-    console.log('  npm run deploy:watch   # rebuild + deploy on every save (hot reload)');
-    console.log('  npm run pack           # release build + zip to .mcaddon');
-    console.log('');
-    console.log('Docs: https://bedrockcli.keyyard.xyz/docs');
-  } else {
-    console.log('  # Open in your editor and follow the sample\'s README.');
-  }
+  console.log('  npm run build          # dev bundle into dist/');
+  console.log('  npm run watch          # rebuild on save');
+  console.log('  npm run deploy         # one-shot deploy to local Minecraft (Windows)');
+  console.log('  npm run deploy:watch   # rebuild + deploy on every save (hot reload)');
+  console.log('  npm run pack           # release build + zip to .mcaddon');
+  console.log('');
+  console.log('Generate content (day 2):');
+  console.log('  npm run create:weapon  # wires the BP item + RP texture/lang in one shot');
+  console.log('  npm run create:tool    # pickaxe / axe / shovel / hoe');
+  console.log('  npm run create:armor   # helmet / chestplate / leggings / boots');
+  console.log('  npm run create:item    # generic item');
+  console.log('  npm run create:entity  # BP + RP entity pair');
+  console.log('  npm run create:block   # block + terrain/blocks/lang registration');
+  console.log('');
+  console.log('Docs: https://bedrockcli.keyyard.xyz/docs');
 }
 
 async function fileExists(p) {

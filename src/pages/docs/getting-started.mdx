@@ -24,22 +24,14 @@ five minutes.
 npx create-mc-bedrock
 ```
 
-The scaffolder is interactive. You'll see prompts for:
-
-- **Source.** Pick one of three starting points:
-  - **Custom**: the new default. A `config.json` workspace wired
-    up to `@keyyard/bedrock-build`. Pick this unless you have a reason
-    not to.
-  - **Microsoft Samples**: the official samples from
-    [`microsoft/minecraft-scripting-samples`](https://github.com/microsoft/minecraft-scripting-samples).
-    Good for following an MS tutorial verbatim.
-  - **Community Templates**: specialized starters from
-    [`keyyard/custom-mc-scripting-templates`](https://github.com/Keyyard/custom-mc-scripting-templates).
-
-  More detail on the trade-offs: [Which source?](/docs/concepts/which-source).
+The scaffolder is interactive and the flow is linear (no source picker).
+You'll see prompts for:
 
 - **Project name.** Becomes the folder name and the value of
   [`name` in `config.json`](/docs/reference/config-schema).
+
+- **Destination folder.** Defaults to `./<project-name>`. Press Enter to
+  accept.
 
 - **Language.** TypeScript or JavaScript. Either way the entry point is
   bundled by esbuild, so pick whichever you prefer.
@@ -48,10 +40,15 @@ The scaffolder is interactive. You'll see prompts for:
   `npm install` for you. Either way, manifest UUIDs are freshly
   generated for this project, with no copy-paste collisions.
 
+You get one opinionated starter wired to
+[`@keyyard/bedrock-build`](/docs/reference/cli-build), with the
+[`create:*` generators](/docs/reference/cli-create-generators) ready to
+go. For where this sits next to mct and Regolith, see
+[Bedrock CLI vs mct vs Regolith](/docs/concepts/which-source).
+
 ### Look at what you got
 
-After the scaffolder finishes, the workspace looks like this (Custom
-source):
+After the scaffolder finishes, the workspace looks like this:
 
 ```
 my-addon/
@@ -84,6 +81,28 @@ npm run folders
 You'll get an interactive picker with the canonical layout. Tick the
 folders you want and they're created under `packs/BP/` and `packs/RP/`.
 Full reference: [`folders` command](/docs/reference/cli-build#folders).
+
+### Generate your first feature
+
+This is the day-2 loop. Instead of hand-wiring an item, its texture
+entry, and its lang line, run a generator:
+
+```bash
+npm run create:item
+```
+
+Press Enter through the prompts (every one has a smart default), or pass
+flags to skip them entirely:
+
+```bash
+npm run create:weapon -- fire_sword --mode 3d --icon sword
+```
+
+Each `create:*` command writes every linked file for the feature in one
+shot: the behavior JSON, the resource JSON (attachable + render
+controller for 3D), and the texture and lang registration. Generators
+are safe to re-run, support `--dry-run`, and emit plain standard packs.
+Full reference: [create generators](/docs/reference/cli-create-generators).
 
 ### Run your first build
 
@@ -137,10 +156,14 @@ installed.
 
 ## Next steps
 
+- **Generate features.** The
+  [create generators](/docs/reference/cli-create-generators) are the
+  day-2 loop: `create:weapon`, `create:block`, `create:entity`, and the
+  rest.
 - **Learn the model.** Start with
   [Workspace Layout](/docs/concepts/workspace-layout), then
-  [Which source?](/docs/concepts/which-source) to understand the
-  ecosystem.
+  [Bedrock CLI vs mct vs Regolith](/docs/concepts/which-source) to
+  understand where this sits in the ecosystem.
 - **Reference material.** The
   [CLI reference](/docs/reference/cli-build) and
   [config schema](/docs/reference/config-schema) are the two pages

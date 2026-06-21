@@ -105,8 +105,9 @@ const ComparisonSection: React.FC = () => (
         How Bedrock CLI compares
       </h2>
       <p className="mt-3 text-zinc-300 max-w-2xl mx-auto">
-        Same goal, different trade-offs. Bedrock CLI optimizes for the shortest
-        path from source to in-game for script add-ons.
+        Three bands, three trade-offs. mct is for learning the official way,
+        Regolith is for advanced filter pipelines, and Bedrock CLI is the
+        approachable middle: scaffold once, generate linked files, ship.
       </p>
     </div>
 
@@ -208,9 +209,10 @@ const ComparisonSection: React.FC = () => (
     </div>
 
     <p className="mt-6 text-center text-xs text-zinc-300 max-w-2xl mx-auto">
-      Note: Regolith and Dash are powerful for advanced multi-pack pipelines and
-      asset transforms. Bedrock CLI is the complement, not a replacement: it
-      ships plain standard packs those tools can also consume.
+      Note: mct is the place to learn the raw API the official way, and Regolith
+      is powerful for advanced multi-pack filter pipelines. Bedrock CLI is the
+      complement, not a replacement: it emits plain standard packs both tools
+      can also consume, with zero lock-in.
     </p>
   </section>
 );

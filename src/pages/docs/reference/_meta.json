@@ -1,5 +1,6 @@
 {
-  "cli-create": "CLI: create",
-  "cli-build": "CLI: build",
+  "cli-create": "CLI: create-mc-bedrock",
+  "cli-create-generators": "CLI: create generators",
+  "cli-build": "CLI: bedrock-build",
   "config-schema": "Config Schema"
 }

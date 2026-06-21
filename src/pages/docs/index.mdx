@@ -6,11 +6,18 @@ Bedrock CLI is a toolchain for building Minecraft Bedrock add-ons without
 fighting your tooling. It pairs a scaffolder (`create-mc-bedrock`) with a
 compiler (`@keyyard/bedrock-build`) so you can go from a blank folder to a
 hot-reloading TypeScript workspace, and eventually a packaged `.mcaddon`,
-without the usual setup tax.
+without the usual setup tax. It's the approachable middle: past your first
+tutorial, not yet running a filter pipeline.
 
-These docs cover scaffolding a project, the workspace layout, the build
-pipeline, deploying to your local Minecraft install, and packaging for
-distribution.
+The headline feature is the
+[`create:*` generators](/docs/reference/cli-create-generators). Scaffold
+once, then one command writes every linked file for a feature: behavior
+JSON, resource JSON, and the texture and lang registration that goes with
+it.
+
+These docs cover scaffolding a project, the `create` generators, the
+workspace layout, the build pipeline, deploying to your local Minecraft
+install, and packaging for distribution.
 
 <Cards>
   <Card
@@ -21,11 +28,19 @@ distribution.
     A 5-minute walkthrough: scaffold, build, deploy, pack.
   </Card>
   <Card
+    title="Generators"
+    href="/docs/reference/cli-create-generators"
+    arrow
+  >
+    The `create:*` family: one command per fully wired add-on feature.
+  </Card>
+  <Card
     title="Concepts"
     href="/docs/concepts/workspace-layout"
     arrow
   >
-    Workspace layout, the three sources, and how the compiler thinks.
+    Workspace layout, how the compiler thinks, and where this sits next to
+    mct and Regolith.
   </Card>
   <Card
     title="Reference"
@@ -37,18 +52,24 @@ distribution.
 </Cards>
 
 <Callout type="info">
-**What's new in 2.0**
+**What's new in 3.0 - the generator release**
 
-- **New compiler.** [`@keyyard/bedrock-build`](/docs/reference/cli-build)
-  bundles your TypeScript with esbuild, copies pack assets, and ships a
-  proper CLI: `build`, `watch`, `deploy`, `pack`.
-- **Three sources.** [Pick the starting point](/docs/concepts/which-source)
-  that matches the project: Custom (recommended), Microsoft Samples, or
-  Community Templates.
-- **Hot reload.** `npm run deploy:watch` rebuilds and re-syncs to
-  `com.mojang` on every save. See the
+- **`create:*` generators.** The headline feature.
+  [Six generators](/docs/reference/cli-create-generators) -
+  `create:weapon`, `create:tool`, `create:armor`, `create:item`,
+  `create:entity`, `create:block` - each scaffold a fully wired feature
+  (behavior JSON + resource JSON + texture and lang registration) in one
+  command. Beginners run them with zero flags; CI runs them fully
+  non-interactive.
+- **One opinionated starter.** The source picker is gone. The scaffolder
+  lays down a single starter wired to the generators. See
+  [`create-mc-bedrock`](/docs/reference/cli-create).
+- **Optional derived `namespace`.** Identifiers come from a
+  [`namespace`](/docs/reference/config-schema#bedrock-clinamespace) that
+  is derived from your project `name` when you omit it. Fully
+  backward-compatible.
+- **Same compiler.** `build`, `watch`, `deploy`, `pack`, and
+  `deploy:watch` hot reload are unchanged. See the
   [CLI reference](/docs/reference/cli-build).
-- **`.mcaddon` packaging.** `npm run pack` produces a clean,
-  Minecraft-ready zip in one command. No more manual zipping.
 
 </Callout>

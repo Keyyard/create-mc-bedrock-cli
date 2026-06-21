@@ -2,17 +2,21 @@ import { Callout, Steps } from "nextra-theme-docs";
 
 # Migrating from Microsoft Samples
 
-If you started a project from
-[`microsoft/minecraft-scripting-samples`](https://github.com/microsoft/minecraft-scripting-samples)
-and want to switch to the Custom Workspace, this guide walks through
+If you started a project with Microsoft's tooling (mct /
+[`microsoft/minecraft-scripting-samples`](https://github.com/microsoft/minecraft-scripting-samples))
+and want to switch to a Bedrock CLI workspace, this guide walks through
 the move. It takes about ten minutes for a small project. The migration
-is non-destructive: you scaffold a fresh Custom Workspace next to your
-existing project and copy code across.
+is non-destructive: you scaffold a fresh Bedrock CLI workspace next to
+your existing project and copy code across.
 
 ## Why migrate
 
-The Custom Workspace ships with a few things the Microsoft samples
-don't:
+The Bedrock CLI workspace ships with a few things Microsoft's tooling
+doesn't:
+
+- **`create:*` generators.** Add a fully wired item, weapon, armor,
+  entity, or block with one command. See
+  [create generators](/docs/reference/cli-create-generators).
 
 - **Opinionated, documented layout.** One workspace shape across every
   project. See [Workspace Layout](/docs/concepts/workspace-layout).
@@ -27,9 +31,9 @@ don't:
 - **`.mcaddon` packaging.** One command produces a clean, shareable
   zip. See [Packaging a `.mcaddon`](/docs/guides/packaging-mcaddon).
 
-If you're following an MS tutorial verbatim, **don't migrate**. The
-Microsoft Samples source exists for that case. See
-[Which source?](/docs/concepts/which-source).
+If you're following an MS tutorial verbatim, **don't migrate**. mct
+exists for that case. See
+[Bedrock CLI vs mct vs Regolith](/docs/concepts/which-source).
 
 ## What you'll copy
 
@@ -51,7 +55,7 @@ What you'll **not** copy:
 
 <Steps>
 
-### Step 1: scaffold a fresh Custom Workspace
+### Step 1: scaffold a fresh workspace
 
 In a directory next to your existing project:
 
@@ -59,10 +63,11 @@ In a directory next to your existing project:
 npx create-mc-bedrock
 ```
 
-Pick **Custom** at the source prompt. Give it the name you want the
-new project to have. Let the scaffolder generate fresh manifest UUIDs.
+Give it the name you want the new project to have, pick a language, and
+let the scaffolder generate fresh manifest UUIDs. There's no source
+prompt: you get one opinionated starter.
 
-The result is a clean Custom Workspace following the
+The result is a clean workspace following the
 [standard layout](/docs/concepts/workspace-layout).
 
 ### Step 2: copy your scripts
@@ -163,7 +168,7 @@ keep two copies live; they'll drift.
   `@minecraft/server` API at the time they were written. The fresh
   scaffold uses the current latest. Most code carries over, but a
   small fraction may need API updates. This is the same drift you'd
-  hit on the Microsoft Samples source itself.
+  hit staying on Microsoft's tooling.
 
 <Callout type="info">
 **Need to roll back?** Because the migration creates a new project
@@ -173,8 +178,10 @@ old one. Migration is opt-in and reversible.
 
 ## Related
 
-- [Which source?](/docs/concepts/which-source) for the bigger picture
-  on Custom vs Microsoft Samples vs Community Templates.
+- [Bedrock CLI vs mct vs Regolith](/docs/concepts/which-source) for the
+  bigger picture on where each tool fits.
+- [Create generators](/docs/reference/cli-create-generators) for adding
+  features to the migrated project.
 - [Workspace Layout](/docs/concepts/workspace-layout) for the target
   shape you're migrating into.
 - [Hot reload setup](/docs/guides/hot-reload-setup) for the post-

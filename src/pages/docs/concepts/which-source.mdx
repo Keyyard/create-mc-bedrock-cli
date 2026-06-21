@@ -1,128 +1,134 @@
 import { Callout } from "nextra-theme-docs";
 
-# Which Source?
+# When to use Bedrock CLI vs mct vs Regolith
 
-`create-mc-bedrock` offers three starting points. They are not ranked.
-Each one fits a different situation. This page is the honest version of
-the decision: when to pick each, when not to, and what you actually get.
+There are three tools worth knowing in the Bedrock scripting space, and
+they don't really compete: they occupy three different bands. This page
+is the honest version of the decision: which one fits where, and why
+Bedrock CLI is the approachable middle.
 
-If you're not sure, **Custom** is the safe default for new projects.
+If you're starting a new add-on and want to ship it, **Bedrock CLI** is
+the default.
 
-## Custom (recommended default)
+## The three bands
 
-The new workspace shape introduced in 2.0. A `config.json` at
-the root, TypeScript or JavaScript in `src/`, pack assets in `packs/BP` and
-`packs/RP`, and a build pipeline driven by
-[`@keyyard/bedrock-build`](/docs/reference/cli-build).
+| Tool | Band | For |
+|---|---|---|
+| **mct** (Microsoft) | Learning / templates | Learning the raw `@minecraft` API the official way, following Microsoft tutorials, the in-browser editor. |
+| **Bedrock CLI** | The approachable middle | Beginners through experienced. Scaffold once, then `create:*` generators emit every linked BP + RP file. Hot reload and `.mcaddon` packaging. Plain standard packs, zero lock-in. |
+| **Regolith** (Bedrock-OSS) | Advanced / filter pipelines | Multi-pack transform pipelines for large projects with custom compile-time filters. |
 
-**Pick this when:**
+The market splits into those three bands and the middle is where most
+people actually live: past the first tutorial, not yet running a filter
+pipeline. That is the band Bedrock CLI is built for.
 
-- You're starting a new add-on from scratch.
-- You want hot reload to `com.mojang` on every save.
-- You want one command (`npm run pack`) to produce a clean
-  `.mcaddon`.
-- You like a clear separation between source code (`src/`) and built
-  output (`dist/`).
+## mct (Microsoft)
 
-**Don't pick this when:**
-
-- You're following a Microsoft tutorial verbatim and need the file
-  layout the tutorial assumes.
-- You explicitly want a workspace that lines up with the public
-  Microsoft samples for easy diffing.
-
-**What you get:**
-
-- A scaffolded workspace following the
-  [layout in the Workspace Layout doc](/docs/concepts/workspace-layout).
-- `config.json` pre-filled with sensible defaults. See the
-  [config schema](/docs/reference/config-schema).
-- A `package.json` with `@keyyard/bedrock-build` as a dev dependency,
-  resolved to the latest stable version at scaffold time.
-- Freshly generated manifest UUIDs, committed to git.
-- A `tsconfig.json` set up for ES2020 + ESM, ready for esbuild.
-
-## Microsoft Samples
-
-The official samples from
-[`microsoft/minecraft-scripting-samples`](https://github.com/microsoft/minecraft-scripting-samples).
-Maintained by Microsoft, used in their tutorials and official
-documentation.
+The official toolchain. Best when you're learning the raw
+`@minecraft/server` API the way Microsoft demos it, working through a
+Microsoft tutorial, or using the in-browser editor and the level-graded
+lessons.
 
 **Pick this when:**
 
-- You're working through an official Microsoft tutorial and want the
-  exact files the tutorial references.
-- You're learning the raw `@minecraft/server` API surface and don't
-  want a build tool in the way.
+- You're learning the API surface and want the official, documented path.
+- You're following a Microsoft tutorial and want the exact files it
+  references.
 - You want a workspace that other readers of the official docs will
   recognize at a glance.
 
-**Don't pick this when:**
+**Reach for Bedrock CLI instead when:**
 
-- You want the build/deploy/pack ergonomics of `bedrock-build`. The
-  Microsoft samples don't ship with one.
-- You're bothered by API drift. Sample code can lag behind the
-  current `@minecraft/server` API and may need touch-ups to compile
-  against the latest types.
-
-**What you get:**
-
-- One of the official Microsoft sample projects, cloned and ready to
-  open.
-- Whatever build setup that sample includes (varies; some use
-  `gulp`, some are pure-source, some have other approaches).
-- Manifest UUIDs regenerated for your local copy.
+- You want one command to scaffold a project, generators that write every
+  linked file for a feature, hot reload to `com.mojang`, and `.mcaddon`
+  packaging out of the box.
 
 <Callout type="info">
-**Heads up: APIs may drift.** Microsoft's samples are pinned to the
-state of `@minecraft/server` at the time they were written. The API
-evolves between Minecraft releases, so some samples may need small
-fixes to typecheck against the current types. That's not a flaw of
-the samples. It's just the cost of using anything that targets a
-moving API. Worth knowing before you pick this source.
+**APIs drift.** Microsoft's samples are pinned to the state of
+`@minecraft/server` at the time they were written. The API evolves
+between Minecraft releases, so some samples may need small fixes to
+typecheck against the current types. Worth knowing before you lean on a
+sample.
 </Callout>
 
-## Community Templates
+## Bedrock CLI (the approachable middle)
 
-Specialized starters from
-[`keyyard/custom-mc-scripting-templates`](https://github.com/Keyyard/custom-mc-scripting-templates).
-Curated by the community for specific use cases: different scripting
-patterns, alternative tooling setups, or themed starter content.
+A scaffolder ([`create-mc-bedrock`](/docs/reference/cli-create)) plus a
+compiler ([`@keyyard/bedrock-build`](/docs/reference/cli-build)). You run
+the scaffolder once to lay down a single opinionated starter, then live in
+the `create:*` generators: `create:weapon`, `create:block`,
+`create:entity`, and the rest each scaffold a fully wired feature
+(behavior JSON + resource JSON + texture and lang registration) in one
+command.
 
 **Pick this when:**
 
-- You want a starter that already includes a specific pattern (UI
-  framework wrapper, scoreboard helpers, event registry, etc.).
-- You've seen a template in the community-templates repo that lines
-  up with the project you have in mind.
-- You're comfortable that the template's conventions may differ from
-  the Custom source's defaults.
-
-**Don't pick this when:**
-
-- You want the canonical `bedrock-build` setup that the rest of these
-  docs assume. The Custom source is closer to that.
-- You're new to Bedrock add-ons and want the most opinionated, most
-  documented starting point. (Pick Custom for that.)
+- You're starting a new add-on and want to ship it, not just learn the API.
+- You want generators that write every linked file for a feature instead
+  of hand-wiring items, attachables, textures, and lang lines.
+- You want hot reload to `com.mojang` on every save and a one-command
+  `.mcaddon`.
+- You want a clear split between source (`src/`) and built output (`dist/`).
 
 **What you get:**
 
-- The chosen template, cloned into your project folder.
-- Whatever conventions that template defines. Read the template's
-  own README before assuming the build commands match this site's
-  CLI reference.
-- Fresh manifest UUIDs for your project.
+- A single scaffolded workspace following the
+  [workspace layout](/docs/concepts/workspace-layout).
+- The [`create` generator family](/docs/reference/cli-create-generators)
+  as the day-2 loop.
+- `config.json` pre-filled with sensible defaults. See the
+  [config schema](/docs/reference/config-schema).
+- Freshly generated manifest UUIDs, committed to git.
+- **Plain standard packs in and out.** No lock-in: the output is exactly
+  what Minecraft, mct, and Regolith all consume.
+
+This is the gap 3.0 occupies: a terminal-native, idempotent,
+flag-or-interactive, in-project generator that writes every linked file
+for a feature in one shot, emits plain standard packs, validates the
+identifier before writing, previews with `--dry-run`, and is safe to
+re-run.
+
+## Regolith (Bedrock-OSS)
+
+A multi-pack build system built around **filters**: compile-time
+transforms that run over your packs. Powerful for large projects with
+custom code generation, asset processing, or templating pipelines.
+
+**Pick this when:**
+
+- You're running a large multi-pack project with custom transforms.
+- You want a filter pipeline (templating, asset processing, custom
+  codegen) as a first-class part of your build.
+- You're comfortable with a heavier toolchain in exchange for that power.
+
+**Reach for Bedrock CLI instead when:**
+
+- You want the shortest path from idea to in-game without configuring a
+  pipeline, and you don't need compile-time filters.
+
+Bedrock CLI is the **complement, not the replacement**: it emits plain
+standard packs, so a project can outgrow into Regolith later without a
+rewrite. Generation in Bedrock CLI is a one-shot scaffold of standard
+files; generation in Regolith is a compile-time transform.
 
 ## Quick decision
 
-| You want… | Pick |
+| You want… | Use |
 |---|---|
-| The shortest path to a working `bedrock-build` workspace | Custom |
-| To follow an official Microsoft tutorial | Microsoft Samples |
-| A specialized community starter | Community Templates |
-| Hot reload + `.mcaddon` packaging out of the box | Custom |
-| Files that match published MS docs verbatim | Microsoft Samples |
+| To learn the raw `@minecraft` API the official way | mct |
+| To follow a Microsoft tutorial verbatim | mct |
+| The shortest path to a shipped add-on | Bedrock CLI |
+| Generators that write every linked file for a feature | Bedrock CLI |
+| Hot reload + `.mcaddon` packaging out of the box | Bedrock CLI |
+| A filter pipeline for a large multi-pack project | Regolith |
 
-All three sources are first-class. There's no wrong choice, just a
-fit for the project in front of you.
+These tools are not ranked against each other. They fit different bands.
+Bedrock CLI is built for the middle, and it stays out of the way of the
+other two by emitting plain standard packs.
+
+## Related
+
+- [CLI: create generators](/docs/reference/cli-create-generators) for the
+  `create:*` family.
+- [Getting Started](/docs/getting-started) for the day-one walkthrough.
+- [Workspace Layout](/docs/concepts/workspace-layout) for the starter tree.

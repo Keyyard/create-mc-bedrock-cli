@@ -45,6 +45,9 @@ interface ProjectConfig {
     /** Project version for the .mcaddon filename. Falls back to package.json. */
     version?: string;
 
+    /** Identifier namespace for the create generators. Derived from name when omitted. */
+    namespace?: string;
+
     /** TS or JS entry, relative to the config file. */
     entry?: string;  // default: probes "src/main.ts" then "src/main.js"
 
@@ -143,6 +146,35 @@ value isn't valid semver.
 "bedrock-cli": { "version": "1.0.0" }
 ```
 
+### `bedrock-cli.namespace`
+
+- **Type:** `string`
+- **Required:** no
+- **Default:** derived from `name`
+
+The identifier namespace the
+[`create` generators](/docs/reference/cli-create-generators) use to build
+identifiers like `<namespace>:<feature>`. **Optional and
+backward-compatible.** New starters ship without it.
+
+When omitted (or when present but malformed), the compiler derives a
+legal namespace from `name`: lowercased, non-alphanumeric runs collapsed
+to `_`, leading / trailing underscores trimmed, and a leading digit
+prefixed with `ns_`. So `name: "My Addon"` derives `my_addon`.
+
+```json
+"bedrock-cli": { "namespace": "my_addon" }
+```
+
+<Callout type="info">
+**Non-fatal at load time.** An absent or malformed `namespace` never
+breaks `build`, `watch`, or `deploy`: the compiler warns and falls back
+to the derived value. A namespace is only hard-validated at generate
+time, inside `create`, where a bad value can't break a previously working
+project. Set an explicit `namespace` when you want stable, predictable
+identifiers across machines.
+</Callout>
+
 ### `bedrock-cli.entry`
 
 - **Type:** `string`
@@ -150,7 +182,7 @@ value isn't valid semver.
 - **Default:** probes `"src/main.ts"`, then `"src/main.js"`
 
 Path to the script entry file, relative to the config file. **TypeScript or
-JavaScript** — esbuild bundles both. Everything `entry` imports is pulled into
+JavaScript**: esbuild bundles both. Everything `entry` imports is pulled into
 a single bundle written to `<out>/packs/BP/scripts/main.js`. If omitted,
 bedrock-build uses `src/main.ts` when present, otherwise `src/main.js`.
 

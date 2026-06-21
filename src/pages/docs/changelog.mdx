@@ -8,6 +8,30 @@ Everything that shipped across the Bedrock CLI ecosystem, organized by component
   Looking for a per-package release feed? See the linked GitHub Releases for [`create-mc-bedrock`](https://github.com/Keyyard/create-mc-bedrock-cli/releases) and [`@keyyard/bedrock-build`](https://github.com/Keyyard/bedrock-build/releases).
 </Callout>
 
+## 3.0 release - the generator release
+
+The decisive move: stop asking people to pick a template, start helping them build content. 2.x scaffolded from one of three sources. 3.0 ships one opinionated starter, then gives that project a family of `create:*` generators.
+
+**New**
+
+- **`create:*` generators** on `@keyyard/bedrock-build`. Six commands - `create:weapon`, `create:tool`, `create:armor`, `create:item`, `create:entity`, `create:block` - each scaffold a fully wired add-on feature (behavior JSON + resource JSON + texture and lang registration) in one command. Run them interactively with smart defaults, or fully non-interactive in CI (`npm run create:weapon -- fire_sword --mode 3d --icon sword`). Safe to re-run, idempotent registry merges, `--dry-run` preview, `--force` to overwrite. Generation emits plain standard packs with zero lock-in. See [create generators](/docs/reference/cli-create-generators).
+- **One opinionated starter.** The scaffolder's source picker (Custom / Microsoft Samples / Community Templates) and all remote-fetch machinery are removed. The flow is linear: name → destination → language → scaffold. The starter pre-creates the canonical generator-target folders and seeds the registry files generators merge into (`item_texture.json`, `terrain_texture.json`, `blocks.json`, `texts/en_US.lang`, `texts/languages.json`).
+- **Optional derived `namespace`.** `bedrock-cli.namespace` is a new optional config field; when absent it is derived from a sanitized `name`. Non-fatal at config load, so existing 2.x projects keep building. See [config schema](/docs/reference/config-schema#bedrock-clinamespace).
+
+**Compatibility**
+
+- **Existing 2.x projects keep working.** The dual-read (`bedrock-cli` + legacy flat `bp`/`rp`) and the `config.json`-first probe are preserved. Generators work on a 2.x project without edits: missing folders and registry files are created on first need.
+
+**Breaking**
+
+- The scaffolder no longer prompts for a source. Scripts piping a source answer into `npx create-mc-bedrock` via stdin need updating.
+
+**Positioning**
+
+- The website and docs pivot from "three sources, no wrong choice" to the positioning ladder: mct for learning the official way, Bedrock CLI as the approachable middle, Regolith for advanced filter pipelines. See [Bedrock CLI vs mct vs Regolith](/docs/concepts/which-source).
+
+---
+
 ## `@keyyard/bedrock-build@1.0.1` (2026-05-14)
 
 Bug fix release for retail deploy detection.

@@ -11,9 +11,16 @@ const features: Feature[] = [
   {
     title: "One command to scaffold",
     description:
-      "Pick a source, get a manifest, install deps, done. No copy-paste setup.",
+      "Name it, pick a language, get a wired manifest and deps. No copy-paste setup, no source picker.",
     language: "bash",
-    code: "$ npx create-mc-bedrock\n? Project name › my-addon\n? Source › Custom (recommended)\n? Install deps? › yes\n\n✓ workspace ready in my-addon/",
+    code: "$ npx create-mc-bedrock\n? Project name › my-addon\n? Language › TypeScript\n? Install deps? › yes\n\n✓ workspace ready in my-addon/",
+  },
+  {
+    title: "create:* generators",
+    description:
+      "One command writes every linked file: behavior JSON, resource JSON, texture and lang registration. Beginners run it with zero flags; CI runs it fully non-interactive.",
+    language: "bash",
+    code: "$ npm run create:weapon -- fire_sword --mode 3d --icon sword\n→ create  packs/BP/items/fire_sword.item.json\n→ create  packs/RP/attachables/fire_sword.attachable.json\n→ create  packs/RP/render_controllers/fire_sword.rc.json\n→ merge   item_texture.json + en_US.lang\n\n✓ fire_sword wired in one shot",
   },
   {
     title: "Hot reload to com.mojang",

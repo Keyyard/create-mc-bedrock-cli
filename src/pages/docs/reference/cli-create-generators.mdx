@@ -1,0 +1,532 @@
+import { Callout } from "nextra-theme-docs";
+
+# CLI: `create` generators
+
+`bedrock-build create <type> [name]` is the generator family. Each
+`create:*` command scaffolds a fully wired add-on feature in one shot:
+the behavior JSON, the resource JSON, and the texture and lang
+registration that goes with it. Run it inside a scaffolded workspace.
+
+The generators live on the compiler ([`@keyyard/bedrock-build`](/docs/reference/cli-build))
+because generation is in-project work: it reads `config.json` for the
+absolute pack paths and writes into the live project, exactly like
+`build`, `deploy`, and `folders`. The scaffolder lays the project down
+once; the generators are the day-2 loop.
+
+This page is the full reference. For the config file the generators
+read, see the [Config Schema](/docs/reference/config-schema), including
+the optional [`namespace`](/docs/reference/config-schema#bedrock-clinamespace)
+field used to build identifiers.
+
+## Usage
+
+```
+bedrock-build create <type> [name] [options]
+```
+
+`<type>` is one of the six generators below. `[name]` is the feature
+name. From a scaffolded project you run them through the pre-wired npm
+scripts:
+
+```bash
+npm run create:weapon
+npm run create:tool
+npm run create:armor
+npm run create:item
+npm run create:entity
+npm run create:block
+```
+
+npm forwards arguments after `--`, so a name and flags reach the binary
+intact:
+
+```bash
+npm run create:weapon -- fire_sword --mode 3d --icon sword
+# → bedrock-build create weapon fire_sword --mode 3d --icon sword
+```
+
+### Commands
+
+| Command | Generates |
+|---------|-----------|
+| `create item` | A generic item: BP item JSON + texture + lang. |
+| `create weapon` | A sword-style item (2D or 3D attachable) + texture + lang. |
+| `create tool` | A pickaxe / axe / shovel / hoe (2D) + texture + lang. |
+| `create armor` | A helmet / chestplate / leggings / boots (icon or 3D) + texture + lang. |
+| `create entity` | A BP + RP entity pair (2D sprite or 3D model) + lang. |
+| `create block` | A block: BP block JSON + terrain texture + `blocks.json` + lang. |
+
+### Shared flags
+
+| Flag | Description |
+|---|---|
+| `--name <name>` | Override / alias for the positional name. The positional wins when both are given. |
+| `--icon <name>` | Texture file stem under `textures/items/`. Defaults to the feature name. |
+| `--dry-run` | Print the change plan (create / skip / conflict per file) and write nothing. |
+| `--force` | Overwrite files that exist and differ. Without it, a conflict aborts the whole generator. |
+| `-y, --yes` | Accept all defaults; skip prompts. Useful in CI. |
+
+Beginners can run any generator with **zero flags**: every prompt has a
+smart default and you press Enter through. Experts and CI pass flags to
+bypass prompts entirely. Generator-only flags are rejected on every
+other command (`build --piece chestplate` errors), so a typo never
+parses silently.
+
+<Callout type="info">
+**Interactive vs non-interactive.** Generators run interactively when
+attached to a TTY and not in CI. In a non-TTY / CI environment, or with
+`-y`, prompts are skipped. If a required value is missing in
+non-interactive mode, the command errors and prints the exact
+copy-paste one-liner to run.
+</Callout>
+
+## Naming rules
+
+Feature names are **pure lowercase letters and underscores only** -
+snake_case, no digits, no spaces, no capitals. There is no silent
+auto-fixing: a bad name (e.g. `fire sword`, `Sword2`) is rejected with a
+friendly message and an example like `item_name`. The check runs in the
+interactive prompt **and** again before any file is written, so a name
+passed via a flag gets the same treatment.
+
+The identifier is `<namespace>:<name>`. The namespace comes from
+[`bedrock-cli.namespace`](/docs/reference/config-schema#bedrock-clinamespace),
+or is derived from the project `name` when that field is omitted.
+
+**Atlas keys are namespaced; texture paths are icon-derived.** To keep
+two add-ons from colliding on the shared vanilla atlas, the atlas key is
+`<ns>_<name>` (e.g. `my_addon_fire_sword`). The texture path is
+`textures/items/<icon>`, where `<icon>` defaults to the name. The
+`minecraft:icon` component references the **key**, never a path. Any
+trailing `.png` you type in a texture reference is stripped.
+
+## Idempotency, conflicts, and dry-run
+
+Generators are safe to re-run. Each builds an in-memory plan, then
+classifies every file:
+
+- not on disk → **create**
+- on disk, byte-identical → **skip** (a re-run is a no-op)
+- on disk, differs, no `--force` → **conflict** → aborts before writing anything
+- on disk, differs, `--force` → **overwrite**
+
+If any file is a conflict and `--force` is absent, **nothing is
+written**. The plan is printed with a suggestion to use `--force` or
+`--dry-run`. Shared registry files (`item_texture.json`,
+`terrain_texture.json`, `blocks.json`, `texts/en_US.lang`,
+`texts/languages.json`) are special-cased: they are always read, merged
+by key, and re-written, so adding a feature never clobbers another one
+and re-adding the same key is idempotent.
+
+<Callout type="info">
+**Works on 2.x projects too.** `namespace` is optional and derived from
+`name` when absent, and generators create missing target folders and
+seed missing registry files (including `texts/languages.json` as
+`["en_US"]`, without which the game silently ignores `en_US.lang`). A
+generator never crashes or no-ops on an older workspace.
+</Callout>
+
+## `create item`
+
+```bash
+bedrock-build create item [name] [--icon <name>] [--display-name <text>]
+```
+
+A generic stackable item. Prompts: name → icon → display name (defaults
+to Title Case of the name).
+
+**BP file** `packs/BP/items/<name>.item.json`:
+
+```json
+{
+  "format_version": "1.21.80",
+  "minecraft:item": {
+    "description": { "identifier": "my_addon:ruby", "menu_category": { "category": "items" } },
+    "components": {
+      "minecraft:icon": "my_addon_ruby",
+      "minecraft:display_name": { "value": "Ruby" },
+      "minecraft:max_stack_size": 64
+    }
+  }
+}
+```
+
+**Side-effects:** `item_texture.json` key `my_addon_ruby → textures/items/ruby`;
+`item.my_addon:ruby=Ruby` in the RP `en_US.lang`. Drop the PNG at
+`RP/textures/items/ruby.png`.
+
+## `create weapon`
+
+```bash
+bedrock-build create weapon [name] [--mode 2d|3d] [--icon <name>] \
+  [--geometry <id>] [--texture <path>] \
+  [--durability <n>] [--damage <n>] [--enchant-value <n>]
+```
+
+A sword-style item with diamond-sword defaults. Prompts: name → 2D or 3D
+(attachable) → icon → optional advanced (durability default 1561, damage
+default 7, enchant value default 10).
+
+<Callout type="warning">
+**Damage is additive.** `minecraft:damage` adds to the base 1-damage
+hand attack, so `"minecraft:damage": 7` yields a higher in-game total,
+not exactly 7. This is expected. The generator never emits the
+deprecated `minecraft:weapon` component.
+</Callout>
+
+**BP file** `packs/BP/items/<name>.item.json` (format_version `1.21.80`):
+
+```json
+{
+  "format_version": "1.21.80",
+  "minecraft:item": {
+    "description": { "identifier": "my_addon:fire_sword", "menu_category": { "category": "equipment" } },
+    "components": {
+      "minecraft:icon": "my_addon_fire_sword",
+      "minecraft:display_name": { "value": "Fire Sword" },
+      "minecraft:max_stack_size": 1,
+      "minecraft:hand_equipped": true,
+      "minecraft:damage": 7,
+      "minecraft:durability": { "max_durability": 1561 },
+      "minecraft:enchantable": { "slot": "sword", "value": 10 }
+    }
+  }
+}
+```
+
+**Side-effects (both modes):** `item_texture.json` key
+`my_addon_fire_sword → textures/items/fire_sword`;
+`item.my_addon:fire_sword=Fire Sword` lang line.
+
+### 3D adds an attachable + a custom render controller
+
+When you pick **3D**, the item AND a 3D attachable are created together.
+The attachable identifier must equal the item identifier:
+
+```json
+{
+  "format_version": "1.10.0",
+  "minecraft:attachable": {
+    "description": {
+      "identifier": "my_addon:fire_sword",
+      "materials": { "default": "entity_alphatest", "enchanted": "entity_alphatest_glint" },
+      "textures": { "default": "textures/my_addon/items/fire_sword", "enchanted": "textures/misc/enchanted_item_glint" },
+      "geometry": { "default": "geometry.my_addon.fire_sword" },
+      "animations": {
+        "first_person": "animation.my_addon.fire_sword.first_person",
+        "third_person": "animation.my_addon.fire_sword.third_person"
+      },
+      "scripts": { "animate": [ { "first_person": "c.is_first_person" }, { "third_person": "!c.is_first_person" } ] },
+      "render_controllers": [ "controller.render.my_addon_fire_sword" ]
+    }
+  }
+}
+```
+
+3D mode emits one extra file: a minimal custom
+`packs/RP/render_controllers/<name>.rc.json`. A custom render controller
+is required because the vanilla item render controllers do not reliably
+render custom geometry.
+
+<Callout type="warning">
+**3D art is user-imported.** The generator wires the references, not the
+art. It does **not** create the geometry, animation, or texture files.
+After generating, import your model into `RP/models/entity/`, your
+animations into `RP/animations/` (the attachable already references
+`first_person` / `third_person` IDs - rename there if yours differ), and
+the texture at the path you gave. If it doesn't render or animate, adjust
+the geometry / animation yourself.
+</Callout>
+
+## `create tool`
+
+```bash
+bedrock-build create tool [name] [--variant pickaxe|axe|shovel|hoe] \
+  [--tier <tier>] [--icon <name>] [--durability <n>] [--damage <n>] \
+  [--enchant-value <n>] [--repair-item <id>]
+```
+
+A mining tool, 2D only (no attachable). Prompts: name → **tool type
+picker** (pickaxe / axe / shovel / hoe) → icon → optional tier
+(wooden / stone / iron / golden / diamond, default diamond), durability
+(default 1562), damage, enchant value (default 10), repair item id.
+
+The variant picker swaps three things via a lookup table: the item tag,
+the enchant slot, and the `digger.destroy_speeds` block-tag query.
+
+| variant | item tag | enchant slot | block-tag query | default damage |
+|---|---|---|---|---|
+| pickaxe | `minecraft:is_pickaxe` | `pickaxe` | `minecraft:is_pickaxe_item_destructible` | 6 |
+| axe | `minecraft:is_axe` | `axe` | `minecraft:is_axe_item_destructible` | 7 |
+| shovel | `minecraft:is_shovel` | `shovel` | `minecraft:is_shovel_item_destructible` | 5 |
+| hoe | `minecraft:is_hoe` | `hoe` | `minecraft:is_hoe_item_destructible` | 4 |
+
+**BP file** `packs/BP/items/<name>.item.json` (format_version `1.21.80`),
+shown for the default pickaxe variant:
+
+```json
+{
+  "format_version": "1.21.80",
+  "minecraft:item": {
+    "description": { "identifier": "my_addon:ruby_pickaxe", "menu_category": { "category": "equipment" } },
+    "components": {
+      "minecraft:icon": "my_addon_ruby_pickaxe",
+      "minecraft:display_name": { "value": "Ruby Pickaxe" },
+      "minecraft:max_stack_size": 1,
+      "minecraft:hand_equipped": true,
+      "minecraft:durability": { "max_durability": 1562 },
+      "minecraft:damage": 6,
+      "minecraft:enchantable": { "slot": "pickaxe", "value": 10 },
+      "minecraft:repairable": { "repair_items": [ { "items": ["minecraft:diamond"], "repair_amount": "context.other->q.remaining_durability + 0.05 * context.other->q.max_durability" } ] },
+      "minecraft:digger": { "use_efficiency": true, "destroy_speeds": [ { "block": { "tags": "query.any_tag('minecraft:is_pickaxe_item_destructible')" }, "speed": 8 } ] },
+      "minecraft:tags": { "tags": ["minecraft:is_pickaxe", "minecraft:diamond_tier"] }
+    }
+  }
+}
+```
+
+The tier tag (`minecraft:<tier>_tier`) sets the harvest level;
+`minecraft:is_pickaxe` makes it a real pickaxe. **Side-effects:**
+`item_texture.json` key `my_addon_ruby_pickaxe → textures/items/<icon>`;
+`item.my_addon:ruby_pickaxe=Ruby Pickaxe` lang line.
+
+## `create armor`
+
+```bash
+bedrock-build create armor [name] [--piece helmet|chestplate|leggings|boots] \
+  [--mode icon|3d] [--icon <name>] [--durability <n>] [--protection <n>] \
+  [--repair-item <id>]
+```
+
+A wearable armor piece. Prompts: piece → render mode (`icon` vs `3d`) →
+icon → durability / protection (vanilla-iron defaults below) → repair
+item. Enchant value is 9 for every piece, with
+`damage_chance { min: 60, max: 100 }`.
+
+| piece | wearable slot | enchant slot | default durability | default protection |
+|---|---|---|---|---|
+| helmet | `slot.armor.head` | `armor_head` | 265 | 2 |
+| chestplate | `slot.armor.chest` | `armor_torso` | 340 | 6 |
+| leggings | `slot.armor.legs` | `armor_legs` | 325 | 5 |
+| boots | `slot.armor.feet` | `armor_feet` | 295 | 2 |
+
+<Callout type="info">
+**Chestplate uses `armor_torso`, not `armor_chest`.** The enchant slot
+for the chest piece is `armor_torso`. The generator hardcodes this so you
+never hit the most common armor enchant bug.
+</Callout>
+
+**BP file** `packs/BP/items/<name>.item.json` (format_version `1.20.80`):
+
+```json
+{
+  "format_version": "1.20.80",
+  "minecraft:item": {
+    "description": { "identifier": "my_addon:ruby_chestplate", "menu_category": { "category": "equipment" } },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "my_addon_ruby_chestplate",
+      "minecraft:display_name": { "value": "Ruby Chestplate" },
+      "minecraft:enchantable": { "value": 9, "slot": "armor_torso" },
+      "minecraft:durability": { "max_durability": 340, "damage_chance": { "min": 60, "max": 100 } },
+      "minecraft:wearable": { "slot": "slot.armor.chest", "protection": 6 },
+      "minecraft:repairable": { "repair_items": [ { "items": ["minecraft:diamond"], "repair_amount": "query.max_durability * 0.25" } ] }
+    }
+  }
+}
+```
+
+- **icon mode** emits only the BP item plus the registry / lang
+  side-effects. The protection buff applies, but **no armor renders on
+  the body** without an attachable. The reminder note says so.
+- **3d mode** additionally emits
+  `packs/RP/attachables/<name>.attachable.json` (identifier == item id,
+  `materials { default: "armor", enchanted: "armor_enchanted" }`) **plus a
+  minimal custom `RP/render_controllers/<name>.rc.json`**. No geometry or
+  texture file is generated; the attachable references the geometry id +
+  texture path you provide. Import your armor model + texture; if it
+  doesn't render, adjust the geometry yourself.
+
+**Side-effects:** `item_texture.json` key
+`my_addon_ruby_chestplate → textures/items/<icon>`; lang line.
+
+## `create entity`
+
+```bash
+bedrock-build create entity [name] [--mode 2d|3d] [--texture <path>] [--geometry <id>]
+```
+
+Emits the **pair**: a BP entity and an RP client entity with the same
+identifier. Prompts: name → 2D billboard sprite or 3D model → display
+name → (3D) geometry / texture → spawn-egg colors (default black base +
+white overlay). BP `format_version` is `1.21.40`; the RP `client_entity`
+`format_version` is `1.10.0` and is intentionally old - do not sync these.
+
+**BP file** `packs/BP/entities/<name>.json` (a minimal walking mob, not a
+frozen blob):
+
+```json
+{
+  "format_version": "1.21.40",
+  "minecraft:entity": {
+    "description": { "identifier": "my_addon:goblin", "spawn_category": "creature", "is_spawnable": true, "is_summonable": true },
+    "components": {
+      "minecraft:type_family": { "family": ["goblin", "mob"] },
+      "minecraft:health": { "value": 10, "max": 10 },
+      "minecraft:collision_box": { "width": 0.6, "height": 1.8 },
+      "minecraft:physics": {},
+      "minecraft:pushable": { "is_pushable": true, "is_pushable_by_piston": true },
+      "minecraft:movement": { "value": 0.25 },
+      "minecraft:movement.basic": {},
+      "minecraft:navigation.walk": { "can_path_over_water": true, "avoid_water": true },
+      "minecraft:jump.static": {},
+      "minecraft:behavior.float": { "priority": 0 },
+      "minecraft:behavior.random_stroll": { "priority": 6, "speed_multiplier": 1.0 },
+      "minecraft:behavior.look_at_player": { "priority": 7, "look_distance": 6.0, "probability": 0.02 },
+      "minecraft:behavior.random_look_around": { "priority": 8 }
+    }
+  }
+}
+```
+
+**RP file** `packs/RP/entity/<name>.json` (3D shown; the file lives in the
+singular `entity/` folder):
+
+```json
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "my_addon:goblin",
+      "materials": { "default": "entity_alphatest" },
+      "textures": { "default": "textures/entity/goblin" },
+      "geometry": { "default": "geometry.my_addon.goblin" },
+      "render_controllers": ["controller.render.default"],
+      "spawn_egg": { "base_color": "#000000", "overlay_color": "#ffffff" }
+    }
+  }
+}
+```
+
+The **2D sprite** variant uses `materials { default: "snowball" }`,
+`geometry { default: "geometry.item_sprite" }`,
+`render_controllers ["controller.render.item_sprite"]`, and a billboard
+animation. The spawn egg defaults to a black base + white overlay
+(`#000000` / `#ffffff`).
+
+**Side-effects:** `entity.my_addon:goblin.name=Goblin` and
+`item.spawn_egg.entity.my_addon:goblin.name=Spawn Goblin` lang lines. No
+`spawn_rules` file is generated by default (egg / summon only).
+
+<Callout type="warning">
+**3D art is user-imported.** No geometry, animation, or texture file is
+generated for 3D. The client entity only references the geometry id +
+texture path you give. Import your model into `RP/models/entity/`, your
+texture at the path you gave, and attach animations + `scripts.animate`
+in the client entity. If it doesn't render, adjust the geometry yourself.
+</Callout>
+
+## `create block`
+
+```bash
+bedrock-build create block [name] [--texture <key>] \
+  [--render-method opaque|blend|alpha_test] [--sound <name>] [--light <n>]
+```
+
+Prompts: name → texture key (default name) → render method (default
+opaque) → sound (default stone) → optional light emission.
+format_version `1.21.50`.
+
+<Callout type="info">
+**Geometry / material pairing.** On 1.21.80+, a block that uses
+`minecraft:material_instances` must also define `minecraft:geometry` (and
+vice versa). The generator always emits both, defaulting geometry to
+`"minecraft:geometry.full_block"`.
+</Callout>
+
+**BP file** `packs/BP/blocks/<name>.block.json`:
+
+```json
+{
+  "format_version": "1.21.50",
+  "minecraft:block": {
+    "description": { "identifier": "my_addon:ruby_block", "menu_category": { "category": "construction" } },
+    "components": {
+      "minecraft:geometry": "minecraft:geometry.full_block",
+      "minecraft:material_instances": { "*": { "texture": "my_addon_ruby_block", "render_method": "opaque" } },
+      "minecraft:destructible_by_mining": { "seconds_to_destroy": 1.5 },
+      "minecraft:destructible_by_explosion": { "explosion_resistance": 3 },
+      "minecraft:friction": 0.6
+    }
+  }
+}
+```
+
+**Side-effects (four artifacts):**
+
+1. the BP block file above;
+2. `terrain_texture.json` key `my_addon_ruby_block → textures/blocks/ruby_block`;
+3. `blocks.json` entry `my_addon:ruby_block → { textures: "my_addon_ruby_block", sound: "stone" }`;
+4. `tile.my_addon:ruby_block.name=Ruby Block` lang line.
+
+The `material_instances.texture` value is the terrain_texture **key**
+(unique, namespaced), not a path. Drop the PNG at
+`RP/textures/blocks/ruby_block.png`. The block's inventory item is
+auto-created by the engine; there is no separate item file.
+
+## Exit codes
+
+| Code | Meaning |
+|---|---|
+| 0 | Success. |
+| 1 | Generic error. |
+| 2 | Invalid config file (schema validation failure). |
+| 3 | Deploy target not found. |
+| 4 | Pack failure. |
+| 5 | Generate error (bad name / identifier, conflict without `--force`, or missing required value in non-interactive mode). |
+
+Exit code 5 is always a fixable input problem: an invalid name, a
+reserved namespace, a write conflict you need to resolve with `--force`,
+or a required flag missing in CI.
+
+## Common invocations
+
+```bash
+# Interactive: press Enter through every prompt with smart defaults
+npm run create:item
+
+# A generic item, fully non-interactive
+npm run create:item -- ruby --icon ruby
+
+# A 3D weapon: item + attachable + custom render controller in one shot
+npm run create:weapon -- fire_sword --mode 3d --icon sword
+
+# A diamond-tier axe
+npm run create:tool -- ruby_axe --variant axe --tier diamond
+
+# A chestplate that renders on the body (3D)
+npm run create:armor -- ruby_chestplate --piece chestplate --mode 3d
+
+# A 3D entity pair (BP + RP)
+npm run create:entity -- goblin --mode 3d
+
+# A stone block with a light level
+npm run create:block -- glow_block --sound stone --light 12
+
+# Preview without writing anything
+npm run create:weapon -- fire_sword --dry-run
+
+# Overwrite an existing feature on purpose
+npm run create:item -- ruby --force
+```
+
+## Related
+
+- [CLI: `bedrock-build`](/docs/reference/cli-build) for `build`,
+  `watch`, `deploy`, `pack`, and `folders`.
+- [Config schema: `namespace`](/docs/reference/config-schema#bedrock-clinamespace)
+  for how the identifier namespace is resolved.
+- [CLI: `create-mc-bedrock`](/docs/reference/cli-create) for the
+  scaffolder that lays the project down.
+- [When to use Bedrock CLI vs mct vs Regolith](/docs/concepts/which-source)
+  for the positioning.

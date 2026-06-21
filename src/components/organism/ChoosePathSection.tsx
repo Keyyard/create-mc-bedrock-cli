@@ -10,30 +10,7 @@ interface Path {
 
 const paths: Path[] = [
   {
-    title: "keyyard/bedrock-build",
-    recommended: true,
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={1.8}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="h-6 w-6"
-        aria-hidden="true"
-      >
-        <path d="M12 2 4 7l8 5 8-5-8-5Z" />
-        <path d="m4 12 8 5 8-5" />
-        <path d="m4 17 8 5 8-5" />
-      </svg>
-    ),
-    description:
-      "Full-featured workspace with our compiler. Pick this if you want hot reload, .mcaddon packaging, and TypeScript out of the box.",
-    bestFor: "Best for: shipping serious add-ons fast.",
-  },
-  {
-    title: "Microsoft Samples",
+    title: "mct (Microsoft)",
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -53,11 +30,12 @@ const paths: Path[] = [
       </svg>
     ),
     description:
-      "Official Microsoft scripting samples, unmodified. Pick this if you're following an MS tutorial verbatim.",
-    bestFor: "Best for: learning the raw API the way Microsoft demos it.",
+      "The official toolchain. Best when you're learning the raw @minecraft API or following a Microsoft tutorial.",
+    bestFor: "Best for: learning the official way.",
   },
   {
-    title: "Community Templates",
+    title: "Bedrock CLI",
+    recommended: true,
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -69,15 +47,38 @@ const paths: Path[] = [
         className="h-6 w-6"
         aria-hidden="true"
       >
-        <circle cx="9" cy="7" r="3" />
-        <circle cx="17" cy="9" r="2.5" />
-        <path d="M3 21c0-3.3 2.7-6 6-6s6 2.7 6 6" />
-        <path d="M14 21c0-2.2 1.8-4 4-4s4 1.8 4 4" />
+        <path d="M12 2 4 7l8 5 8-5-8-5Z" />
+        <path d="m4 12 8 5 8-5" />
+        <path d="m4 17 8 5 8-5" />
       </svg>
     ),
     description:
-      "Curated starters contributed by the community. Pick this for specialized starters like custom items, entities, or minigames.",
-    bestFor: "Best for: niche projects with a head start.",
+      "The approachable middle. Scaffold once, then create:weapon, create:block, create:entity wire every linked file for you. Grows from your first add-on to a shipped one.",
+    bestFor: "Best for: building and shipping add-ons fast.",
+  },
+  {
+    title: "Regolith",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.8}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-6 w-6"
+        aria-hidden="true"
+      >
+        <path d="M4 7h16" />
+        <path d="M7 12h10" />
+        <path d="M10 17h4" />
+        <path d="M12 3v2" />
+        <path d="M12 19v2" />
+      </svg>
+    ),
+    description:
+      "Advanced filter pipelines for large multi-pack projects with custom transforms.",
+    bestFor: "Best for: heavy pipelines at scale.",
   },
 ];
 
@@ -85,13 +86,14 @@ const ChoosePathSection: React.FC = () => (
   <section className="w-full max-w-6xl mx-auto px-4 py-16 md:py-24">
     <div className="text-center mb-12">
       <p className="font-code text-xs uppercase tracking-[0.2em] text-emerald-400">
-        {"// paths"}
+        {"// positioning"}
       </p>
       <h2 className="mt-3 font-header text-3xl md:text-4xl font-bold tracking-tight text-white">
-        One CLI, three starting points
+        Where Bedrock CLI fits
       </h2>
       <p className="mt-3 text-zinc-300 max-w-2xl mx-auto">
-        Pick the source that matches your goal. You can always switch later.
+        Three tools, three bands. mct teaches the official way, Regolith powers
+        heavy pipelines, and Bedrock CLI is the approachable middle.
       </p>
     </div>
 
@@ -119,11 +121,7 @@ const ChoosePathSection: React.FC = () => (
           >
             {p.icon}
           </div>
-          <h3
-            className={`mt-4 text-xl text-white ${
-              p.recommended ? "font-code font-medium" : "font-header font-semibold"
-            }`}
-          >
+          <h3 className="mt-4 text-xl text-white font-header font-semibold">
             {p.title}
           </h3>
           <p className="mt-2 text-sm text-zinc-300 leading-relaxed">

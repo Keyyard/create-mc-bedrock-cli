@@ -9,7 +9,6 @@ interface NavLink {
 
 const links: NavLink[] = [
   { label: "Docs", href: "/docs" },
-  { label: "Showcase", href: "/#showcase" },
   {
     label: "GitHub",
     href: "https://github.com/keyyard/create-mc-bedrock-cli",

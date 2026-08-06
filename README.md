@@ -1,9 +1,3 @@
-Thursday, August 6, 2026 at 9:50 AM
-
-Here is a modernized, clean, and well-structured rewrite of your `README.md`:
-
----
-
 # Create MC Bedrock CLI
 
 **The fastest, most reliable way to build Minecraft Bedrock Add-ons.**

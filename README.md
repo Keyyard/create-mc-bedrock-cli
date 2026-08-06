@@ -1,131 +1,123 @@
-# Create MC Bedrock CLI
+Thursday, August 6, 2026 at 9:50 AM
 
-<div align="center">
-
-[![GitHub Stars](https://img.shields.io/github/stars/keyyard/create-mc-bedrock-cli?style=social)](https://github.com/keyyard/create-mc-bedrock-cli)
-
-[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
-[![License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
-[![Discord](https://img.shields.io/badge/Discord-join-5865F2?logo=discord&logoColor=white)](https://discord.gg/EJ4swPKJNU)
-[![Website](https://img.shields.io/badge/website-bedrockcli.keyyard.xyz-8A2BE2)](https://bedrockcli.keyyard.xyz/)
-
-<br/>
-
-<img src="medias/create-bedrock-cli-banner.png" alt="Create MC Bedrock CLI Banner" width="600" />
-
-</div>
-
-**The fastest way to start a Minecraft Bedrock addon. One clean starter, then scaffold content with a single command.**
+Here is a modernized, clean, and well-structured rewrite of your `README.md`:
 
 ---
 
-## Bedrock CLI 3.0 — the generator release
+# Create MC Bedrock CLI
 
-No more picking a template.
+**The fastest, most reliable way to build Minecraft Bedrock Add-ons.**
 
-You scaffold one clean starter, then build content with `create:*` generators.
+Scaffold a clean workspace in seconds, then generate custom content with a single command.
 
-## Quick start
+---
+
+## 🚀 Why Bedrock CLI 3.0?
+
+Bedrock CLI 3.0 introduces the **Generator Release**. Say goodbye to picking monolithic templates—start with a lightweight, clean starter project, then dynamically scaffold entities, blocks, tools, armor, and items on demand.
+
+* **Automated File Linking:** Generates linked behavior/resource JSONs, texture atlas entries, and language strings automatically.
+* **UUID Management:** Automatically regenerates unique UUIDs and keeps Behavior Pack (BP) ↔ Resource Pack (RP) dependencies in perfect sync.
+* **Developer Safe:** Built-in `--dry-run` flag lets you preview file changes before writing to disk.
+
+---
+
+## ⚡ Quick Start
+
+Initialize a new project instantly using `npx`:
 
 ```bash
 npx create-mc-bedrock
-```
-
-You'll be asked for:
-
-1. **Project name** — used for `bedrock.config.json`, `package.json`, and manifest headers.
-2. **Destination folder** — defaults to `./<project-name>`.
-3. (After scaffold) **Install dependencies now?** — `y` to run `npm install`, `n` to skip.
-
-Manifest UUIDs are regenerated for every scaffold and BP↔RP dependency UUIDs are kept consistent.
-
-## New `create:*` generators (run inside your project)
-
-```bash
-npm run create:weapon   # 2D or 3D, default behavior stats, auto-builds item + attachable
-npm run create:tool     # pickaxe / axe / shovel / hoe picker
-npm run create:armor    # helmet/chest/legs/boots, icon-only or 3D
-npm run create:item     # basic item with texture
-npm run create:entity   # basic entity with geo + texture
-npm run create:block    # basic block with texture
-```
-
-Every command writes all linked files for you:
-
-- Behavior + resource JSON
-- Texture atlas entries
-- Language entries
-
-All registrations are handled automatically.
-
-- **Safe to re-run** (idempotent)
-- Supports `--dry-run` so you can preview changes before writing files
-
-For custom generator assets, import your own model/animation/texture first; the generator wires references for you.
-
-## Starter workspace at a glance
 
 ```
+
+### Interactive Setup Flow
+
+1. **Project Name:** Sets names in `bedrock.config.json`, `package.json`, and pack manifests.
+2. **Destination Folder:** Defaults to `./<project-name>`.
+3. **Dependency Installation:** Prompts to automatically run `npm install`.
+
+---
+
+## 📂 Project Structure
+
+```text
 my-addon/
-  bedrock.config.json
-  package.json
-  tsconfig.json
-  src/
-    main.ts                ← entry — bundled into BP/scripts/main.js
-  packs/
-    BP/  manifest.json + behavior pack files
-    RP/  manifest.json + resource pack files
-  dist/                    ← build output (gitignored)
+├── bedrock.config.json   # CLI & compiler configuration
+├── package.json          # Dependencies & npm scripts
+├── tsconfig.json         # TypeScript configuration
+├── src/
+│   └── main.ts           # Entry point (bundled into BP/scripts/main.js)
+├── packs/
+│   ├── BP/               # Behavior Pack files & manifest.json
+│   └── RP/               # Resource Pack files & manifest.json
+└── dist/                 # Compiled build output (gitignored)
+
 ```
 
-Useful scripts the scaffolder writes for you:
+### Available Development Scripts
 
-```bash
-npm run build           # dev build
-npm run watch           # rebuild on save
-npm run deploy          # build + copy to local Minecraft
-npm run deploy:watch    # hot reload to local Minecraft
-npm run pack            # release build + zip into .mcaddon
-npm run release         # release build only
-```
+| Command | Action |
+| --- | --- |
+| `npm run build` | Builds the project for development |
+| `npm run watch` | Rebuilds project automatically on file save |
+| `npm run deploy` | Builds and deploys directly to your local Minecraft installation |
+| `npm run deploy:watch` | Real-time hot-reloading directly to local Minecraft |
+| `npm run pack` | Creates a production release and zips it into a `.mcaddon` package |
+| `npm run release` | Compiles a production release without packaging |
 
-See the full [`bedrock.config.json` reference](https://bedrockcli.keyyard.xyz/docs) for compiler options.
+*For complete configuration options, check out the [`bedrock.config.json` Reference](https://bedrockcli.keyyard.xyz/docs).*
 
-## Repositories + links
+---
 
-- **CLI (main):** https://github.com/Keyyard/create-mc-bedrock-cli
-- **`@keyyard/bedrock-build` (compiler):** https://github.com/Keyyard/bedrock-build
-- **Website:** https://bedrockcli.keyyard.xyz/
-- **Docs:** https://bedrockcli.keyyard.xyz/docs
+## 🛠️ Content Generators
 
-## Requirements
+Run these generators directly inside your project directory to scaffold content seamlessly:
 
-- Node.js 18 or higher.
-- Windows for `deploy` retail (custom deploy paths work everywhere). Mac/Linux retail deploy is on the roadmap.
+| Generator Command | Description |
+| --- | --- |
+| `npm run create:weapon` | 2D/3D weapons with default behavior stats; builds item + attachable |
+| `npm run create:tool` | Tool picker (Pickaxe, Axe, Shovel, Hoe) with proper mining logic |
+| `npm run create:armor` | Armor sets (Helmet, Chestplate, Leggings, Boots), icon-only or 3D |
+| `npm run create:item` | Basic custom item with texture registration |
+| `npm run create:entity` | Basic custom entity with geometry, animations, and texture |
+| `npm run create:block` | Basic block with texture registration |
 
-## Contributing
+> **Pro Tip:** Generators are **idempotent** (safe to re-run) and support `--dry-run`. For custom 3D assets, import your model/texture/animation files first, and the generator will automatically wire up all references for you!
 
-Want to add a Community Template? Open a PR against [`Keyyard/custom-mc-scripting-templates`](https://github.com/Keyyard/custom-mc-scripting-templates).
+---
+## 💻 Requirements
 
-Found a bug in the scaffolder or compiler? File an issue here or join the [Discord](https://discord.gg/EJ4swPKJNU).
+* **Node.js:** v18.0.0 or higher.
+* **OS:** Windows is recommended for automated deployment to the default Minecraft retail directory. Custom deployment paths can be configured for Mac and Linux (native Mac/Linux retail auto-deploy coming soon).
 
-## Credits
+---
 
-- **Beyond64** ([OsmaanGani](https://github.com/OsmaanGani)) — package banner artist
-- **PottedPropagule** ([PottedPropagule](https://github.com/PottedPropagule)) — issue reporter and helpful feedback
+## 🔗 Project Links
 
-## ⭐ Stargazers Over Time
+* **CLI Repository:** [Keyyard/create-mc-bedrock-cli](https://github.com/Keyyard/create-mc-bedrock-cli)
+* **Compiler Engine (`@keyyard/bedrock-build`):** [Keyyard/bedrock-build](https://github.com/Keyyard/bedrock-build)
+* **Official Website:** [bedrockcli.keyyard.xyz](https://bedrockcli.keyyard.xyz/)
+* **Documentation:** [bedrockcli.keyyard.xyz/docs](https://bedrockcli.keyyard.xyz/docs)
 
-<a href="https://www.star-history.com/#Keyyard/create-mc-bedrock-cli&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Keyyard/create-mc-bedrock-cli&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Keyyard/create-mc-bedrock-cli&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Keyyard/create-mc-bedrock-cli&type=Date" />
- </picture>
-</a>
+---
 
-<div align="center">
-  Made for the Minecraft Bedrock dev community.
-  <br/>
-  <a href="https://github.com/keyyard/create-mc-bedrock-cli/stargazers">⭐ Star us on GitHub</a>
-</div>
+## 🤝 Contributing
+
+We welcome community contributions!
+
+* **Community Templates:** Want to submit a custom template? Submit a PR to [Keyyard/custom-mc-scripting-templates](https://github.com/Keyyard/custom-mc-scripting-templates).
+* **Bug Reports & Ideas:** Found an issue with the CLI or compiler? Open an issue on GitHub or join our [Discord Server](https://discord.gg/EJ4swPKJNU).
+
+---
+
+## 💖 Credits & Acknowledgments
+
+* **Beyond64** ([@OsmaanGani](https://github.com/OsmaanGani)) — Creator of the official package banner artwork.
+* **PottedPropagule** ([@PottedPropagule](https://github.com/PottedPropagule)) — Valuable testing, issue reporting, and feedback.
+
+---
+
+Crafted with ❤️ for the **Minecraft Bedrock Developer Community**.
+
+[⭐ Star us on GitHub](https://github.com/keyyard/create-mc-bedrock-cli/stargazers)

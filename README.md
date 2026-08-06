@@ -15,16 +15,15 @@
 
 </div>
 
-**The fastest way to start a Minecraft Bedrock addon. Three sources, one command, zero boilerplate.**
+**The fastest way to start a Minecraft Bedrock addon. One clean starter, then scaffold content with a single command.**
 
 ---
 
-## What's new in 2.0
+## Bedrock CLI 3.0 — the generator release
 
-- **Three sources** — Custom Workspace (recommended), Microsoft Official Samples, Community Templates.
-- **Bundled Custom Workspace** powered by [`@keyyard/bedrock-build`](https://github.com/Keyyard/bedrock-build) — TypeScript bundling, hot-reload deploy to local Minecraft, one-shot `.mcaddon` packaging.
-- **Pinned dependencies** — the scaffolder queries the npm registry and writes resolved versions into your `package.json`, so every new project starts on current-stable `@minecraft/server`.
-- **Auto-install prompt** after scaffold.
+No more picking a template.
+
+You scaffold one clean starter, then build content with `create:*` generators.
 
 ## Quick start
 
@@ -34,17 +33,37 @@ npx create-mc-bedrock
 
 You'll be asked for:
 
-1. **Source** — pick one of three:
-   - **Custom Workspace (recommended)** — bundled, ships with the `bedrock-build` compiler (hot reload, deploy, `.mcaddon` pack).
-   - **Microsoft Official Samples** — cloned from [`microsoft/minecraft-scripting-samples`](https://github.com/microsoft/minecraft-scripting-samples).
-   - **Community Templates** — cloned from [`Keyyard/custom-mc-scripting-templates`](https://github.com/Keyyard/custom-mc-scripting-templates).
-2. **Project name** — used for `bedrock.config.json`, `package.json`, and manifest headers.
-3. **Destination folder** — defaults to `./<project-name>`.
-4. (After scaffold) **Install dependencies now?** — `y` to run `npm install`, `n` to skip.
+1. **Project name** — used for `bedrock.config.json`, `package.json`, and manifest headers.
+2. **Destination folder** — defaults to `./<project-name>`.
+3. (After scaffold) **Install dependencies now?** — `y` to run `npm install`, `n` to skip.
 
 Manifest UUIDs are regenerated for every scaffold and BP↔RP dependency UUIDs are kept consistent.
 
-## Custom Workspace at a glance
+## New `create:*` generators (run inside your project)
+
+```bash
+npm run create:weapon   # 2D or 3D, default behavior stats, auto-builds item + attachable
+npm run create:tool     # pickaxe / axe / shovel / hoe picker
+npm run create:armor    # helmet/chest/legs/boots, icon-only or 3D
+npm run create:item     # basic item with texture
+npm run create:entity   # basic entity with geo + texture
+npm run create:block    # basic block with texture
+```
+
+Every command writes all linked files for you:
+
+- Behavior + resource JSON
+- Texture atlas entries
+- Language entries
+
+All registrations are handled automatically.
+
+- **Safe to re-run** (idempotent)
+- Supports `--dry-run` so you can preview changes before writing files
+
+For custom generator assets, import your own model/animation/texture first; the generator wires references for you.
+
+## Starter workspace at a glance
 
 ```
 my-addon/
@@ -71,6 +90,13 @@ npm run release         # release build only
 ```
 
 See the full [`bedrock.config.json` reference](https://bedrockcli.keyyard.xyz/docs) for compiler options.
+
+## Repositories + links
+
+- **CLI (main):** https://github.com/Keyyard/create-mc-bedrock-cli
+- **`@keyyard/bedrock-build` (compiler):** https://github.com/Keyyard/bedrock-build
+- **Website:** https://bedrockcli.keyyard.xyz/
+- **Docs:** https://bedrockcli.keyyard.xyz/docs
 
 ## Requirements
 

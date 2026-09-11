@@ -6,9 +6,11 @@ import {
   promptLanguage,
   promptProjectName,
   promptDestination,
+  promptInitGit,
   promptAutoInstall
 } from './commands.js';
 import { scaffoldCustom } from '../services/customTemplateService.js';
+import { initGitRepository } from '../services/gitInitService.js';
 import { runNpmInstall } from '../services/installService.js';
 
 async function run() {
@@ -31,7 +33,24 @@ async function run() {
     // 4) Scaffold the single opinionated starter.
     await scaffoldCustom(targetPath, projectName, language);
 
-    // 5) Auto-install prompt.
+    // 5) Git init + .gitignore.
+    const wantGit = await promptInitGit();
+    if (wantGit) {
+      try {
+        const code = await initGitRepository(targetPath);
+        if (code !== 0) {
+          console.error(
+            `git init exited with code ${code}. You can re-run it manually with:\n  cd ${destination} && git init`
+          );
+        }
+      } catch (err) {
+        console.error(
+          `Could not run git init (${err.message}). .gitignore was still written. To initialize later:\n  cd ${destination} && git init`
+        );
+      }
+    }
+
+    // 6) Auto-install prompt.
     const hasPackageJson = await fileExists(path.join(targetPath, 'package.json'));
     if (hasPackageJson) {
       const wantInstall = await promptAutoInstall();

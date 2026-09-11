@@ -78,5 +78,20 @@ export async function promptAutoInstall() {
   return install;
 }
 
+/**
+ * Post-scaffold: offer to `git init` and write a `.gitignore`.
+ */
+export async function promptInitGit() {
+  const { initGit } = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'initGit',
+      message: 'Initialize a git repository?',
+      default: true
+    }
+  ]);
+  return initGit;
+}
+
 // Re-export path so callers don't need their own import for default destinations.
 export { path };
